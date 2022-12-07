@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "es2020",  
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "outDir": "build",
+    "baseUrl": ".",
+    
+    "esModuleInterop":true,
+    "paths": {
+      "*": ["node_modules/*"]
+    }
+  },
+  "include": [
+    "electron/**/*"
+  ]
+}

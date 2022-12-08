@@ -36,12 +36,12 @@ export function BalanceCards({Icon, title, value, color, clickable = false}:Bala
     >
 
       <div className='flex flex-col justify-center items-start'>
-        <div className='flex flex-row justify-start items-center text-xs '>
-          <span className='mr-1' >{title}</span>
+        <div className='flex flex-row justify-start items-center text-sm '>
+          <span className='mr-1 font-medium' >{title}</span>
           <IoIosArrowForward/>
         </div>
         <div
-          className='text-xl font-bold'
+          className='text-2xl font-bold'
         >
           {value}
         </div>

@@ -1,7 +1,7 @@
 import { createContext , ReactNode, useState, useEffect, ReactComponentElement, JSXElementConstructor, useContext} from "react";
 
 
-type Pages = 
+export type Pages = 
 'Dashboard' | 
 'Preventive' | 
 'Preventive.Historic' |
@@ -42,7 +42,8 @@ export function PagesContextProvider({ children } : PagesContextProviderProps) {
     <PagesContext.Provider value={{
 		goToPage,
 		currentPage,
-		currentPageProps
+		currentPageProps,
+		
     }}>
 		{children}
     </PagesContext.Provider>
@@ -87,4 +88,26 @@ export function PagesContainer({children, className} : PagesProviderProps) {
 			{pageComponent}
 		</div>
 	)
+}
+
+
+const names = {
+    'Historic': 'Histórico',
+    'Dashboard' : 'Dashboard',
+    'Preventive' : 'Preventiva',
+    'Opened' : 'Em Aberto',
+    'NewPreventiveActions' : 'Criar Ação',
+    'PreventiveActions' : 'Ações',
+    'RegisterPreventive' : 'Lançamento',
+    'Corrective' : 'Corretiva',
+    'Settings': 'Configurações'
+} 
+const pageNames:typeof names |any = {...names}
+
+export function getPageName(page:Pages|any){
+	const pageNameSplit = page.split('.')
+	if(pageNameSplit.length>1){
+		return `${pageNames[pageNameSplit[0]]} > ${pageNames[pageNameSplit[1]]}`
+	}
+	return pageNames[page]
 }

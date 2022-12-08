@@ -7,8 +7,9 @@ module.exports = {
     extend: {
       height: {
         'navBar': '30px',
-        'page': 'calc(100vh - 30px)'
-
+        'page': 'calc(100vh - 30px)',
+        'card': 'calc(100% - 35px)',
+        'titlecard': '35px'
       },
 
       top: {'navBar': '30px'},

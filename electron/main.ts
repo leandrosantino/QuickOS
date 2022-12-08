@@ -12,7 +12,7 @@ import { dataRoutes } from "./routes/data";
 async function main() {
 
     const browser = windowCreator({
-        width: 1000,
+        width: 1060,
         height: 650,
         devTools: true, //isDev,
         url: isDev? 'http://localhost:3000':`file://${path.join(__dirname, "./index.html")}`,

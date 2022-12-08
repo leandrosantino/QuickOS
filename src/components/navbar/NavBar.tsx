@@ -7,7 +7,8 @@ import {
   VscMenu
 } from "react-icons/vsc";
 
-import { usePages } from '../../hooks/usePages'
+import { getPageName } from '../../contexts/PagesContext'
+import { usePages,} from '../../hooks/usePages'
 
 export interface NavBarProps {
   handleMenuClick: Function
@@ -39,10 +40,13 @@ export function NavBar({ handleMenuClick }: NavBarProps) {
         >
           <VscMenu />
         </button>
+        <header className='flex text-[10pt] justify-center items-center py-1 text-white-500'>
+          {getPageName(currentPage)}
+        </header>
       </div>
-
+      
       <header className='w-1/3 flex text-[10pt] justify-center items-center py-1 text-white-500'>
-        {currentPage ? currentPage + ' - ' : ''} Quick OS
+        Quick OS
       </header>
 
       <div className='h-[100%] w-1/3 flex flex-row justify-end'>

@@ -1,10 +1,17 @@
-import { usePages} from "../hooks/usePages"
+import { useEffect, useState } from "react"
 
 export interface HomeProps {nome:string}
 
+
+
 export function Home() {
 
-  const {goToPage} = usePages()
+
+  const [teste, setTeste] = useState('')
+
+  useEffect(()=>{
+    setTeste(window.ipc.sendSync('teste'))
+  }, [])
 
   return (
       <div 
@@ -18,6 +25,7 @@ export function Home() {
         '  
       
       >
+        {teste}
 
       </div>
   )

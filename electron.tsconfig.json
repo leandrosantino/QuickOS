@@ -6,6 +6,7 @@
     "sourceMap": true,
     "outDir": "build",
     "baseUrl": ".",
+    "jsx": "react-jsx", 
     
     "esModuleInterop":true,
     "paths": {

@@ -24,5 +24,5 @@
   "include": [
     "src",
     "@types"
-, "src/pages/preventive/preventivas.tsx", "src/pages/preventive/Opened.tsx"  ]
+  ]
 }

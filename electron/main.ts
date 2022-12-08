@@ -6,7 +6,6 @@ import { windowCreator } from './modules/windowCreator'
 import { useRoutes } from "./modules/useRoutes";
 
 import { navBarRoutes } from "./routes/navbar";
-import { prisma } from "./services/prisma";
 import { dataRoutes } from "./routes/data";
 
 
@@ -16,7 +15,7 @@ async function main() {
         width: 1000,
         height: 650,
         devTools: true, //isDev,
-        url: isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, "./index.html")}`,
+        url: isDev? 'http://localhost:3000':`file://${path.join(__dirname, "./index.html")}`,
         icon: '',
     })
 
@@ -26,8 +25,6 @@ async function main() {
 
     routes.use(navBarRoutes)
     routes.use(dataRoutes)
-
-    console.log(await prisma.user.findMany())
 
 }
 

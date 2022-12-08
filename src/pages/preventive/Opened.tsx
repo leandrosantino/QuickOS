@@ -1,4 +1,4 @@
-export function Corretivas() {
+export function Opened() {
   return (
     <div
       className="

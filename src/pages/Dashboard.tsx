@@ -1,10 +1,6 @@
-import { PagesContextProvider } from "../contexts/PagesContext"
 import { usePages} from "../hooks/usePages"
 
-import HomeRoutes from "../routes/home.routes"
-
 export interface HomeProps {nome:string}
-
 
 export function Home() {
 
@@ -22,12 +18,6 @@ export function Home() {
         '  
       
       >
-
-        <div>Testtando</div>
-        <button onClick={()=>goToPage('corretivas', {})}>Corretivas</button>
-        <button onClick={()=>goToPage('preventivas', {})}>Preventivas</button>
-
-        <HomeRoutes/>
 
       </div>
   )

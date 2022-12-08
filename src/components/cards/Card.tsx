@@ -8,7 +8,7 @@ interface CardsContainerProps {
 }
 
 
-export function CardsContainer({children, className, title} : CardsContainerProps) {
+export function Card({children, className, title} : CardsContainerProps) {
   return (
 
     <div className='text-white-500 w-full mt-2' >

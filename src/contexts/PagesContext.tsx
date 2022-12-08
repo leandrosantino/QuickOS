@@ -1,7 +1,16 @@
 import { createContext , ReactNode, useState, useEffect, ReactComponentElement, JSXElementConstructor, useContext} from "react";
 
 
-type Pages = 'Dashboard' | 'Send' | 'corretivas' | 'preventivas'
+type Pages = 
+'Dashboard' | 
+'Preventive' | 
+'Preventive.Historic' |
+'Preventive.Opened' |
+'Preventive.NewPreventiveActions' |
+'Preventive.PreventiveActions' |
+'Preventive.RegisterPreventive' |
+'Corrective' |
+'Settings' 
 
 type GoToPageType = <T>(name:Pages, props:T)=>void
 

@@ -1,17 +1,16 @@
 import React from 'react'
 import { IconType } from 'react-icons/lib';
 
-interface ButtonSideMenuProps {
+interface SideMenuPageButtonProps {
     title: string;
     onclick: React.MouseEventHandler;
     activated: boolean; 
     Icon: IconType;
     reduced: boolean;
-    activeColor?: string
 }
 
-export function SideMenuButton(
-    {title, onclick, activated, Icon, reduced, activeColor}:ButtonSideMenuProps
+export function SideMenuPageButton(
+    {title, onclick, activated, Icon, reduced}:SideMenuPageButtonProps
 ){
   return (
     <button 
@@ -19,9 +18,11 @@ export function SideMenuButton(
         className={`
             w-[100%] h-10  
             hover:bg-gray-700
+            font-medium
+            text-lg
             ${activated?
-                `border-l-solid border-l-4 text-gray-100 border-l-gray-100`:
-                'text-white-500'
+                `border-l-4 text-green-600 border-l-green-600`:
+                'text-gray-100'
             }
             flex
             fle-row

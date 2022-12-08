@@ -1,7 +1,8 @@
 import {PagesContainer, Screen} from '../contexts/PagesContext';
 
-import { Home } from '../pages/Home';
-import { Send } from '../pages/send';
+import { Home } from '../pages/Dashboard';
+import { Preventive } from '../pages/preventive';
+import { Historic } from '../pages/corrective/Historic';
 
 export default function AppRoutes() {
   return (
@@ -11,8 +12,16 @@ export default function AppRoutes() {
             component={Home}
         />
         <Screen 
-            name='Send'
-            component={Send}
+            name='Preventive'
+            component={Preventive}
+        />
+        <Screen 
+            name='Corrective'
+            component={Historic}
+        />
+        <Screen 
+            name='Settings'
+            component={Historic}
         />
     </PagesContainer>
   )

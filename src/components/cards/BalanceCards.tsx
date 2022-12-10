@@ -5,15 +5,15 @@ interface BalanceCardsProps {
   Icon: IconType,
   title: string;
   value: string;
-  color: 'blue' | 'red' | 'green' | 'cyan' ,
+  color: 'blue' | 'red' | 'green' | 'orange' ,
   clickable?: boolean;
 }
 
 const colors = {
-  blue: 'bg-blue-600 ',
-  red: 'bg-red-600 ',
-  green: 'bg-green-600 ',
-  cyan: 'bg-cyan-600 ',
+  blue: 'bg-blue-400',
+  red: 'bg-red-600',
+  green: 'bg-green-500 ',
+  orange: 'bg-orange-500 ',
 }
 
 export function BalanceCards({Icon, title, value, color, clickable = false}:BalanceCardsProps){

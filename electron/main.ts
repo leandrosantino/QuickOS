@@ -14,7 +14,7 @@ async function main() {
     const browser = windowCreator({
         width: 1060,
         height: 650,
-        devTools: true, //isDev,
+        devTools: isDev,
         url: isDev? 'http://localhost:3000':`file://${path.join(__dirname, "./index.html")}`,
         icon: '',
     })
@@ -28,10 +28,10 @@ async function main() {
 
 }
 
-// !isDev && app.on('browser-window-focus', () => {
-//     globalShortcut.register('CommandOrControl+R', () => { })
-//     globalShortcut.register('F5', () => { })
-// })
+!isDev && app.on('browser-window-focus', () => {
+    globalShortcut.register('CommandOrControl+R', () => { })
+    globalShortcut.register('F5', () => { })
+})
 
 app.disableHardwareAcceleration()
 

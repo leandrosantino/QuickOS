@@ -5,9 +5,9 @@ import { Card } from '../components/cards/Card'
 import { ScrollContainer } from '../components/containers/ScrollContainer'
 import { DataFilterFrame } from '../components/dashboard/DataFilterFrame'
 
+import { DashLineChart } from '../components/dashboard/charts/Line'
+
 export interface HomeProps {nome:string}
-
-
 
 export function Home() {
 
@@ -66,7 +66,7 @@ export function Home() {
         />
         <BalanceCards
           Icon={IoBarChartSharp}
-          color='cyan'
+          color='orange'
           title="Quantidade de Setups"
           value="15"
           clickable
@@ -79,7 +79,6 @@ export function Home() {
           w-full h-[1000px] mt-5 px-6
           grid grid-cols-1 gap-2
           xl:grid-cols-3 xl:h-[600px]
-          
         "
       >
       <div className='col-span-1 h-full grid grid-cols-1 grid-rows-6 gap-2'>
@@ -88,7 +87,7 @@ export function Home() {
           <Card 
             title='MTBF & MTTR / Tecnologia'
           >
-            teste
+            <DashLineChart/>
           </Card>
 
       </div>

@@ -21,7 +21,7 @@ export function SideMenuPageButton(
             font-medium
             text-lg
             ${activated?
-                `border-l-4 text-green-600 border-l-green-600`:
+                `border-l-4 text-green-500 border-l-green-500`:
                 'text-gray-100'
             }
             flex

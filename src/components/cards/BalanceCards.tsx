@@ -10,9 +10,9 @@ interface BalanceCardsProps {
 }
 
 const colors = {
-  blue: 'bg-blue-400',
-  red: 'bg-red-600',
   green: 'bg-green-500 ',
+  blue: 'bg-green-600',
+  red: 'bg-blue-400',
   orange: 'bg-orange-500 ',
 }
 

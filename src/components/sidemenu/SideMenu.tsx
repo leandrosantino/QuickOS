@@ -23,7 +23,7 @@ export function SideMenu({ reduced }: SideMenuProps) {
         transition-all
         h-[100%] bg-gray-800
         border-r-4
-        border-r-green-700
+        border-r-green-500
         ${reduced ?
           'w-[50px]' :
           'w-[256px]'

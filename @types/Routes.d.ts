@@ -3,8 +3,9 @@ export type MainRoutes =
     'minimize' |
     'close' |
     'isMaximized' |
-    'teste'
+    'teste' 
 
 export type RenderRoutes = 
     'update' |
-    'changeIconMaximizeButton'
+    'changeIconMaximizeButton'|
+    'onWindowResize'

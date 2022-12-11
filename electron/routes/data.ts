@@ -22,4 +22,8 @@ export function dataRoutes({ipcMain, window}: UseRoutesProps){
         }
     }) 
 
+    window.on('resize', ()=>{
+        window.webContents.send('onWindowResize')
+    })
+
 }

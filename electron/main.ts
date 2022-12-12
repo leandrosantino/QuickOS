@@ -8,7 +8,7 @@ import { useRoutes } from "./modules/useRoutes";
 import { navBarRoutes } from "./routes/navbar";
 import { dataRoutes } from "./routes/data";
 
-//
+//teste
 
 async function main() {
 

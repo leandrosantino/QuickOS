@@ -52,6 +52,8 @@ export function PreventiveProgressChart({ filters }: Props) {
             outerRadius={95}
             stroke='none'
             cx={'50%'} cy={'50%'}
+            startAngle={90}
+            endAngle={-290}
           >
             {
               data.map((entry, index) => (

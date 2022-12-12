@@ -8,7 +8,7 @@ import { RegisterPreventive } from '../pages/preventive/RegisterPreventive'
 
 export default function PreventiveRoutes() {
   return (
-    <PagesContainer className='w-full h-[50%] flex items-center justify-center' >
+    <PagesContainer className='w-[100%] h-tabPage flex items-center justify-center' >
         <Screen 
             name='Preventive.Historic'
             component={Historic}

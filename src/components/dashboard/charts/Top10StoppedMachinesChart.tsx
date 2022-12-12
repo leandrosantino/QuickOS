@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { XAxis, YAxis, BarChart, Tooltip, Bar, ResponsiveContainer, Cell, Legend } from 'recharts';
+import { XAxis, YAxis, BarChart, Tooltip, Bar, ResponsiveContainer} from 'recharts';
 import theme from '../../../theme'
 
 interface Props {

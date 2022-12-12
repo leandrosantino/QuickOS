@@ -28,7 +28,7 @@
       "node_modules/**/*",
       "public/**/*",
       "database/**/*",
-      "theme.ts"
+      "theme.js"
     ],
     "asarUnpack": [
       "database/app.db"

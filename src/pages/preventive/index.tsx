@@ -12,7 +12,7 @@ export function Preventive() {
   return (
     <div 
       className="
-        w-full h-full 
+        w-full h-full
       "
     >
         <TabContainer>

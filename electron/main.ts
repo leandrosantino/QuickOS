@@ -8,7 +8,6 @@ import { useRoutes } from "./modules/useRoutes";
 import { navBarRoutes } from "./routes/navbar";
 import { dataRoutes } from "./routes/data";
 
-//teste
 
 async function main() {
 
@@ -31,7 +30,7 @@ async function main() {
 
 !isDev && app.on('browser-window-focus', () => {
     globalShortcut.register('CommandOrControl+R', () => { })
-    globalShortcut.register('F5', () => { })
+    globalShortcut.register('F5', () => {})
 })
 
 app.disableHardwareAcceleration()

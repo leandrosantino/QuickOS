@@ -2,7 +2,7 @@
 import { BalanceCards } from "../components/cards/BalanceCards"
 import { Card } from '../components/cards/Card'
 import { ScrollContainer } from '../components/containers/ScrollContainer'
-import { DataFilterFrame } from '../components/dashboard/DataFilterFrame'
+import { FilterFrame } from '../components/dashboard/FilterFrame'
 
 import { MTBFandMTTRbyTecChart } from '../components/dashboard/charts/MTBFandMTTRbyTecChart'
 import { PreventiveProgressChart } from '../components/dashboard/charts/preventiveProgressChart'
@@ -41,7 +41,7 @@ export function Home() {
       <div
         className='mt-2 w-full h-8 flex justify-center items-center'
       >
-        <DataFilterFrame />
+        <FilterFrame />
       </div>
 
       <div
@@ -102,7 +102,7 @@ export function Home() {
               <Card
                 title='Progresso das Preventivas'
               >
-                <PreventiveProgressChart/>
+                <PreventiveProgressChart />
               </Card>
 
             </div>
@@ -111,7 +111,7 @@ export function Home() {
               <Card
                 title='Preventivas em Aberto'
               >
-                <PreventiveOpenedList/>
+                <PreventiveOpenedList />
               </Card>
 
             </div>
@@ -120,7 +120,7 @@ export function Home() {
               <Card
                 title='Top 10 - Máquinas Paradas'
               >
-                <Top10StoppedMachinesChart/>
+                <Top10StoppedMachinesChart />
               </Card>
 
             </div>

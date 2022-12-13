@@ -6,8 +6,8 @@ export type Pages =
 'Preventive' | 
 'Preventive.Historic' |
 'Preventive.Opened' |
-'Preventive.NewPreventiveActions' |
-'Preventive.PreventiveActions' |
+'Preventive.Actions.NewActions' |
+'Preventive.Actions' |
 'Preventive.RegisterPreventive' |
 'Corrective' |
 'Settings' 
@@ -96,8 +96,8 @@ const names = {
     'Dashboard' : 'Dashboard',
     'Preventive' : 'Preventiva',
     'Opened' : 'Em Aberto',
-    'NewPreventiveActions' : 'Criar Ação',
-    'PreventiveActions' : 'Ações',
+    'NewActions' : 'Nova Ação',
+    'Actions' : 'Ações',
     'RegisterPreventive' : 'Lançamento',
     'Corrective' : 'Corretiva',
     'Settings': 'Configurações'
@@ -107,7 +107,12 @@ const pageNames:typeof names |any = {...names}
 export function getPageName(page:Pages|any){
 	const pageNameSplit = page.split('.')
 	if(pageNameSplit.length>1){
-		return `${pageNames[pageNameSplit[0]]} > ${pageNames[pageNameSplit[1]]}`
+		let name = ''
+		pageNameSplit.forEach((element:string, index:number) => {
+			const arrow = index === pageNameSplit.length-1?'':' > '
+			name += pageNames[element]+arrow
+		});
+		return name
 	}
 	return pageNames[page]
 }

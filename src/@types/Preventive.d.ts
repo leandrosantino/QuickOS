@@ -1,6 +1,10 @@
 interface AcctionsType {
     description: string;
     concluded?: boolean;
+    tag?: string;
+    nature?: string;
+    frequency?: number;
+    nextExecution?: string;
 }
 
 interface PreventiveType {

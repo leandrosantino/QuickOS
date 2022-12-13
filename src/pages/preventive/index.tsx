@@ -32,14 +32,9 @@ export function Preventive() {
           title="Em Aberto"
         />
         <TabButton
-          activated={currentPage.split('.')[1] === 'PreventiveActions'}
-          onclick={() => { goToPage('Preventive.PreventiveActions', {}) }}
+          activated={currentPage.split('.')[1] === 'Actions'}
+          onclick={() => { goToPage('Preventive.Actions', {}) }}
           title="Ações"
-        />
-        <TabButton
-          activated={currentPage.search('NewPreventiveActions') > -1}
-          onclick={() => { goToPage('Preventive.NewPreventiveActions', {}) }}
-          title="Criar Ação"
         />
         <TabButton
           activated={currentPage.search('RegisterPreventive') > -1}

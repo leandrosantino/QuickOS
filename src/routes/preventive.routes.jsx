@@ -2,7 +2,6 @@ import {PagesContainer, Screen} from '../contexts/PagesContext';
 
 import { Historic } from '../pages/preventive/Historic';
 import { Opened } from '../pages/preventive/Opened';
-import { NewPreventiveActions } from '../pages/preventive/NewPreventiveActions'
 import { PreventiveActions } from '../pages/preventive/PreventiveActions'
 import { RegisterPreventive } from '../pages/preventive/RegisterPreventive'
 
@@ -18,11 +17,11 @@ export default function PreventiveRoutes() {
             component={Opened}
         />
         <Screen 
-            name='Preventive.NewPreventiveActions'
-            component={NewPreventiveActions}
+            name='Preventive.Actions.NewActions'
+            component={()=>(<PreventiveActions showCreationForm />)}
         />
         <Screen 
-            name='Preventive.PreventiveActions'
+            name='Preventive.Actions'
             component={PreventiveActions}
         />
         <Screen 

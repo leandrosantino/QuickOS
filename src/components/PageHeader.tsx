@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react'
 
 interface PageHeaderProps {
   title: string;
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 export function PageHeader({ title, children }: PageHeaderProps) {
@@ -21,7 +21,7 @@ export function PageHeader({ title, children }: PageHeaderProps) {
         {title}
       </div>
       <div
-        className='w-1/2 h-5 text-sm flex justify-center items-center'
+        className='w-1/2 h-full text-sm flex justify-end items-center'
       >
         {children}
       </div>

@@ -8,6 +8,17 @@ interface PreventiveCardProps {
 }
 
 export function PreventiveCard({ data }: PreventiveCardProps) {
+
+  let actionsConcluded = 0
+  data.actions.forEach((entry, index)=>{
+    if(entry.concluded){
+      actionsConcluded += 1
+    }
+  })
+
+  const completionPercent = ((actionsConcluded / data.actions.length) * 100).toFixed(2)
+
+  
   return (
     <div
       className='
@@ -21,10 +32,10 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
       '
     >
       <header
-        className="
+        className={`
           flex flex-row justify-center items-center w-full px-2
-          border-b-2 border-gray-900 font-medium text-lg 
-        "
+          border-b-2 ${data.duration?'border-green-600':'border-gray-900'} font-medium text-lg 
+        `}
       >
         <div className='w-1/2 text-start py-2' >Nº {data.id}</div>
         <div className='w-1/2 text-end py-2' >{data.tag}</div>
@@ -56,7 +67,7 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
             >
 
               {
-                false ?
+                entry.concluded ?
                   <span className='text-green-500'><VscDebugBreakpointLog /></span> :
                   <span><VscDebugBreakpointLogUnverified /></span>
               }
@@ -66,7 +77,7 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
                 className="
                   p-1 text-lg
                 "
-              >{entry}</div>
+              >{entry.description}</div>
             </li>
           ))
         }
@@ -80,27 +91,35 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
         "
       >
         <div
-          className="
+          className={`
             w-full mt-2
-            border-t border-gray-500 p-2
+            border-t ${data.duration?'border-green-600':'border-gray-500'} p-2
             flex flex-row justify-end 
-          "
+          `}
         >
           {
             data.responsible ?
               <div
                 className="
-                  h-full w-full text-lg
-                  flex flex-row justify-start
+                  h-full w-full text-base
+                  flex flex-row justify-center items-center
                 "
               >
-                <span className='mr-1 font-medium' >Responsável:</span>
-                {data.responsible}
+                <div className="w-1/2 flex justify-center items-center" >
+                  <span className='mr-1 font-medium' >Responsável:</span>
+                  {data.responsible}
+                </div>
+                <div className={`
+                  w-1/2 flex justify-end items-center font-bold
+                  ${Number(completionPercent)<100?'text-gray-900':'text-green-600'}
+                `} >
+                  {completionPercent}% Concluído 
+                </div>
               </div>
               :
               <button
-                className="
-                  text-gray-100 bg-green-500 
+                className=" 
+                  text-gray-100 bg-red-500 
                   p-1.5 rounded-lg
                   flex flex-row justify-center items-center
                   hover:opacity-90 active:opacity-80

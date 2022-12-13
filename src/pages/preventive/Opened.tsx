@@ -3,93 +3,29 @@ import { ScrollContainer } from "../../components/containers/ScrollContainer";
 import { FilterFrame } from "../../components/dashboard/FilterFrame";
 import { PageHeader } from "../../components/PageHeader";
 
+import { TfiReload } from 'react-icons/tfi'
 
 const data: PreventiveType[] = [
   {
     id: 105,
     tag: 'M20',
     actions: [
-      'Trocar relé',
-      'Trocar Rolamento',
-      'Trocar Bomba',
-      'Trocar filtro',
+      {description: 'Troca do Relé', },
+      {description: 'Troca do Filtro', },
+      {description: 'Troca da Bomba', },
+      {description: 'Troca do Disjuntor', },
     ],
-    date: '21/02/2022',
-    duration: 10,
-    responsible: 'Robert'
   },
   {
     id: 106,
     tag: 'M15',
     actions: [
-      'Trocar relé',
-      'Trocar Rolamento',
-      'Trocar Bomba',
-    ]
-  },
-  {
-    id: 107,
-    tag: 'M15',
-    actions: [
-      'Trocar relé',
-      'Trocar Rolamento',
-      'Trocar Rolamento',
-      'Trocar Bomba',
-      'Trocar filtro',
-    ]
-  },
-  {
-    id: 108,
-    tag: 'M15',
-    actions: [
-      'Trocar relé',
-      'Trocar Rolamento',
-      'Trocar Bomba',
-      'Trocar filtro',
-    ]
-  },
-  {
-    id: 109,
-    tag: 'M15',
-    actions: [
-      'Trocar relé',
-      'Trocar Rolamento',
-      'Trocar Bomba',
-      'Trocar filtro',
-    ]
-  },
-  {
-    id: 110,
-    tag: 'M15',
-    actions: [
-      'Trocar relé',
-      'Trocar Rolamento',
-      'Trocar Bomba',
-      'Trocar filtro',
-    ]
-  },
-  {
-    id: 111,
-    tag: 'M15',
-    actions: [
-      'Trocar relé',
-      'Trocar Rolamento',
-      'Trocar Bomba',
-      'Trocar filtro',
+      {description: 'Troca do Relé',},
+      {description: 'Troca do Filtro',},
+      {description: 'Troca do Óleo',},
     ]
   },
 ]
-
-function dataSplitter(data: PreventiveType[], part: 1 | 2) {
-  const splitterArray: typeof data = []
-  const splitter = data.length % 2 === 1 ? (data.length - 1) / 2 : data.length / 2
-  data.forEach((entry, index) => {
-    if (part === 1 ? index <= splitter : index > splitter) {
-      splitterArray.push(entry)
-    }
-  })
-  return splitterArray
-}
 
 export function Opened() {
 
@@ -102,7 +38,17 @@ export function Opened() {
     >
 
       <PageHeader title='Preventivas Em Aberto' >
-        <FilterFrame width={70} />
+        <button
+          className="
+            py-1 px-1.5 bg-green-500 text-gray-100 mr-2
+            flex justify-center items-center rounded-lg
+          "
+        >
+          Atualizar 
+          <span className="ml-2" >
+            <TfiReload width={20} />
+          </span>
+        </button>
       </PageHeader>
       <div className="w-full h-[calc(100vh-170px)]">
         <ScrollContainer className="mt-5 h-full  rounded-md" >
@@ -119,7 +65,7 @@ export function Opened() {
               </div>
               : <div
                 className="
-                  grid grid-cols-1 xl:grid-cols-3 gap-4 p-4 
+                  grid grid-cols-2 xl:grid-cols-3 gap-4 p-4 
                 "
               >
                 {

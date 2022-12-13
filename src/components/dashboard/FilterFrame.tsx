@@ -1,24 +1,40 @@
 import React from 'react'
+import { InputSearch } from '../forms/InputSearch';
 import { SelectionBox, Option } from '../forms/SelectionBox'
 
 interface FilterFrameProps {
   width?: number;
+  opened?: boolean;
+  search?: boolean;
 }
 
-export function FilterFrame({ width }: FilterFrameProps) {
+export function FilterFrame({ width, opened, search }: FilterFrameProps) {
   return (
     <div
       className={`
         h-[80%]
-        grid grid-cols-4 gap-3
+        grid gap-3
         ${
-          width?
-          `w-[${width}%]`:
+          opened?
+          'grid-cols-5':
+          'grid-cols-4'
+        }
+        ${width ?
+          `w-[${width}%]` :
           'w-[40%]'
         }
         
       `}
     >
+
+      {
+        opened &&
+        <SelectionBox>
+          <Option value='true' title='Concluído' />
+          <Option value='false' title='Em Aberto' />
+        </SelectionBox>
+      }
+
       <SelectionBox>
         <Option value='M01' title='M01' />
         <Option value='M02' title='M02' />

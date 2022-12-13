@@ -55,7 +55,7 @@ export function BalanceCards({Icon, title, value, color, clickable = false}:Bala
           flex justify-center
           items-center
           text-xl
-          text-gray-900
+          text-gray-100
         `}
       >
         <Icon/>

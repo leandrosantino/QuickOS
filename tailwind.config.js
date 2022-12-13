@@ -11,7 +11,7 @@ module.exports = {
       height: {
         'navBar': '30px',
         'page': 'calc(100vh - 30px)',
-        'tabPage': 'calc(100% - 28px)',
+        'tabPage': 'calc(100vh - 58px)',
         'card': 'calc(100% - 35px)',
         'titlecard': '35px',
         

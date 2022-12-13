@@ -1,4 +1,5 @@
 
+import { useEffect } from 'react'
 import { TabButton } from '../../components/Tab/TabButton'
 import { TabContainer } from '../../components/Tab/TabContainer'
 import { usePages } from '../../hooks/usePages'
@@ -9,6 +10,10 @@ export function Preventive() {
 
   const {currentPage, goToPage} = usePages()
 
+  useEffect(()=>{
+    if(currentPage === 'Preventive') goToPage('Preventive.Historic', {})
+  }, [currentPage])
+
   return (
     <div 
       className="
@@ -17,7 +22,7 @@ export function Preventive() {
     >
         <TabContainer>
           <TabButton 
-            activated={currentPage === 'Preventive.Historic' || currentPage === 'Preventive'}
+            activated={currentPage === 'Preventive.Historic'}
             onclick={()=>{goToPage('Preventive.Historic', {})}}
             title="Hístorico"
           />

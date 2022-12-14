@@ -3,7 +3,11 @@ import React, { useState } from 'react'
 import { BiSearchAlt } from 'react-icons/bi'
 import { GrFormClose } from 'react-icons/gr'
 
-export function InputSearch() {
+interface InputSearchProps {
+  returnSearchText: (value:string)=>void
+}
+
+export function InputSearch({returnSearchText}:InputSearchProps) {
 
   const [searchText, setSearchText] = useState('')
 
@@ -32,9 +36,12 @@ export function InputSearch() {
         className="
           w-[80%] h-full indent-1 bg-gray-100 
           flex flex-row justify-center items-center 
-        "
+        "        
         value={searchText}
-        
+        onChange={(e)=> {
+          setSearchText(e.target.value)
+          returnSearchText(e.target.value)
+        }}
         id="search"
         type="text"
       />
@@ -46,6 +53,10 @@ export function InputSearch() {
           rounded-br-lg rounded-tr-lg
           hover:bg-gray-200 active:opacity-80
         "
+        onClick={()=>{
+          setSearchText('')
+          returnSearchText('')
+        }}
       >
         <span> 
           <GrFormClose  />

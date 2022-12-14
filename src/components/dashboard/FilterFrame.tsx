@@ -1,5 +1,3 @@
-import React from 'react'
-import { InputSearch } from '../forms/InputSearch';
 import { SelectionBox, Option } from '../forms/SelectionBox'
 
 interface FilterFrameProps {
@@ -8,7 +6,7 @@ interface FilterFrameProps {
   search?: boolean;
 }
 
-export function FilterFrame({ width, opened, search }: FilterFrameProps) {
+export function FilterFrame({ width, opened }: FilterFrameProps) {
   return (
     <div
       className={`

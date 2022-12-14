@@ -12,6 +12,7 @@ interface Props {
 
 export function Top10StoppedMachinesChart({filters}:Props) {
 
+  // eslint-disable-next-line
   const [data, setData] = useState([
     {name: 'M1', value: 15,},
     {name: 'M2', value: 12,},

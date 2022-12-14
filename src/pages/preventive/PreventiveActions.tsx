@@ -1,4 +1,5 @@
 
+import { ReactNode, useState } from 'react'
 import { MdLibraryAdd } from 'react-icons/md'
 import { ScrollContainer } from '../../components/containers/ScrollContainer'
 import { FilterFrame } from '../../components/dashboard/FilterFrame'
@@ -10,20 +11,80 @@ interface PreventiveActionsProps {
   showCreationForm?: boolean;
 }
 
-
-const data:AcctionsType[] = [
+const data: AcctionsType[] = [
   {
     tag: 'M25',
-    description: 'Troca do Relé',
+    description: 'Troca do Relé termico de do motor da bomba de iso',
+    frequency: 15,
+    nature: 'Elétrica',
+    nextExecution: '21/02/2022'
+  },
+  {
+    tag: 'M25',
+    description: 'Troca do Relé termico de do motor da bomba de iso',
+    frequency: 15,
+    nature: 'Elétrica',
+    nextExecution: '21/02/2022'
+  },
+  {
+    tag: 'M25',
+    description: 'Troca do Relé termico de do motor da bomba de iso',
+    frequency: 15,
+    nature: 'Elétrica',
+    nextExecution: '21/02/2022'
+  },
+  {
+    tag: 'M25',
+    description: 'Troca do Relé termico de do motor da bomba de iso',
     frequency: 15,
     nature: 'Elétrica',
     nextExecution: '21/02/2022'
   },
 ]
 
+function TableCell({ children, width }: { width: number; children: ReactNode }) {
+  return (
+    <div
+      className={`
+        w-[${width}%] h-full 
+        flex flex-row justify-center items-center
+      `}
+    >
+      {children}
+    </div>
+  )
+}
+
+function TableRow({ data, className, istitle }: { data: AcctionsType; className?: string, istitle?: boolean}) {
+  return (
+    <div
+      className={`w-full p-2 flex flex-row justify-center items-center border-b border-gray-900 ` + className}
+    >
+      <TableCell width={15} >{data.tag} </TableCell>
+      <TableCell width={15} >{data.nature} </TableCell>
+      <TableCell width={30} >{data.description} </TableCell>
+      <TableCell width={15} >{data.frequency} </TableCell>
+      <TableCell width={15} >{data.nextExecution} </TableCell>
+      <TableCell width={10} >  
+        {
+          istitle?
+          <div className='w-full h-full' >
+              teste
+          </div>:
+          <div className='w-full h-full' >
+            tetet
+          </div>
+        }
+      </TableCell>
+    </div>
+  )
+}
+
 export function PreventiveActions({ showCreationForm }: PreventiveActionsProps) {
 
   const { goToPage } = usePages()
+
+  const [inputSearchText, setInputSearchText] = useState<string>('')
 
   return (
     <>
@@ -47,7 +108,7 @@ export function PreventiveActions({ showCreationForm }: PreventiveActionsProps) 
             </span>
           </button>
 
-          <InputSearch />
+          <InputSearch returnSearchText={(value: string) => setInputSearchText(value)} />
 
         </PageHeader>
 
@@ -57,10 +118,24 @@ export function PreventiveActions({ showCreationForm }: PreventiveActionsProps) 
           <FilterFrame width={70} opened />
         </div>
 
-        <div className="w-full h-[calc(100vh-185px)]">
-          <ScrollContainer className="mt-3 h-full  rounded-md" >
+        <TableRow
+          istitle
+          className='mt-3'
+          data={{
+            tag: 'Tag',
+            description: 'Descição',
+            frequency: 'Priodicidade',
+            nature: 'Natureza',
+            nextExecution: 'Próxima Execução'
+          }}
+        />
+
+        <div className="w-full h-[calc(100vh-230px)]">
+          <ScrollContainer className="h-full" >
             {
-              
+              data.map((entry, index) => (
+                <TableRow key={index} data={entry} />
+              ))
             }
           </ScrollContainer>
         </div>
@@ -72,9 +147,9 @@ export function PreventiveActions({ showCreationForm }: PreventiveActionsProps) 
         <>
           <div
             className="
-              md:w-[82%] sm:w-[81%] xl:w-[84.2%] h-tabPage
+              w-[81%] xl:w-[84.2%] h-tabPage
               flex flex-row justify-center items-center
-              bg-gray-900 bg-opacity-50
+              bg-gray-900 bg-opacity-50 
               absolute
             "
             onClick={() => goToPage('Preventive.Actions', {})}

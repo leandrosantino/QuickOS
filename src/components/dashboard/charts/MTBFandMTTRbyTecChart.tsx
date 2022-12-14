@@ -12,13 +12,15 @@ interface Props {
 
 export function MTBFandMTTRbyTecChart({filters}:Props) {
 
+  // eslint-disable-next-line
   const [data, setData] = useState([
     {name: 'TEC 1', MTBF: 250, MTTR: 36,},
     {name: 'TEC 2', MTBF: 200, MTTR: 45,},
     {name: 'TEC 3', MTBF: 300, MTTR: 52,},
     {name: 'TEC 4', MTBF: 220, MTTR: 26,},
   ])
-
+  
+  // eslint-disable-next-line
   const [goals, setGoals] = useState({mtbf: 220, mttr: 45})
 
   useEffect(() => {

@@ -3,7 +3,7 @@ interface AcctionsType {
     concluded?: boolean;
     tag?: string;
     nature?: string;
-    frequency?: number;
+    frequency?: number|string;
     nextExecution?: string;
 }
 

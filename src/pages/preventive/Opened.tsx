@@ -1,6 +1,5 @@
 import { PreventiveCard } from "../../components/cards/PreventiveCard";
 import { ScrollContainer } from "../../components/containers/ScrollContainer";
-import { FilterFrame } from "../../components/dashboard/FilterFrame";
 import { PageHeader } from "../../components/PageHeader";
 
 import { TfiReload } from 'react-icons/tfi'

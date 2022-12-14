@@ -12,7 +12,7 @@ export function Preventive() {
 
   useEffect(() => {
     if (currentPage === 'Preventive') goToPage('Preventive.Historic', {})
-  }, [currentPage])
+  }, [currentPage, goToPage])
 
   return (
     <div

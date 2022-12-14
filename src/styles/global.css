@@ -6,5 +6,10 @@
     user-select: none;
 }
 
+textarea:focus, input:focus {
+    box-shadow: 0 0 0 0;
+    outline: 0;
+}
+
 .drag{-webkit-app-region: drag;}
 .no-drag{-webkit-app-region: no-drag;}

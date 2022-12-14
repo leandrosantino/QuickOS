@@ -12,15 +12,18 @@ interface Props {
 
 export function PreventiveProgressChart({ filters }: Props) {
 
+  // eslint-disable-next-line
   const [data, setData] = useState([
     { name: 'Concluído', value: 30, },
     { name: 'Em aberto', value: 70, },
   ])
 
+  // eslint-disable-next-line
   useEffect(() => {
 
   }, [filters])
 
+  // eslint-disable-next-line
   useEffect(() => {
 
   }, [])

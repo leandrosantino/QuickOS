@@ -17,6 +17,11 @@ module.exports = {
         
       },
 
+      width:{
+        'sideMenuReduce': '50px',
+        'sideMenuFull': '256px',
+      },
+
       top: {'navBar': '30px'},
 
       colors: {

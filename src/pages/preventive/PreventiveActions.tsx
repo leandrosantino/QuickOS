@@ -1,90 +1,124 @@
 
 import { ReactNode, useState } from 'react'
+
 import { MdLibraryAdd } from 'react-icons/md'
+import { RiDeleteBack2Fill } from 'react-icons/ri'
+
+
+import { ModalContainer } from '../../components/containers/ModalContainer'
 import { ScrollContainer } from '../../components/containers/ScrollContainer'
 import { FilterFrame } from '../../components/dashboard/FilterFrame'
+import { InputButton } from '../../components/forms/InputButton'
 import { InputSearch } from '../../components/forms/InputSearch'
 import { PageHeader } from '../../components/PageHeader'
 import { usePages } from '../../hooks/usePages'
 
 interface PreventiveActionsProps {
-  showCreationForm?: boolean;
+  children?: ReactNode;
 }
 
 const data: AcctionsType[] = [
   {
     tag: 'M25',
     description: 'Troca do Relé termico de do motor da bomba de iso',
-    frequency: 15,
+    frequency: '15 dias',
     nature: 'Elétrica',
     nextExecution: '21/02/2022'
   },
   {
     tag: 'M25',
     description: 'Troca do Relé termico de do motor da bomba de iso',
-    frequency: 15,
+    frequency: '15 dias',
     nature: 'Elétrica',
     nextExecution: '21/02/2022'
   },
   {
     tag: 'M25',
     description: 'Troca do Relé termico de do motor da bomba de iso',
-    frequency: 15,
+    frequency: '15 dias',
     nature: 'Elétrica',
     nextExecution: '21/02/2022'
   },
   {
     tag: 'M25',
     description: 'Troca do Relé termico de do motor da bomba de iso',
-    frequency: 15,
+    frequency: '15 dias',
     nature: 'Elétrica',
     nextExecution: '21/02/2022'
   },
 ]
 
-function TableCell({ children, width }: { width: number; children: ReactNode }) {
+function TableCell({ children, className }: { className: string; children: ReactNode }) {
   return (
     <div
       className={`
-        w-[${width}%] h-full 
-        flex flex-row justify-center items-center
-      `}
+         p-1 flex flex-row justify-center items-center
+      ` + className}
     >
       {children}
     </div>
   )
 }
 
-function TableRow({ data, className, istitle }: { data: AcctionsType; className?: string, istitle?: boolean}) {
+interface TableRowProps {
+  data: AcctionsType;
+  className?: string,
+  istitle?: boolean
+  onClick?: () => void
+}
+
+function TableRow({ data, className, istitle, onClick }: TableRowProps) {
   return (
     <div
-      className={`w-full p-2 flex flex-row justify-center items-center border-b border-gray-900 ` + className}
+      className={`
+        ${istitle ? `
+          bg-gray-700 text-gray-100 font-medium 
+          rounded-tr-lg rounded-tl-lg
+        `: `
+          bg-gray-300 bg-opacity-60
+        `}
+        w-full 
+        flex flex-row 
+        justify-center items-center 
+        border-b border-gray-900 
+      ` + className}
+      onClick={() => onClick ? onClick() : {}}
     >
-      <TableCell width={15} >{data.tag} </TableCell>
-      <TableCell width={15} >{data.nature} </TableCell>
-      <TableCell width={30} >{data.description} </TableCell>
-      <TableCell width={15} >{data.frequency} </TableCell>
-      <TableCell width={15} >{data.nextExecution} </TableCell>
-      <TableCell width={10} >  
+      <TableCell className='w-[12.5%]' >{data.tag} </TableCell>
+      <TableCell className='w-[12.5%]' >{data.nature} </TableCell>
+      <TableCell className='w-[42%]' >{data.description} </TableCell>
+      <TableCell className='w-[13%]' >{data.frequency} </TableCell>
+      <TableCell className='w-[15%]' >{data.nextExecution} </TableCell>
+      <TableCell className='w-[5%]' >
+
         {
-          istitle?
-          <div className='w-full h-full' >
-              teste
-          </div>:
-          <div className='w-full h-full' >
-            tetet
-          </div>
+          istitle ?
+            <div className='w-full h-full'></div> :
+            <div
+              className='
+              w-full h-full
+              flex flex-row justify-center items-center
+            '
+            >
+              <InputButton
+                onClick={()=>{}}
+                className='text-red-500 text-xl w-10'
+                Icon={RiDeleteBack2Fill}
+              />
+            </div>
         }
+
       </TableCell>
     </div>
   )
 }
 
-export function PreventiveActions({ showCreationForm }: PreventiveActionsProps) {
+export function PreventiveActions({ children }: PreventiveActionsProps) {
 
-  const { goToPage } = usePages()
-
+  const { goToPage, sideMenuIsReduce } = usePages()
+  // eslint-disable-next-line
   const [inputSearchText, setInputSearchText] = useState<string>('')
+
 
   return (
     <>
@@ -95,19 +129,12 @@ export function PreventiveActions({ showCreationForm }: PreventiveActionsProps) 
         "
       >
         <PageHeader title='Ações Preventivas'>
-          <button
-            onClick={() => { goToPage('Preventive.Actions.NewActions', {}) }}
-            className="
-              py-1 px-1.5 bg-green-500 text-gray-100 mr-2
-              flex justify-center items-center rounded-lg
-            "
-          >
-            Criar
-            <span className="ml-2" >
-              <MdLibraryAdd width={20} />
-            </span>
-          </button>
-
+          <InputButton 
+            Icon={MdLibraryAdd}  
+            onClick={() => { goToPage('Preventive.Actions.NewActions', {})}}
+            title='Criar'
+            className="bg-green-500 text-gray-100"
+          />
           <InputSearch returnSearchText={(value: string) => setInputSearchText(value)} />
 
         </PageHeader>
@@ -119,6 +146,7 @@ export function PreventiveActions({ showCreationForm }: PreventiveActionsProps) 
         </div>
 
         <TableRow
+
           istitle
           className='mt-3'
           data={{
@@ -134,7 +162,7 @@ export function PreventiveActions({ showCreationForm }: PreventiveActionsProps) 
           <ScrollContainer className="h-full" >
             {
               data.map((entry, index) => (
-                <TableRow key={index} data={entry} />
+                <TableRow onClick={() => goToPage('Preventive.Actions.EditActions', { id: index })} key={index} data={entry} />
               ))
             }
           </ScrollContainer>
@@ -143,27 +171,10 @@ export function PreventiveActions({ showCreationForm }: PreventiveActionsProps) 
       </div>
 
       {
-        showCreationForm &&
-        <>
-          <div
-            className="
-              w-[81%] xl:w-[84.2%] h-tabPage
-              flex flex-row justify-center items-center
-              bg-gray-900 bg-opacity-50 
-              absolute
-            "
-            onClick={() => goToPage('Preventive.Actions', {})}
-          ></div>
-          <div
-            className="
-              w-[50%] h-[70%] 
-              bg-gray-200 z-10
-              absolute rounded-3xl
-            "
-          >
-            <button>Ggge</button>
-          </div>
-        </>
+        children &&
+        <ModalContainer>
+          {children}
+        </ModalContainer>
       }
     </>
   )

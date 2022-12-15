@@ -13,3 +13,9 @@ textarea:focus, input:focus {
 
 .drag{-webkit-app-region: drag;}
 .no-drag{-webkit-app-region: no-drag;}
+
+@media (min-width: 1170px) {
+    .lg1\:w-test {
+        width: calc(100vw - 213px);
+    }
+}

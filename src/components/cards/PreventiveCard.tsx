@@ -2,6 +2,7 @@ import React from 'react'
 
 import { VscDebugBreakpointLogUnverified, VscDebugBreakpointLog } from 'react-icons/vsc'
 import { BsPrinterFill } from 'react-icons/bs'
+import { InputButton } from '../forms/InputButton'
 
 interface PreventiveCardProps {
   data: PreventiveType
@@ -59,6 +60,7 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
         {
           data.actions.map((entry, index) => (
             <li
+              key={index}
               className="
                 w-full pl-2
                 flex flex-row 
@@ -73,7 +75,6 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
               }
 
               <div
-                key={index}
                 className="
                   p-1 text-lg
                 "
@@ -117,19 +118,14 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
                 </div>
               </div>
               :
-              <button
-                className=" 
-                  text-gray-100 bg-red-500 
-                  p-1.5 rounded-lg
-                  flex flex-row justify-center items-center
-                  hover:opacity-90 active:opacity-80
-                "
-              >
-                Imprimir
-                <span className='ml-1'>
-                  <BsPrinterFill />
-                </span>
-              </button>
+
+              <InputButton 
+                title='Imprimir'
+                className="text-gray-100 bg-orange-500 "
+                Icon={BsPrinterFill}
+                onClick={()=>{}}
+              />
+
           }
         </div>
       </div>

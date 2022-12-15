@@ -26,7 +26,7 @@ const data: PreventiveType[] = [
   },
 ]
 
-export function Opened() {
+export function PreventiveOpened() {
 
   return (
     <div

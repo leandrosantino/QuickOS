@@ -9,13 +9,13 @@ import { HomeProps } from '../../pages/Dashboard'
 import { SideMenuPageButton } from './SideMenuPageButton'
 import SideMenuTitle from './SideMenuTitle';
 
-interface SideMenuProps {
-  reduced: boolean
-}
 
-export function SideMenu({ reduced }: SideMenuProps) {
 
-  const { goToPage, currentPage } = usePages()
+export function SideMenu() {
+
+  const { goToPage, currentPage, sideMenuIsReduce } = usePages()
+
+  const reduced = sideMenuIsReduce
 
   return (
     <div
@@ -25,8 +25,8 @@ export function SideMenu({ reduced }: SideMenuProps) {
         border-r-4
         border-r-green-500
         ${reduced ?
-          'w-[50px]' :
-          'w-[256px]'
+          'w-sideMenuReduce' :
+          'w-sideMenuFull'
         }
       `}
     >

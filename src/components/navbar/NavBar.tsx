@@ -7,18 +7,13 @@ import {
   VscMenu
 } from "react-icons/vsc";
 
-import { getPageName } from '../../contexts/PagesContext'
 import { usePages,} from '../../hooks/usePages'
-
-export interface NavBarProps {
-  handleMenuClick: Function
-}
 
 const { ipc } = window
 
-export function NavBar({ handleMenuClick }: NavBarProps) {
+export function NavBar() {
 
-  const { currentPage } = usePages()
+  const { currentPage, sideMenuIsReduce, changeSideMenu, PageNameLink } = usePages()
   const [isMaximized, setIsMaximized] = useState<boolean>()
 
   useEffect(() => {
@@ -36,12 +31,12 @@ export function NavBar({ handleMenuClick }: NavBarProps) {
       <div className=' w-1/3 h-[100%] flex justify-start'>
         <button
           className='no-drag w-[50px] hover:text-white-500 flex items-center justify-center'
-          onClick={() => handleMenuClick()}
+          onClick={() => changeSideMenu(!sideMenuIsReduce)}
         >
           <VscMenu />
         </button>
-        <header className='flex text-[10pt] justify-center items-center py-1 text-white-500'>
-          {getPageName(currentPage)}
+        <header className='no-drag flex text-[10pt] justify-center items-center py-1 text-white-500'>
+          <PageNameLink page={currentPage}/>
         </header>
       </div>
       

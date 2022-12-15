@@ -59,7 +59,7 @@ const data: PreventiveType[] = [
   },
 ]
 
-export function Historic() {
+export function PreventiveHistoric() {
   return (
     <div
       className="

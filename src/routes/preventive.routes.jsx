@@ -1,24 +1,30 @@
 import {PagesContainer, Screen} from '../contexts/PagesContext';
 
-import { Historic } from '../pages/preventive/Historic';
-import { Opened } from '../pages/preventive/Opened';
+import { PreventiveHistoric } from '../pages/preventive/PreventiveHistoric';
+import { PreventiveOpened } from '../pages/preventive/PreventiveOpened';
 import { PreventiveActions } from '../pages/preventive/PreventiveActions'
 import { RegisterPreventive } from '../pages/preventive/RegisterPreventive'
+import { NewPreventiveAction } from '../pages/preventive/NewPreventiveAction';
+import { EditPreventiveAction} from '../pages/preventive/EditPreventiveAction';
 
 export default function PreventiveRoutes() {
   return (
     <PagesContainer className='w-[100%] h-tabPage flex items-center justify-center' >
         <Screen 
             name='Preventive.Historic'
-            component={Historic}
+            component={PreventiveHistoric}
         />
         <Screen 
             name='Preventive.Opened'
-            component={Opened}
+            component={PreventiveOpened}
         />
         <Screen 
             name='Preventive.Actions.NewActions'
-            component={()=>(<PreventiveActions showCreationForm />)}
+            component={NewPreventiveAction}
+        />
+        <Screen 
+            name='Preventive.Actions.EditActions'
+            component={EditPreventiveAction}
         />
         <Screen 
             name='Preventive.Actions'

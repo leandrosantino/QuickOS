@@ -13,9 +13,9 @@ export function InputButton({ onClick, Icon, title, className }: InputButtonProp
 		<button
 			onClick={() => onClick()}
 			className={`
-				py-1 px-1.5  mr-2
+				py-1 px-1.5 
 				flex justify-center items-center rounded-lg
-        hover:opacity-90 active:opacity-80 
+        		hover:opacity-90 active:opacity-80 
 			` + className}
 		>
 			{
@@ -26,8 +26,8 @@ export function InputButton({ onClick, Icon, title, className }: InputButtonProp
 							{Icon && <Icon width={20} />}
 						</span>
 					</>
-        :
-        <>{Icon && <Icon width={20} />}</>
+					:
+					<>{Icon && <Icon width={20} />}</>
 			}
 
 		</button>

@@ -24,15 +24,7 @@ export function ModalContainer({children}:ModalContainerProps) {
     `}
         onClick={() => goToPage('Preventive.Actions', {})}
       ></div>
-      <div
-        className="
-        w-[50%] h-[70%] 
-        bg-gray-200 z-50
-        absolute rounded-3xl
-      "
-      >
-        {children}
-      </div>
+      {children}
     </>
   )
 }

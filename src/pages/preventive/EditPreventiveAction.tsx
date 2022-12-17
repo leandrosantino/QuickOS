@@ -1,8 +1,22 @@
 import React from 'react'
 import { PreventiveActions } from './PreventiveActions'
 
-export function EditPreventiveAction({id}:{id:number}) {
+interface EditPreventiveActionProps {
+  data:AcctionsType
+}
+
+export function EditPreventiveAction({data}:EditPreventiveActionProps) {
   return (
-    <PreventiveActions>PreventiveActionEdit{id}</PreventiveActions>
+    <PreventiveActions>
+      <div
+        className="
+        w-[50%] h-[70%] 
+        bg-gray-200 z-50
+        absolute rounded-3xl
+      "
+      >
+        {data.id}
+      </div>
+    </PreventiveActions>
   )
 }

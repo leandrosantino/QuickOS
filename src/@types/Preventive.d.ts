@@ -1,4 +1,4 @@
-interface AcctionsType {
+interface ActionsType {
     id?: number;
     description: string;
     concluded?: boolean;
@@ -13,7 +13,7 @@ interface AcctionsType {
 interface PreventiveType {
     id: number;
     tag: string;
-    actions: AcctionsType[],
+    actions: ActionsType[],
     responsible?: string,
     date?: string;
     duration?: number;

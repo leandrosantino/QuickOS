@@ -3,10 +3,12 @@ import React from 'react'
 interface InputTextProps {
   labelName: string;
   className?: string;
-  type?: 'date' | 'text'
+  type?: React.HTMLInputTypeAttribute | undefined
+  value?: string | undefined | number;
+  onChange?: (e:React.ChangeEvent<HTMLInputElement>)=>void;
 }
 
-export function InputText({ labelName, className, type }: InputTextProps) {
+export function InputText({ labelName, className, type, onChange, value }: InputTextProps) {
   return (
     <div
       className={`
@@ -26,6 +28,7 @@ export function InputText({ labelName, className, type }: InputTextProps) {
 
       <input
         type={type?type:'text'}
+
         id={labelName}
         className="
           w-full h-1/2 p-[2px]

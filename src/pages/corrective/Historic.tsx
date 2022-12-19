@@ -1,10 +1,46 @@
+import { PageHeader } from "../../components/PageHeader"
+
+
+
+
+
 export function Historic() {
+
+  const teste = new Array<string>(52).fill('teste')
+
+  
   return (
     <div
       className="
-        absolute top-0 left-0 right-0 bottom-0
-        m-auto w-10 h-10 bg-black
+       w-full h-full p-5 
       "
-    > Corretivas </div>
+    > 
+
+
+      <PageHeader title="Plano de Preventivas 2022" />
+
+      <div
+        className="
+          w-full h-[70%] mt-5
+          grid grid-cols-8 grid-rows-7 gap-2
+        "
+      > 
+        {
+          teste.map((entry, index)=>(
+            <div
+              className="
+                w-full h-full 
+                bg-gray-300 rounded-md
+                flex flex-row justify-center items-center
+                font-medium text-xl
+              "
+            >
+              {index+1}
+            </div>
+          ))
+        }
+      </div>
+    
+    </div>
   )
 }

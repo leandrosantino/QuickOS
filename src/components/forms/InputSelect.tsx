@@ -24,9 +24,14 @@ interface SelectionBoxProps {
   children?: ReactNode;
   className?: string;
   labelName: string;
+  value?: string;
+  onChange: (e:React.ChangeEvent<HTMLSelectElement>)=>void;
 }
 
-export function InputSelect({ children, className, labelName }: SelectionBoxProps) {
+export function InputSelect({ children, className, labelName, onChange, value }: SelectionBoxProps) {
+
+  const props = value?{value, title: value}:{}
+
   return (
     <div
       className={`
@@ -45,6 +50,11 @@ export function InputSelect({ children, className, labelName }: SelectionBoxProp
       </label>
 
       <select
+        title={value}
+        value={value}
+        defaultValue={value}
+        defaultChecked
+        onChange={(e)=>onChange(e)}
         className='
           w-full h-1/2 p-[2px]
           bg-transparent

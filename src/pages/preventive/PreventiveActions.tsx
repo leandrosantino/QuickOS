@@ -17,7 +17,7 @@ interface PreventiveActionsProps {
   children?: ReactNode;
 }
 
-const data: AcctionsType[] = [
+const data: ActionsType[] = [
   {
     id: 1,
     tag: 'M25',
@@ -74,7 +74,7 @@ function TableCell({ children, className }:
 }
 
 interface TableRowProps {
-  data: AcctionsType;
+  data: ActionsType;
   className?: string,
   istitle?: boolean
   onClick?: () => void

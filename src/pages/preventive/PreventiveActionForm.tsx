@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { InputButton } from '../../components/forms/InputButton'
 import { InputSelect, Option } from '../../components/forms/InputSelect'
 import { InputText } from '../../components/forms/inputText'
@@ -7,12 +7,24 @@ import { PreventiveActions } from './PreventiveActions'
 
 import {BiSave} from 'react-icons/bi'
 
-export function NewPreventiveAction() {
+interface PreventiveActionFormProps {
+  data: ActionsType;
+}
+
+export function PreventiveActionForm({data}:PreventiveActionFormProps) {
+
+  const [actionsFormData, setActionsFormData] = useState<ActionsType>({} as ActionsType)
+
+  function setInputValue(propName: keyof ActionsType, value:any){
+    actionsFormData[propName] = value as never
+    setActionsFormData(actionsFormData)
+  }
+
   return (
     <PreventiveActions>
       <div
         className="
-        w-[50%]  p-5
+        w-[50%]  p-5 pb-10
         bg-gray-200 z-50
         absolute rounded-3xl
       "
@@ -27,6 +39,8 @@ export function NewPreventiveAction() {
         >
           <InputSelect
             labelName='Tag'
+            value={actionsFormData.tag}
+            onChange={(e)=>setInputValue('tag', e.target.value)}
           >
             <Option title='M41' value='1' />
             <Option title='M42' value='2' />
@@ -35,6 +49,8 @@ export function NewPreventiveAction() {
 
           <InputSelect
             labelName='Natureza'
+            value={actionsFormData.nature}
+            onChange={(e)=>setInputValue('nature', e.target.value)}
           >
             <Option title='Elétrica' value='1' />
             <Option title='Mecânica' value='2' />
@@ -42,6 +58,8 @@ export function NewPreventiveAction() {
 
           <InputSelect
             labelName='Criticidade'
+            value={actionsFormData.criticality}
+            onChange={(e)=>setInputValue('criticality', e.target.value)}
           >
             <Option title='Alta' value='1' />
             <Option title='Média' value='2' />
@@ -50,6 +68,8 @@ export function NewPreventiveAction() {
 
           <InputText
             labelName='Periodicidade'
+            value={actionsFormData.frequency}
+            onChange={(e)=>setInputValue('frequency', e.target.value)}
           />
 
         </div>
@@ -59,6 +79,8 @@ export function NewPreventiveAction() {
         >
           <InputText
             labelName='Descrição'
+            value={actionsFormData.description}
+            onChange={(e)=>setInputValue('description', e.target.value)}
           />
         </div>
 
@@ -67,7 +89,7 @@ export function NewPreventiveAction() {
         >
           <InputText
             labelName='Próxima Execução'
-            type='date'
+            type='week'
             className='w-48'
           />
 

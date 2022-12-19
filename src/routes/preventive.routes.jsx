@@ -4,8 +4,7 @@ import { PreventiveHistoric } from '../pages/preventive/PreventiveHistoric';
 import { PreventiveOpened } from '../pages/preventive/PreventiveOpened';
 import { PreventiveActions } from '../pages/preventive/PreventiveActions'
 import { RegisterPreventive } from '../pages/preventive/RegisterPreventive'
-import { NewPreventiveAction } from '../pages/preventive/NewPreventiveAction';
-import { EditPreventiveAction} from '../pages/preventive/EditPreventiveAction';
+import { PreventiveActionForm } from '../pages/preventive/PreventiveActionForm';
 
 export default function PreventiveRoutes() {
   return (
@@ -20,11 +19,11 @@ export default function PreventiveRoutes() {
         />
         <Screen 
             name='Preventive.Actions.NewActions'
-            component={NewPreventiveAction}
+            component={PreventiveActionForm}
         />
         <Screen 
             name='Preventive.Actions.EditActions'
-            component={EditPreventiveAction}
+            component={PreventiveActionForm}
         />
         <Screen 
             name='Preventive.Actions'

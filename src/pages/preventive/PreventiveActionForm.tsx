@@ -1,109 +1,176 @@
-import React, { useState } from 'react'
-import { InputButton } from '../../components/forms/InputButton'
-import { InputSelect, Option } from '../../components/forms/InputSelect'
-import { InputText } from '../../components/forms/inputText'
+import { useState } from 'react'
+
 import { PageHeader } from '../../components/PageHeader'
 import { PreventiveActions } from './PreventiveActions'
 
-import {BiSave} from 'react-icons/bi'
+import { BiSave } from 'react-icons/bi'
+import { InputButton } from '../../components/forms/InputButton';
+import { InputCaseForm } from '../../components/forms/InputCaseForm';
+import z from 'zod';
 
 interface PreventiveActionFormProps {
   data: ActionsType;
 }
 
-export function PreventiveActionForm({data}:PreventiveActionFormProps) {
+export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
 
-  const [actionsFormData, setActionsFormData] = useState<ActionsType>({} as ActionsType)
+  const [tag, setTag] = useState(data?.tag)
+  const [nature, setNature] = useState(data?.nature)
+  const [frequency, setFrequency] = useState(data?.frequency)
+  const [nextExecution, setNextExecution] = useState(data?.nextExecution)
+  const [description, setDescription] = useState(data?.description)
 
-  function setInputValue(propName: keyof ActionsType, value:any){
-    actionsFormData[propName] = value as never
-    setActionsFormData(actionsFormData)
+  const tags = ['M41', 'M42', 'M25', 'M26', 'M27', 'M28']
+
+  function handleSubmit() {
+    const actionData:ActionsType = {tag, nature, frequency, nextExecution, description}
+    const validateSchema = z
+      .object({
+        tag: z.string(),
+        nature: z.string(),
+        frequency: z.number().min(1),
+        nextExecution: z.string().regex(/\d{4}-W\d{2}/, 'Formato da semana fora do padrão !!'),
+        description: z.string()
+      })
+
+    try{
+      const datateste = validateSchema.parse(actionData)
+      console.log(datateste)
+    }catch(error){
+      console.log(error)
+    }
   }
+
 
   return (
     <PreventiveActions>
       <div
         className="
-        w-[50%]  p-5 pb-10
-        bg-gray-200 z-50
-        absolute rounded-3xl
-      "
+          w-[55%] h-[50%] p-5 pb-10
+          bg-gray-200 z-50
+          absolute rounded-3xl
+        "
       >
 
         <PageHeader
           title='Nova Ação Preventiva'
-        />
-
-        <div
-          className='mt-5 grid grid-cols-4 gap-5'
         >
-          <InputSelect
-            labelName='Tag'
-            value={actionsFormData.tag}
-            onChange={(e)=>setInputValue('tag', e.target.value)}
+          {
+            data &&
+            <div
+              className='font-medium text-xl mr-5'
+            >
+              COD: {data?.id}
+            </div>
+          }
+        </PageHeader>
+
+          <input type="text" name="" id="" />
+
+          <div
+            className='mt-5 grid grid-cols-4 gap-5'
           >
-            <Option title='M41' value='1' />
-            <Option title='M42' value='2' />
-            <Option title='M43' value='2' />
-          </InputSelect>
 
-          <InputSelect
-            labelName='Natureza'
-            value={actionsFormData.nature}
-            onChange={(e)=>setInputValue('nature', e.target.value)}
+            <InputCaseForm
+              labelName='Tag'
+            >
+              <select
+                value={tag}
+                onChange={(e) => setTag(e.target.value)}
+                className={`
+                w-full h-full p-[2px]
+                bg-transparent
+              `}
+              >
+                {
+                  tags.map((entry, index) => (
+                    <option key={index} value={entry} > {entry} </option>
+                  ))
+                }
+              </select>
+            </InputCaseForm>
+
+            <InputCaseForm
+              labelName='Natureza'
+            >
+              <select
+                value={nature}
+                onChange={(e) => setNature(e.target.value)}
+                className={`
+                w-full h-full p-[2px]
+                bg-transparent
+              `}
+              >
+                <option value="Elétrica" > Elétrica </option>
+                <option value="Mecânica" > Mecânica </option>
+              </select>
+            </InputCaseForm>
+
+            <InputCaseForm
+              labelName='Periodicidade'
+            >
+              <input
+                value={frequency}
+                type="number"
+                min={1}
+                onChange={(e) => setFrequency(e.target.value)}
+                className={`
+                w-full h-full p-[2px]
+                bg-transparent
+              `}
+              />
+              Sem
+            </InputCaseForm>
+
+            <InputCaseForm
+              labelName='Próx.Execução'
+            >
+              <input
+                value={nextExecution}
+                type='week'
+                onChange={(e) => setNextExecution(e.target.value)}
+                className={`
+                w-full h-full p-[2px]
+                bg-transparent
+              `}
+              />
+            </InputCaseForm>
+
+
+          </div>
+
+          <div
+            className="w-full mt-5"
           >
-            <Option title='Elétrica' value='1' />
-            <Option title='Mecânica' value='2' />
-          </InputSelect>
+            <InputCaseForm
+              labelName='Descrição'
+            >
+              <input
+                value={description}
+                type="text"
+                onChange={(e) => setDescription(e.target.value)}
+                className={`
+                w-full h-full p-[2px]
+                bg-transparent
+              `}
+              />
+            </InputCaseForm>
+          </div>
 
-          <InputSelect
-            labelName='Criticidade'
-            value={actionsFormData.criticality}
-            onChange={(e)=>setInputValue('criticality', e.target.value)}
+          <div
+            className="flex flex-row justify-end items-end mt-5"
           >
-            <Option title='Alta' value='1' />
-            <Option title='Média' value='2' />
-            <Option title='Baixa' value='3' />
-          </InputSelect>
-
-          <InputText
-            labelName='Periodicidade'
-            value={actionsFormData.frequency}
-            onChange={(e)=>setInputValue('frequency', e.target.value)}
-          />
-
-        </div>
-
-        <div
-          className="w-full mt-5"
-        >
-          <InputText
-            labelName='Descrição'
-            value={actionsFormData.description}
-            onChange={(e)=>setInputValue('description', e.target.value)}
-          />
-        </div>
-
-        <div 
-          className="flex flex-row justify-between items-end mt-5"
-        >
-          <InputText
-            labelName='Próxima Execução'
-            type='week'
-            className='w-48'
-          />
-
-          <InputButton 
-            onClick={()=>{}}
-            title="Salvar"
-            Icon={BiSave}
-            className="bg-green-500 text-gray-100 text-lg font-medium w-28"
-          />
-
-        </div>
+            <InputButton
+              onClick={handleSubmit}
+              title='Salvar'
+              Icon={BiSave}
+              className="bg-green-500 text-gray-100"
+            />
+          </div>
 
 
       </div>
-    </PreventiveActions>
+
+    </PreventiveActions >
   )
 }

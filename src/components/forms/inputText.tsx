@@ -23,7 +23,7 @@ export function InputText({ labelName, className, type, onChange, value }: Input
           w-full h-1/2 align-middle p-1 font-medium
         "
       >
-        {labelName}:
+        {labelName}: 
       </label>
 
       <input

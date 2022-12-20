@@ -2,16 +2,18 @@ import React from 'react'
 import { IconType } from 'react-icons'
 
 interface InputButtonProps {
-	onClick: () => void;
+	onClick?: () => void;
 	Icon?: IconType;
 	title?: string;
 	className?: string;
+	type?: "button" | "submit" | "reset" | undefined
 }
 
-export function InputButton({ onClick, Icon, title, className }: InputButtonProps) {
+export function InputButton({ onClick, Icon, title, className, type }: InputButtonProps) {
 	return (
 		<button
-			onClick={() => onClick()}
+			type={type}
+			onClick={() => onClick?onClick():{}}
 			className={`
 				py-1 px-1.5 
 				flex justify-center items-center rounded-lg

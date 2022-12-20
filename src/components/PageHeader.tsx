@@ -16,7 +16,7 @@ export function PageHeader({ title, children }: PageHeaderProps) {
       "
     >
       <div
-        className='w-1/2'
+        className='w-full'
       >
         {title}
       </div>

@@ -22,37 +22,33 @@ const data: ActionsType[] = [
     id: 1,
     tag: 'M25',
     description: 'Troca do Relé termico de do motor da bomba de iso',
-    frequency: '15 dias',
+    frequency: '1',
     nature: 'Elétrica',
-    nextExecution: '21/02/2022',
-    criticality: 'Alta'
+    nextExecution: '2022-W45',
   },
   {
     id: 2,
-    tag: 'M25',
+    tag: 'M26',
     description: 'Troca do Relé termico de do motor da bomba de iso',
-    frequency: '15 dias',
-    nature: 'Elétrica',
-    nextExecution: '21/02/2022',
-    criticality: 'Alta'
+    frequency: '3',
+    nature: 'Mecânica',
+    nextExecution: '2022-W44',
   },
   {
     id: 3,
-    tag: 'M25',
+    tag: 'M27',
     description: 'Troca do Relé termico de do motor da bomba de iso',
-    frequency: '15 dias',
+    frequency: '4',
     nature: 'Elétrica',
-    nextExecution: '21/02/2022',
-    criticality: 'Alta'
+    nextExecution: '2022-W46',
   },
   {
     id: 4,
-    tag: 'M25',
+    tag: 'M28',
     description: 'Troca do Relé termico de do motor da bomba de iso',
-    frequency: '15 dias',
-    nature: 'Elétrica',
-    nextExecution: '21/02/2022',
-    criticality: 'Alta'
+    frequency: '12',
+    nature: 'Mecânica',
+    nextExecution: '2022-W52',
   },
 ]
 
@@ -109,10 +105,14 @@ function TableRow({ data, className, istitle, onClick }: TableRowProps) {
       >
         <TableCell className='w-[12%]' >{data.tag} </TableCell>
         <TableCell className='w-[10%]' >{data.nature} </TableCell>
-        <TableCell className='w-[42%]' >{data.description} </TableCell>
-        <TableCell className='w-[10%]' >{data.criticality} </TableCell>
-        <TableCell className='w-[13%]' >{data.frequency} </TableCell>
-        <TableCell className='w-[13%]' >{data.nextExecution} </TableCell>
+        <TableCell className='w-[52%]' >{data.description} </TableCell>
+        <TableCell className='w-[13%]' >{data.frequency} {istitle?'':' Sem'}</TableCell>
+        <TableCell className='w-[13%]' >{
+          istitle?data.nextExecution:
+          data.nextExecution?.split('-W')[1]
+          +', '+
+          data.nextExecution?.split('-W')[0]
+        } </TableCell>
       </div>
 
         <TableCell className='w-[5%]' >
@@ -181,7 +181,6 @@ export function PreventiveActions({ children }: PreventiveActionsProps) {
             frequency: 'Priodicidade',
             nature: 'Natureza',
             nextExecution: 'Próxima Execução',
-            criticality: 'Criticidade'
           }}
         />
 

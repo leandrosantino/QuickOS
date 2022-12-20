@@ -52,7 +52,7 @@ export function InputSelect({ children, className, labelName, onChange, value }:
       <select
         title={value}
         value={value}
-        defaultValue={value}
+        defaultValue={value} 
         defaultChecked
         onChange={(e)=>onChange(e)}
         className='

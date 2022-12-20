@@ -6,8 +6,6 @@ interface ActionsType {
     nature?: string;
     frequency?: number|string;
     nextExecution?: string;
-    criticality?: string
-
 }
 
 interface PreventiveType {

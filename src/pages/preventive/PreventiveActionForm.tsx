@@ -1,12 +1,13 @@
 import { useState } from 'react'
 
 import { PageHeader } from '../../components/PageHeader'
-import { PreventiveActions } from './PreventiveActions'
 
 import { BiSave } from 'react-icons/bi'
 import { InputButton } from '../../components/forms/InputButton';
 import { InputCaseForm } from '../../components/forms/InputCaseForm';
 import z, { ZodError } from 'zod';
+import { PageModalContainer } from '../../components/containers/PageModalContainer';
+import { usePages } from '../../hooks/usePages';
 
 interface PreventiveActionFormProps {
   data: ActionsType;
@@ -52,14 +53,20 @@ export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
     console.log(actionInfo)
   }
 
+  const { goToPage } = usePages()
 
   return (
-    <PreventiveActions>
+    <PageModalContainer
+      onClick={()=>goToPage('Preventive.Actions', {})}
+      width="57%"
+      height="55%"
+    >
       <div
         className="
-          w-[55%] h-[50%] p-5 pb-10
+          w-full h-full p-5 pb-10
           bg-gray-200 z-50
-          absolute rounded-3xl
+          rounded-3xl
+
         "
       >
 
@@ -180,6 +187,6 @@ export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
 
       </div>
 
-    </PreventiveActions >
+    </PageModalContainer >
   )
 }

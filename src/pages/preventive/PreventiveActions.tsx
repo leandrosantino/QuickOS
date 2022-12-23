@@ -5,17 +5,13 @@ import { MdLibraryAdd } from 'react-icons/md'
 import { RiDeleteBack2Fill } from 'react-icons/ri'
 
 
-import { ModalContainer } from '../../components/containers/ModalContainer'
 import { ScrollContainer } from '../../components/containers/ScrollContainer'
 import { FilterFrame } from '../../components/dashboard/FilterFrame'
 import { InputButton } from '../../components/forms/InputButton'
 import { InputSearch } from '../../components/forms/InputSearch'
 import { PageHeader } from '../../components/PageHeader'
 import { usePages } from '../../hooks/usePages'
-
-interface PreventiveActionsProps {
-  children?: ReactNode;
-}
+import { PreventiveModalRoutes } from '../../routes/preventive.routes'
 
 const data: ActionsType[] = [
   {
@@ -52,29 +48,29 @@ const data: ActionsType[] = [
   },
 ]
 
-export function PreventiveActions({ children }: PreventiveActionsProps) {
+export function PreventiveActions() {
 
-  const { goToPage, sideMenuIsReduce } = usePages()
+  const { goToPage } = usePages()
   // eslint-disable-next-line
   const [inputSearchText, setInputSearchText] = useState<string>('')
 
   const [actions, setActions] = useState<ActionsType[]>(data)
 
-  useEffect(()=>{
-    const filterActions:ActionsType[] = []
+  useEffect(() => {
+    const filterActions: ActionsType[] = []
 
-    data.forEach(entry=>{
-      if(
+    data.forEach(entry => {
+      if (
         entry.description.toUpperCase()
-        .search(inputSearchText.toUpperCase()) > -1 || 
+          .search(inputSearchText.toUpperCase()) > -1 ||
         inputSearchText === ''
-      ){
+      ) {
         filterActions.push(entry)
       }
     })
 
     setActions(filterActions)
-  },[inputSearchText])
+  }, [inputSearchText])
 
   return (
     <>
@@ -85,9 +81,9 @@ export function PreventiveActions({ children }: PreventiveActionsProps) {
         "
       >
         <PageHeader title='Ações Preventivas'>
-          <InputButton 
-            Icon={MdLibraryAdd}  
-            onClick={() => { goToPage('Preventive.Actions.NewActions', {})}}
+          <InputButton
+            Icon={MdLibraryAdd}
+            onClick={() => { goToPage('Preventive.Actions.NewActions', {}) }}
             title='Criar'
             className="bg-green-500 text-gray-100 mr-2"
           />
@@ -98,7 +94,7 @@ export function PreventiveActions({ children }: PreventiveActionsProps) {
         <div
           className="w-full mt-3 flex justify-center items-center"
         >
-          <FilterFrame width={70} opened /> 
+          <FilterFrame width={70} opened />
         </div>
 
         <TableRow
@@ -118,7 +114,7 @@ export function PreventiveActions({ children }: PreventiveActionsProps) {
           <ScrollContainer className="h-full" >
             {
               actions.map((entry, index) => (
-                <TableRow onClick={() => goToPage('Preventive.Actions.EditActions', {data: entry})} key={index} data={entry} />
+                <TableRow onClick={() => goToPage('Preventive.Actions.EditActions', { data: entry })} key={index} data={entry} />
               ))
             }
           </ScrollContainer>
@@ -126,21 +122,17 @@ export function PreventiveActions({ children }: PreventiveActionsProps) {
 
       </div>
 
-      {
-        children &&
-        <ModalContainer>
-          {children}
-        </ModalContainer>
-      }
+      <PreventiveModalRoutes />
+      
     </>
   )
 }
 
-function TableCell({ children, className }: 
-  { 
-    className: string; 
+function TableCell({ children, className }:
+  {
+    className: string;
     children: ReactNode;
-    onClick?: ()=>void
+    onClick?: () => void
   }) {
   return (
     <div
@@ -176,12 +168,12 @@ function TableRow({ data, className, istitle, onClick }: TableRowProps) {
       ` + className}
     >
 
-      <div 
+      <div
         className={`
           w-[95%] rounded-md
           flex flex-row 
           justify-center items-center 
-          ${istitle?``:`
+          ${istitle ? `` : `
             bg-gray-300
             hover:bg-gray-400 hover:cursor-pointer
           `} 
@@ -191,20 +183,20 @@ function TableRow({ data, className, istitle, onClick }: TableRowProps) {
         <TableCell className='w-[12%]' >{data.tag} </TableCell>
         <TableCell className='w-[10%]' >{data.nature} </TableCell>
         <TableCell className='w-[50%]' >{data.description} </TableCell>
-        <TableCell className='w-[13%]' >{data.frequency} {istitle?'':' Sem'}</TableCell>
+        <TableCell className='w-[13%]' >{data.frequency} {istitle ? '' : ' Sem'}</TableCell>
         <TableCell className='w-[15%]' >{
-          istitle?data.nextExecution:
-          'Semana ' +
-          data.nextExecution?.split('-W')[1]
-          +', '+
-          data.nextExecution?.split('-W')[0]
+          istitle ? data.nextExecution :
+            'Semana ' +
+            data.nextExecution?.split('-W')[1]
+            + ', ' +
+            data.nextExecution?.split('-W')[0]
         } </TableCell>
       </div>
 
-        <TableCell className='w-[5%]' >
+      <TableCell className='w-[5%]' >
 
         {
-          istitle ? 
+          istitle ?
             <div className='w-full h-full'></div> :
             <div
               className='
@@ -213,7 +205,7 @@ function TableRow({ data, className, istitle, onClick }: TableRowProps) {
               '
             >
               <InputButton
-                onClick={()=>{}}
+                onClick={() => { }}
                 className='text-gray-100 bg-red-500 text-xl w-10'
                 Icon={RiDeleteBack2Fill}
               />

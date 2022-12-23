@@ -4,7 +4,7 @@ import { TabButton } from '../../components/Tab/TabButton'
 import { TabContainer } from '../../components/Tab/TabContainer'
 import { usePages } from '../../hooks/usePages'
 
-import {PreventiveRoutes, PreventiveModalRoutes} from '../../routes/preventive.routes'
+import { PreventiveRoutes } from '../../routes/preventive.routes'
 
 export function Preventive() {
 
@@ -44,7 +44,7 @@ export function Preventive() {
       </TabContainer>
 
       <PreventiveRoutes />
-      
+
 
     </div>
   )

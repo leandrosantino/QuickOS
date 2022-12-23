@@ -161,7 +161,7 @@ function TableRow({ data, className, istitle, onClick }: TableRowProps) {
           bg-gray-700 text-gray-100 font-medium 
           rounded-tr-lg rounded-tl-lg text-sm
         `: `bg-gray-300`}
-        w-full pl-1
+        w-full
         flex flex-row 
         justify-center items-center
         border-b border-gray-900 
@@ -170,7 +170,7 @@ function TableRow({ data, className, istitle, onClick }: TableRowProps) {
 
       <div
         className={`
-          w-[95%] rounded-md
+          w-[100%]
           flex flex-row 
           justify-center items-center 
           ${istitle ? `` : `
@@ -182,8 +182,8 @@ function TableRow({ data, className, istitle, onClick }: TableRowProps) {
       >
         <TableCell className='w-[12%]' >{data.tag} </TableCell>
         <TableCell className='w-[10%]' >{data.nature} </TableCell>
-        <TableCell className='w-[50%]' >{data.description} </TableCell>
-        <TableCell className='w-[13%]' >{data.frequency} {istitle ? '' : ' Sem'}</TableCell>
+        <TableCell className='w-[53%]' >{data.description} </TableCell>
+        <TableCell className='w-[10%]' >{data.frequency} {istitle ? '' : ' Sem'}</TableCell>
         <TableCell className='w-[15%]' >{
           istitle ? data.nextExecution :
             'Semana ' +
@@ -193,7 +193,7 @@ function TableRow({ data, className, istitle, onClick }: TableRowProps) {
         } </TableCell>
       </div>
 
-      <TableCell className='w-[5%]' >
+      {/* <TableCell className='w-[5%]' >
 
         {
           istitle ?
@@ -212,7 +212,8 @@ function TableRow({ data, className, istitle, onClick }: TableRowProps) {
             </div>
         }
 
-      </TableCell>
+      </TableCell> */}
+
     </div>
   )
 }

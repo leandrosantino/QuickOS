@@ -3,6 +3,8 @@ import { useState } from 'react'
 import { PageHeader } from '../../components/PageHeader'
 
 import { BiSave } from 'react-icons/bi'
+import { MdDeleteOutline } from 'react-icons/md'
+
 import { InputButton } from '../../components/forms/InputButton';
 import { InputCaseForm } from '../../components/forms/InputCaseForm';
 import z, { ZodError } from 'zod';
@@ -18,7 +20,7 @@ export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
   const tags = ['M41', 'M42', 'M25', 'M26', 'M27', 'M28']
 
   const [tag, setTag] = useState(data ? data?.tag : tags[0])
-  const [nature, setNature] = useState(data ? data?.nature : 'Elétrica')
+  const [nature, setNature] = useState(data ? data?.nature : 'Mecânica')
   const [frequency, setFrequency] = useState(data ? data?.frequency : 1)
   const [nextExecution, setNextExecution] = useState(data ? data?.nextExecution : '')
   const [description, setDescription] = useState(data ? data?.description : '')
@@ -57,16 +59,15 @@ export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
 
   return (
     <PageModalContainer
-      onClick={()=>goToPage('Preventive.Actions', {})}
-      width="57%"
-      height="55%"
+      onClick={() => goToPage('Preventive.Actions', {})}
+      width="60%"
+      height="50%"
     >
       <div
         className="
-          w-full h-full p-5 pb-10
+          w-full h-full p-5 pb-5
           bg-gray-200 z-50
           rounded-3xl
-
         "
       >
 
@@ -118,7 +119,7 @@ export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
               `}
             >
               <option value="Elétrica" > Elétrica </option>
-              <option value="Mecânica" selected > Mecânica </option>
+              <option value="Mecânica" > Mecânica </option>
             </select>
           </InputCaseForm>
 
@@ -174,8 +175,20 @@ export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
         </div>
 
         <div
-          className="flex flex-row justify-end items-end mt-5"
+          className={`
+            flex flex-row items-end mt-7
+            ${data?.id?'justify-between':'justify-end'}
+          `}
         >
+          {data?.id &&
+            <InputButton
+              onClick={()=>{}}
+              title='Excluir'
+              Icon={MdDeleteOutline}
+              className="text-red-500"
+            />
+          }
+
           <InputButton
             onClick={handleSubmit}
             title='Salvar'

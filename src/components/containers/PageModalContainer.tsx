@@ -4,8 +4,8 @@ import { usePages } from '../../hooks/usePages'
 interface PageModalContainerProps {
   children?: ReactNode;
   onClick?: () => void;
-  width: number | string;
-  height: number | string;
+  width: string;
+  height: string;
 }
 
 export function PageModalContainer({ children, onClick, width ,height }: PageModalContainerProps) {
@@ -21,7 +21,7 @@ export function PageModalContainer({ children, onClick, width ,height }: PageMod
           flex justify-center items-center
           ${sideMenuIsReduce ?
             'w-[calc(100vw-50px)] left-[50px]' :
-            'w-[calc(100vw-208px)] lg1:w-test xl:w-[calc(100vw-216px)] left-[216px]'
+            'w-[calc(100vw-208px)] lg1:w-test xl:w-[calc(100vw-216px)] xl:left-[216px] left-[208px]'
           }
         `}
       >
@@ -30,17 +30,15 @@ export function PageModalContainer({ children, onClick, width ,height }: PageMod
           className='
             w-full h-full 
             bg-gray-900 bg-opacity-50
-          
           '
           onClick={onClick}
         ></div>
 
         <div
-          className={`
-            z-60 absolute 
-            ${'w-[' + String(width) +  ']'}
-            ${'h-[' + String(height) +  ']'}
-          `}
+          style={{
+            width, height
+          }}
+          className="z-60 absolute"
         >
           {children}
         </div>

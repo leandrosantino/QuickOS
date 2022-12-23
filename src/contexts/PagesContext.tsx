@@ -1,5 +1,13 @@
-import { createContext, ReactNode, useState, useEffect, ReactComponentElement, JSXElementConstructor, useContext } from "react";
-
+import {
+	createContext,
+	ReactNode,
+	useState,
+	useEffect,
+	ReactComponentElement,
+	JSXElementConstructor,
+	useContext
+} from "react";
+ 
 
 export type Pages =
 	'Dashboard' |
@@ -66,7 +74,7 @@ export function PagesContextProvider({ children }: PagesContextProviderProps) {
 		const [Routes, setRoutes] = useState<string[]>([])
 
 		useEffect(() => {
-			let routeArray:string[] = []
+			let routeArray: string[] = []
 			let route: string = ''
 			pageNameSplit.forEach((entry, index) => {
 				if (index > 0) {
@@ -79,7 +87,7 @@ export function PagesContextProvider({ children }: PagesContextProviderProps) {
 				return
 			})
 			setRoutes(routeArray)
-			
+
 			// eslint-disable-next-line
 		}, [page])
 

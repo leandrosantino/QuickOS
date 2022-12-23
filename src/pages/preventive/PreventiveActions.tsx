@@ -1,5 +1,5 @@
 
-import { ReactNode, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 import { MdLibraryAdd } from 'react-icons/md'
 import { RiDeleteBack2Fill } from 'react-icons/ri'
@@ -29,7 +29,7 @@ const data: ActionsType[] = [
   {
     id: 2,
     tag: 'M26',
-    description: 'Troca do Relé termico de do motor da bomba de iso',
+    description: 'Troca do Relé termico de do motor da bomba de poliol',
     frequency: '3',
     nature: 'Mecânica',
     nextExecution: '2022-W44',
@@ -37,7 +37,7 @@ const data: ActionsType[] = [
   {
     id: 3,
     tag: 'M27',
-    description: 'Troca do Relé termico de do motor da bomba de iso',
+    description: 'Troca do Relé termico de do motor da bomba de desmoldante',
     frequency: '4',
     nature: 'Elétrica',
     nextExecution: '2022-W46',
@@ -45,12 +45,96 @@ const data: ActionsType[] = [
   {
     id: 4,
     tag: 'M28',
-    description: 'Troca do Relé termico de do motor da bomba de iso',
+    description: 'Troca do Relé termico de do motor da bomba de água',
     frequency: '12',
     nature: 'Mecânica',
     nextExecution: '2022-W52',
   },
 ]
+
+export function PreventiveActions({ children }: PreventiveActionsProps) {
+
+  const { goToPage, sideMenuIsReduce } = usePages()
+  // eslint-disable-next-line
+  const [inputSearchText, setInputSearchText] = useState<string>('')
+
+  const [actions, setActions] = useState<ActionsType[]>(data)
+
+  useEffect(()=>{
+    const filterActions:ActionsType[] = []
+
+    data.forEach(entry=>{
+      if(
+        entry.description.toUpperCase()
+        .search(inputSearchText.toUpperCase()) > -1 || 
+        inputSearchText === ''
+      ){
+        filterActions.push(entry)
+      }
+    })
+
+    setActions(filterActions)
+  },[inputSearchText])
+
+  return (
+    <>
+      <div
+        className="
+          w-full h-[100%]
+          px-5
+        "
+      >
+        <PageHeader title='Ações Preventivas'>
+          <InputButton 
+            Icon={MdLibraryAdd}  
+            onClick={() => { goToPage('Preventive.Actions.NewActions', {})}}
+            title='Criar'
+            className="bg-green-500 text-gray-100 mr-2"
+          />
+          <InputSearch returnSearchText={(value: string) => setInputSearchText(value)} />
+
+        </PageHeader>
+
+        <div
+          className="w-full mt-3 flex justify-center items-center"
+        >
+          <FilterFrame width={70} opened /> 
+        </div>
+
+        <TableRow
+
+          istitle
+          className='mt-3'
+          data={{
+            tag: 'Tag',
+            description: 'Descição',
+            frequency: 'Priodicidade',
+            nature: 'Natureza',
+            nextExecution: 'Próxima Execução',
+          }}
+        />
+
+        <div className="w-full h-[calc(100vh-230px)]">
+          <ScrollContainer className="h-full" >
+            {
+              actions.map((entry, index) => (
+                <TableRow onClick={() => goToPage('Preventive.Actions.EditActions', {data: entry})} key={index} data={entry} />
+              ))
+            }
+          </ScrollContainer>
+        </div>
+
+      </div>
+
+      {
+        children &&
+        <ModalContainer>
+          {children}
+        </ModalContainer>
+      }
+    </>
+  )
+}
 
 function TableCell({ children, className }: 
   { 
@@ -77,6 +161,7 @@ interface TableRowProps {
 }
 
 function TableRow({ data, className, istitle, onClick }: TableRowProps) {
+
   return (
     <div
       className={`
@@ -105,10 +190,11 @@ function TableRow({ data, className, istitle, onClick }: TableRowProps) {
       >
         <TableCell className='w-[12%]' >{data.tag} </TableCell>
         <TableCell className='w-[10%]' >{data.nature} </TableCell>
-        <TableCell className='w-[52%]' >{data.description} </TableCell>
+        <TableCell className='w-[50%]' >{data.description} </TableCell>
         <TableCell className='w-[13%]' >{data.frequency} {istitle?'':' Sem'}</TableCell>
-        <TableCell className='w-[13%]' >{
+        <TableCell className='w-[15%]' >{
           istitle?data.nextExecution:
+          'Semana ' +
           data.nextExecution?.split('-W')[1]
           +', '+
           data.nextExecution?.split('-W')[0]
@@ -136,72 +222,5 @@ function TableRow({ data, className, istitle, onClick }: TableRowProps) {
 
       </TableCell>
     </div>
-  )
-}
-
-export function PreventiveActions({ children }: PreventiveActionsProps) {
-
-  const { goToPage, sideMenuIsReduce } = usePages()
-  // eslint-disable-next-line
-  const [inputSearchText, setInputSearchText] = useState<string>('')
-
-
-  return (
-    <>
-      <div
-        className="
-          w-full h-[100%]
-          px-5
-        "
-      >
-        <PageHeader title='Ações Preventivas'>
-          <InputButton 
-            Icon={MdLibraryAdd}  
-            onClick={() => { goToPage('Preventive.Actions.NewActions', {})}}
-            title='Criar'
-            className="bg-green-500 text-gray-100 mr-2"
-          />
-          <InputSearch returnSearchText={(value: string) => setInputSearchText(value)} />
-
-        </PageHeader>
-
-        <div
-          className="w-full mt-3 flex justify-center items-center"
-        >
-          <FilterFrame width={70} opened />
-        </div>
-
-        <TableRow
-
-          istitle
-          className='mt-3'
-          data={{
-            tag: 'Tag',
-            description: 'Descição',
-            frequency: 'Priodicidade',
-            nature: 'Natureza',
-            nextExecution: 'Próxima Execução',
-          }}
-        />
-
-        <div className="w-full h-[calc(100vh-230px)]">
-          <ScrollContainer className="h-full" >
-            {
-              data.map((entry, index) => (
-                <TableRow onClick={() => goToPage('Preventive.Actions.EditActions', {data: entry})} key={index} data={entry} />
-              ))
-            }
-          </ScrollContainer>
-        </div>
-
-      </div>
-
-      {
-        children &&
-        <ModalContainer>
-          {children}
-        </ModalContainer>
-      }
-    </>
   )
 }

@@ -1,8 +1,9 @@
 import {useContext} from  'react'
 
-import {DialogContext, DialogContextDataProps} from '../contexts/DialogContext'
+import {DialogContext, UseDialogProps} from '../contexts/DialogContext'
 
-export function useDialog() : DialogContextDataProps{
+export function useDialog() : UseDialogProps{
 	const context = useContext(DialogContext);
-	return context;
+	const {dialogAlert, dialogError, dialogQuestion} = context
+	return {dialogAlert, dialogError, dialogQuestion};
 }

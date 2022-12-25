@@ -121,8 +121,8 @@ export function Dialogs() {
     <>
       {visible &&
         <DialogContainer
-          width={"300px"}
-          height={"170px"}
+          width={"320px"}
+          height={"180px"}
         >
           <div
             className="

@@ -23,7 +23,7 @@ export function DialogContainer({ children, width ,height }: PageModalContainerP
         <div
           className={`
             flex justify-center items-center
-            h-full
+            h-full bg-gray-900 bg-opacity-50
             ${sideMenuIsReduce ?
               'w-[calc(100vw-50px)]' :
               'w-[calc(100vw-208px)] lg1:w-test xl:w-[calc(100vw-216px)]'

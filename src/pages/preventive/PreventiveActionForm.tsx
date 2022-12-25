@@ -10,6 +10,7 @@ import { InputCaseForm } from '../../components/forms/InputCaseForm';
 import z, { ZodError } from 'zod';
 import { PageModalContainer } from '../../components/containers/PageModalContainer';
 import { usePages } from '../../hooks/usePages';
+import { useDialog } from '../../hooks/useDialog';
 
 interface PreventiveActionFormProps {
   data: ActionsType;
@@ -21,9 +22,19 @@ export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
 
   const [tag, setTag] = useState(data ? data?.tag : tags[0])
   const [nature, setNature] = useState(data ? data?.nature : 'Mecânica')
-  const [frequency, setFrequency] = useState(data ? data?.frequency : 1)
+  const [frequency, setFrequency] = useState(data ? data?.frequency : '1')
   const [nextExecution, setNextExecution] = useState(data ? data?.nextExecution : '')
   const [description, setDescription] = useState(data ? data?.description : '')
+
+  const {dialogError, dialogQuestion, dialogAlert} = useDialog()
+
+  function clearInputs(){
+    setTag('M41')
+    setNature('Mecânica')
+    setFrequency('1')
+    setNextExecution('')
+    setDescription('')
+  }
 
   function handleSubmit() {
     const actionData: ActionsType = { tag, nature, frequency, nextExecution, description }
@@ -43,16 +54,29 @@ export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
           .min(10, 'A descrição tem que ter no mínimo 10 caracteres !!')
       })
 
-    let actionInfo
-
     try {
-      actionInfo = validateSchema.parse(actionData)
+
+      const actionInfo = validateSchema.parse(actionData)
+
+      let teste = true
+
+      dialogQuestion('Atenção!', 'Realmente deseja salvar as alterações??', 
+        ()=>{
+          console.log(actionInfo)
+          clearInputs()
+        },
+        ()=>{
+          console.log('Cancelado!')
+        }
+      )
+
+      console.log(teste)
+
     } catch (error) {
       const err = error as ZodError
-      console.log(err.errors.map((entry, index) => entry.message))
+      dialogError('Erro de Validação!!', err.errors.map((entry)=>entry.message)[0])
       return
     }
-    console.log(actionInfo)
   }
 
   const { goToPage } = usePages()

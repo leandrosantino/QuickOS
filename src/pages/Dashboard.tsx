@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+
 import { BalanceCards } from "../components/cards/BalanceCards"
 import { Card } from '../components/cards/Card'
 import { ScrollContainer } from '../components/containers/ScrollContainer'
@@ -13,26 +13,11 @@ import { CgTimelapse } from 'react-icons/cg'
 import { MdOutlineReportGmailerrorred } from 'react-icons/md'
 import { MdWifiProtectedSetup } from 'react-icons/md'
 import { PreventiveOpenedList } from "../components/dashboard/PreventiveOpenedList"
-import { useDialog } from "../hooks/useDialog"
-
 
 
 export interface HomeProps { nome: string }
 
 export function Home() {
-
-  const {dialogAlert, dialogQuestion} = useDialog()
-
-
-  // const [teste, setTeste] = useState('')
-
-  // useEffect(()=>{
-  //   //setTeste(window.ipc.sendSync('teste'))
-    
-    
-  //   console.log('d')
-
-  // }, [])
 
   return (
     <div
@@ -50,20 +35,6 @@ export function Home() {
         className='mt-2 w-full h-8 flex justify-center items-center'
       >
         <FilterFrame />
-        <button
-          onClick={()=>dialogQuestion(
-            'Atenção!!', 
-            'Ação slava com sucesso !!', 
-            function yes(){
-                console.log('sim')
-            },
-            function no(){
-              console.log('não')
-            },
-          )}
-        >
-          Teste
-        </button>
       </div>
 
       <div

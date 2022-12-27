@@ -6,41 +6,17 @@ export function DialogQuestion({message, title, callback}:DialogProps) {
   return (
     <div
     className="
-      w-full h-full
-      flex flex-row justify-center items-center
+      w-full h-full px-2
+      flex flex-col justify-start items-center
     "
   >
-
-    <div
-      className="
-        w-[23%] h-full
-        flex justify-center items-center
-      "
-    >
-      <div
-        className="
-          w-[60px] h-[60px]
-          rounded-[30px]
-          bg-blue-500 text-gray-100
-          flex justify-center items-center
-        "
-      >
-        <FaQuestion size={40} />
-      </div>
-    </div>
-
-    <div
-      className="
-        w-[77%] h-full px-2
-        flex flex-col justify-center items-center
-      "
-    >
 
       <div
         className="
           w-full h-[22%]
-          font-bold text-2xl
-          flex felx-col justify-center items-center
+          font-semibold text-2xl
+          text-gray-900
+          flex felx-col justify-start items-center
         "
       >
         {title}
@@ -48,8 +24,9 @@ export function DialogQuestion({message, title, callback}:DialogProps) {
 
       <div
         className="
+        text-gray-900
           w-full h-[56%] pt-2
-          flex felx-col justify-center items-center
+          flex felx-col justify-start items-center
         "
       >
         {message}
@@ -58,31 +35,38 @@ export function DialogQuestion({message, title, callback}:DialogProps) {
       <div
         className="
           w-full h-[22%]
-          flex justify-end
+          flex justify-start
         "
       >
-      <InputButton
-        title='Não'
-        onClick={() => callback(false)}
-        className="
-          w-16 mr-2
-          bg-red-500
-          indent-1
-          text-gray-100
-        "
-      />
 
-      <InputButton
-        title='Sim'
+      <button
         onClick={() => callback(true)}
         className="
-          w-16
-          bg-gray-500
-          indent-1
+          h-6 w-9 mr-2
+          text-[9pt]
+          bg-gray-900
           text-gray-100
+          rounded
         "
-      />
-    </div>
+      >
+        Sim
+      </button>
+
+      <button
+        onClick={() => callback(false)}
+        className="
+          h-6 w-9 mr-2
+          text-[9pt]
+          bg-gray-900
+          text-gray-100
+          rounded
+        "
+      >
+        Não
+      </button>
+
+
+
 
     </div>
 

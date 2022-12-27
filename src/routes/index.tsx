@@ -5,6 +5,8 @@ import { PagesContextProvider } from '../contexts/PagesContext';
 
 import { DialogContextProvider, Dialogs } from '../contexts/DialogContext'
 
+import {} from 'react-toastify'
+
 import AppRoutes from '../routes/app.routes'
 
 export function Routes() {

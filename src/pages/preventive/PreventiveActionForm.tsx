@@ -12,6 +12,9 @@ import { PageModalContainer } from '../../components/containers/PageModalContain
 import { usePages } from '../../hooks/usePages';
 import { useDialog } from '../../hooks/useDialog';
 
+import {toast} from 'react-toastify'
+import { rejects } from 'assert';
+
 interface PreventiveActionFormProps {
   data: ActionsType;
 }
@@ -26,7 +29,7 @@ export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
   const [nextExecution, setNextExecution] = useState(data ? data?.nextExecution : '')
   const [description, setDescription] = useState(data ? data?.description : '')
 
-  const {dialogError, dialogQuestion, dialogAlert} = useDialog()
+  const {dialogQuestion} = useDialog()
 
   function clearInputs(){
     setTag('M41')
@@ -58,23 +61,44 @@ export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
 
       const actionInfo = validateSchema.parse(actionData)
 
-      let teste = true
-
       dialogQuestion('Atenção!', 'Realmente deseja salvar as alterações??', 
         ()=>{
-          console.log(actionInfo)
-          clearInputs()
+          toast.promise(async ()=>{
+            return new Promise((resolve, reject)=>{
+              setTimeout(() => {
+                if(false){
+                  reject('Erro no Banco de dados')
+                  return
+                }
+                console.log(actionInfo)
+                clearInputs()
+                resolve(true)
+                return
+              }, 1000);
+            })
+          }, {
+            pending: 'Processando as informações...',
+            error:{
+              render({data}){
+                return `${data}`
+              }
+            },
+            success: 'Alteração realizada com sucesso!!'
+          })
+          
         },
         ()=>{
           console.log('Cancelado!')
         }
       )
 
-      console.log(teste)
-
     } catch (error) {
       const err = error as ZodError
-      dialogError('Erro de Validação!!', err.errors.map((entry)=>entry.message)[0])
+      const msgError = err.errors.map((entry)=>entry.message)[0]
+
+      toast.error(msgError, {toastId: msgError})
+
+      //dialogError('Erro de Validação!!', err.errors.map((entry)=>entry.message)[0])
       return
     }
   }

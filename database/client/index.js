@@ -27,12 +27,12 @@ const Prisma = {}
 exports.Prisma = Prisma
 
 /**
- * Prisma Client JS version: 4.7.1
- * Query Engine version: 694eea289a8462c80264df36757e4fdc129b1b32
+ * Prisma Client JS version: 4.9.0
+ * Query Engine version: ceb5c99003b99c9ee2c1d2e618e359c14aef2ea5
  */
 Prisma.prismaVersion = {
-  client: "4.7.1",
-  engine: "694eea289a8462c80264df36757e4fdc129b1b32"
+  client: "4.9.0",
+  engine: "ceb5c99003b99c9ee2c1d2e618e359c14aef2ea5"
 }
 
 Prisma.PrismaClientKnownRequestError = PrismaClientKnownRequestError;
@@ -93,6 +93,40 @@ const dirname = regularDirname || foundDirname || __dirname
 // https://github.com/microsoft/TypeScript/issues/3192#issuecomment-261720275
 function makeEnum(x) { return x; }
 
+exports.Prisma.MachineScalarFieldEnum = makeEnum({
+  id: 'id',
+  tag: 'tag',
+  ute: 'ute',
+  technology: 'technology'
+});
+
+exports.Prisma.NatureScalarFieldEnum = makeEnum({
+  id: 'id',
+  name: 'name'
+});
+
+exports.Prisma.PreventiveActionScalarFieldEnum = makeEnum({
+  id: 'id',
+  description: 'description',
+  machineId: 'machineId',
+  excution: 'excution',
+  frequency: 'frequency',
+  nextExecution: 'nextExecution',
+  preventiveOSId: 'preventiveOSId',
+  natureId: 'natureId'
+});
+
+exports.Prisma.PreventiveOSScalarFieldEnum = makeEnum({
+  id: 'id',
+  machineId: 'machineId',
+  week: 'week',
+  responsibleId: 'responsibleId',
+  year: 'year',
+  date: 'date',
+  natureId: 'natureId',
+  concluded: 'concluded'
+});
+
 exports.Prisma.SortOrder = makeEnum({
   asc: 'asc',
   desc: 'desc'
@@ -102,17 +136,23 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.UserScalarFieldEnum = makeEnum({
+exports.Prisma.WorkerScalarFieldEnum = makeEnum({
   id: 'id',
-  name: 'name'
+  registration: 'registration',
+  name: 'name',
+  class: 'class'
 });
 
 
 exports.Prisma.ModelName = makeEnum({
-  User: 'User'
+  Nature: 'Nature',
+  Machine: 'Machine',
+  Worker: 'Worker',
+  PreventiveAction: 'PreventiveAction',
+  PreventiveOS: 'PreventiveOS'
 });
 
-const dmmfString = "{\"datamodel\":{\"enums\":[],\"models\":[{\"name\":\"User\",\"dbName\":null,\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Int\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"name\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false}],\"types\":[]},\"mappings\":{\"modelOperations\":[{\"model\":\"User\",\"plural\":\"users\",\"findUnique\":\"findUniqueUser\",\"findUniqueOrThrow\":\"findUniqueUserOrThrow\",\"findFirst\":\"findFirstUser\",\"findFirstOrThrow\":\"findFirstUserOrThrow\",\"findMany\":\"findManyUser\",\"create\":\"createOneUser\",\"delete\":\"deleteOneUser\",\"update\":\"updateOneUser\",\"deleteMany\":\"deleteManyUser\",\"updateMany\":\"updateManyUser\",\"upsert\":\"upsertOneUser\",\"aggregate\":\"aggregateUser\",\"groupBy\":\"groupByUser\"}],\"otherOperations\":{\"read\":[],\"write\":[\"executeRaw\",\"queryRaw\"]}}}"
+const dmmfString = "{\"datamodel\":{\"enums\":[],\"models\":[{\"name\":\"Nature\",\"dbName\":null,\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"Int\",\"default\":{\"name\":\"autoincrement\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"name\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"PreventiveOS\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"PreventiveOS\",\"relationName\":\"NatureToPreventiveOS\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"PreventiveAction\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"PreventiveAction\",\"relationName\":\"NatureToPreventiveAction\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},{\"name\":\"Machine\",\"dbName\":null,\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"Int\",\"default\":{\"name\":\"autoincrement\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"tag\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":true,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"ute\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"technology\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"PreventiveOS\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"PreventiveOS\",\"relationName\":\"MachineToPreventiveOS\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"PreventiveAction\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"PreventiveAction\",\"relationName\":\"MachineToPreventiveAction\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},{\"name\":\"Worker\",\"dbName\":null,\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"Int\",\"default\":{\"name\":\"autoincrement\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"registration\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":true,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Int\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"name\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"class\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"PreventiveOS\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"PreventiveOS\",\"relationName\":\"PreventiveOSToWorker\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},{\"name\":\"PreventiveAction\",\"dbName\":null,\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"Int\",\"default\":{\"name\":\"autoincrement\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"description\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"machineId\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"Int\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"excution\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"frequency\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Int\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"nextExecution\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Int\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"preventiveOSId\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"Int\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"natureId\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"Int\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"machine\",\"kind\":\"object\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Machine\",\"relationName\":\"MachineToPreventiveAction\",\"relationFromFields\":[\"machineId\"],\"relationToFields\":[\"id\"],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"PreventiveOS\",\"kind\":\"object\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"PreventiveOS\",\"relationName\":\"PreventiveActionToPreventiveOS\",\"relationFromFields\":[\"preventiveOSId\"],\"relationToFields\":[\"id\"],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"nature\",\"kind\":\"object\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Nature\",\"relationName\":\"NatureToPreventiveAction\",\"relationFromFields\":[\"natureId\"],\"relationToFields\":[\"id\"],\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},{\"name\":\"PreventiveOS\",\"dbName\":null,\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"Int\",\"default\":{\"name\":\"autoincrement\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"machineId\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"Int\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"week\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Int\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"responsibleId\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"Int\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"year\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Int\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"date\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"natureId\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"Int\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"actions\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"PreventiveAction\",\"relationName\":\"PreventiveActionToPreventiveOS\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"concluded\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Boolean\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"nature\",\"kind\":\"object\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Nature\",\"relationName\":\"NatureToPreventiveOS\",\"relationFromFields\":[\"natureId\"],\"relationToFields\":[\"id\"],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"machine\",\"kind\":\"object\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Machine\",\"relationName\":\"MachineToPreventiveOS\",\"relationFromFields\":[\"machineId\"],\"relationToFields\":[\"id\"],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"responsible\",\"kind\":\"object\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Worker\",\"relationName\":\"PreventiveOSToWorker\",\"relationFromFields\":[\"responsibleId\"],\"relationToFields\":[\"id\"],\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[[\"machineId\",\"natureId\",\"week\",\"year\"]],\"uniqueIndexes\":[{\"name\":null,\"fields\":[\"machineId\",\"natureId\",\"week\",\"year\"]}],\"isGenerated\":false}],\"types\":[]},\"mappings\":{\"modelOperations\":[{\"model\":\"Nature\",\"plural\":\"natures\",\"findUnique\":\"findUniqueNature\",\"findUniqueOrThrow\":\"findUniqueNatureOrThrow\",\"findFirst\":\"findFirstNature\",\"findFirstOrThrow\":\"findFirstNatureOrThrow\",\"findMany\":\"findManyNature\",\"create\":\"createOneNature\",\"delete\":\"deleteOneNature\",\"update\":\"updateOneNature\",\"deleteMany\":\"deleteManyNature\",\"updateMany\":\"updateManyNature\",\"upsert\":\"upsertOneNature\",\"aggregate\":\"aggregateNature\",\"groupBy\":\"groupByNature\"},{\"model\":\"Machine\",\"plural\":\"machines\",\"findUnique\":\"findUniqueMachine\",\"findUniqueOrThrow\":\"findUniqueMachineOrThrow\",\"findFirst\":\"findFirstMachine\",\"findFirstOrThrow\":\"findFirstMachineOrThrow\",\"findMany\":\"findManyMachine\",\"create\":\"createOneMachine\",\"delete\":\"deleteOneMachine\",\"update\":\"updateOneMachine\",\"deleteMany\":\"deleteManyMachine\",\"updateMany\":\"updateManyMachine\",\"upsert\":\"upsertOneMachine\",\"aggregate\":\"aggregateMachine\",\"groupBy\":\"groupByMachine\"},{\"model\":\"Worker\",\"plural\":\"workers\",\"findUnique\":\"findUniqueWorker\",\"findUniqueOrThrow\":\"findUniqueWorkerOrThrow\",\"findFirst\":\"findFirstWorker\",\"findFirstOrThrow\":\"findFirstWorkerOrThrow\",\"findMany\":\"findManyWorker\",\"create\":\"createOneWorker\",\"delete\":\"deleteOneWorker\",\"update\":\"updateOneWorker\",\"deleteMany\":\"deleteManyWorker\",\"updateMany\":\"updateManyWorker\",\"upsert\":\"upsertOneWorker\",\"aggregate\":\"aggregateWorker\",\"groupBy\":\"groupByWorker\"},{\"model\":\"PreventiveAction\",\"plural\":\"preventiveActions\",\"findUnique\":\"findUniquePreventiveAction\",\"findUniqueOrThrow\":\"findUniquePreventiveActionOrThrow\",\"findFirst\":\"findFirstPreventiveAction\",\"findFirstOrThrow\":\"findFirstPreventiveActionOrThrow\",\"findMany\":\"findManyPreventiveAction\",\"create\":\"createOnePreventiveAction\",\"delete\":\"deleteOnePreventiveAction\",\"update\":\"updateOnePreventiveAction\",\"deleteMany\":\"deleteManyPreventiveAction\",\"updateMany\":\"updateManyPreventiveAction\",\"upsert\":\"upsertOnePreventiveAction\",\"aggregate\":\"aggregatePreventiveAction\",\"groupBy\":\"groupByPreventiveAction\"},{\"model\":\"PreventiveOS\",\"plural\":\"preventiveOS\",\"findUnique\":\"findUniquePreventiveOS\",\"findUniqueOrThrow\":\"findUniquePreventiveOSOrThrow\",\"findFirst\":\"findFirstPreventiveOS\",\"findFirstOrThrow\":\"findFirstPreventiveOSOrThrow\",\"findMany\":\"findManyPreventiveOS\",\"create\":\"createOnePreventiveOS\",\"delete\":\"deleteOnePreventiveOS\",\"update\":\"updateOnePreventiveOS\",\"deleteMany\":\"deleteManyPreventiveOS\",\"updateMany\":\"updateManyPreventiveOS\",\"upsert\":\"upsertOnePreventiveOS\",\"aggregate\":\"aggregatePreventiveOS\",\"groupBy\":\"groupByPreventiveOS\"}],\"otherOperations\":{\"read\":[],\"write\":[\"executeRaw\",\"queryRaw\"]}}}"
 const dmmf = JSON.parse(dmmfString)
 exports.Prisma.dmmf = JSON.parse(dmmfString)
 
@@ -127,7 +167,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\leand\\Desktop\\Dev\\quick_os\\database\\client",
+      "value": "E:\\quick_os\\database\\client",
       "fromEnvVar": null
     },
     "config": {
@@ -142,8 +182,8 @@ const config = {
     "schemaEnvPath": "..\\..\\.env"
   },
   "relativePath": "..\\..\\prisma",
-  "clientVersion": "4.7.1",
-  "engineVersion": "694eea289a8462c80264df36757e4fdc129b1b32",
+  "clientVersion": "4.9.0",
+  "engineVersion": "ceb5c99003b99c9ee2c1d2e618e359c14aef2ea5",
   "datasourceNames": [
     "db"
   ],

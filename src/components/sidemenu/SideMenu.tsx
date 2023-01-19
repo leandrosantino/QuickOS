@@ -13,7 +13,7 @@ import SideMenuTitle from './SideMenuTitle';
 
 export function SideMenu() {
 
-  const { goToPage, currentPage, sideMenuIsReduce } = usePages()
+  const { goToPage, currentPage, sideMenuIsReduce, backPage } = usePages()
 
   const reduced = sideMenuIsReduce
 
@@ -34,6 +34,14 @@ export function SideMenu() {
       <SideMenuTitle reduced={reduced} />
 
       <div className='mt-2'>
+        
+      {/* <button
+        className="bg-gray-100 w-10 h-4"
+        onClick={()=>backPage()}
+      >
+        voltar
+      </button> */}
+
         <SideMenuPageButton
           reduced={reduced}
           Icon={IoBarChartSharp}

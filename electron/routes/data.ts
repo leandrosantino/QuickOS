@@ -6,24 +6,24 @@ import { store } from "../services/store";
 
 export function dataRoutes({ipcMain, window}: UseRoutesProps){
     
-    ipcMain.on('teste' as MainRoutes, async (event, args)=>{
-        try {
-            const val = await prisma.user.findMany()
-            const value = Number(store.get('increment'))
+    // ipcMain.on('teste' as MainRoutes, async (event, args)=>{
+    //     try {
+    //         const val = await prisma.user.findMany()
+    //         const value = Number(store.get('increment'))
 
-            console.log(value)
+    //         console.log(value)
 
-            const teste = value?value: 0
-            store.set('increment', teste+1)
+    //         const teste = value?value: 0
+    //         store.set('increment', teste+1)
 
-            event.returnValue = JSON.stringify({val, value})
-        } catch (error) {
-            event.returnValue = String(error)
-        }
-    }) 
+    //         event.returnValue = JSON.stringify({val, value})
+    //     } catch (error) {
+    //         event.returnValue = String(error)
+    //     }
+    // }) 
 
-    window.on('resize', ()=>{
-        window.webContents.send('onWindowResize')
-    })
+    // window.on('resize', ()=>{
+    //     window.webContents.send('onWindowResize')
+    // })
 
 }

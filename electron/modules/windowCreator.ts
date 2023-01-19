@@ -24,7 +24,6 @@ export function windowCreator({icon, width, height, devTools, url} : WindowCreat
         }
     }
 
-
     function load(){
         let window = new BrowserWindow(options)
         window.loadURL(url)

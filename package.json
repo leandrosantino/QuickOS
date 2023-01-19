@@ -19,6 +19,9 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "prisma": {
+    "seed": "tsx prisma/seed/seed.ts"
+  },
   "build": {
     "asar": true,
     "appId": "com.teste.electron",
@@ -41,6 +44,7 @@
     }
   },
   "dependencies": {
+    "@prisma/client": "^4.9.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -64,7 +68,9 @@
   "devDependencies": {
     "electron": "^22.0.0",
     "electron-builder": "^23.6.0",
-    "tailwind-scrollbar": "^2.0.1"
+    "prisma": "^4.9.0",
+    "tailwind-scrollbar": "^2.0.1",
+    "tsx": "^3.12.2"
   },
   "eslintConfig": {
     "extends": [

@@ -13,12 +13,12 @@ const Prisma = {}
 exports.Prisma = Prisma
 
 /**
- * Prisma Client JS version: 4.7.1
- * Query Engine version: 694eea289a8462c80264df36757e4fdc129b1b32
+ * Prisma Client JS version: 4.9.0
+ * Query Engine version: ceb5c99003b99c9ee2c1d2e618e359c14aef2ea5
  */
 Prisma.prismaVersion = {
-  client: "4.7.1",
-  engine: "694eea289a8462c80264df36757e4fdc129b1b32"
+  client: "4.9.0",
+  engine: "ceb5c99003b99c9ee2c1d2e618e359c14aef2ea5"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -89,6 +89,40 @@ Prisma.NullTypes = {
 // https://github.com/microsoft/TypeScript/issues/3192#issuecomment-261720275
 function makeEnum(x) { return x; }
 
+exports.Prisma.MachineScalarFieldEnum = makeEnum({
+  id: 'id',
+  tag: 'tag',
+  ute: 'ute',
+  technology: 'technology'
+});
+
+exports.Prisma.NatureScalarFieldEnum = makeEnum({
+  id: 'id',
+  name: 'name'
+});
+
+exports.Prisma.PreventiveActionScalarFieldEnum = makeEnum({
+  id: 'id',
+  description: 'description',
+  machineId: 'machineId',
+  excution: 'excution',
+  frequency: 'frequency',
+  nextExecution: 'nextExecution',
+  preventiveOSId: 'preventiveOSId',
+  natureId: 'natureId'
+});
+
+exports.Prisma.PreventiveOSScalarFieldEnum = makeEnum({
+  id: 'id',
+  machineId: 'machineId',
+  week: 'week',
+  responsibleId: 'responsibleId',
+  year: 'year',
+  date: 'date',
+  natureId: 'natureId',
+  concluded: 'concluded'
+});
+
 exports.Prisma.SortOrder = makeEnum({
   asc: 'asc',
   desc: 'desc'
@@ -98,14 +132,20 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.UserScalarFieldEnum = makeEnum({
+exports.Prisma.WorkerScalarFieldEnum = makeEnum({
   id: 'id',
-  name: 'name'
+  registration: 'registration',
+  name: 'name',
+  class: 'class'
 });
 
 
 exports.Prisma.ModelName = makeEnum({
-  User: 'User'
+  Nature: 'Nature',
+  Machine: 'Machine',
+  Worker: 'Worker',
+  PreventiveAction: 'PreventiveAction',
+  PreventiveOS: 'PreventiveOS'
 });
 
 /**

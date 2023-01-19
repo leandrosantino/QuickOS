@@ -3,7 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output = "../database/client"
+  output   = "../database/client"
 }
 
 datasource db {
@@ -11,7 +11,61 @@ datasource db {
   url      = "file:../database/app.db"
 }
 
+model Nature {
+  id               Int                @id @default(autoincrement())
+  name             String
+  PreventiveOS     PreventiveOS[]
+  PreventiveAction PreventiveAction[]
+}
+
+model Machine {
+  id         Int    @id @default(autoincrement())
+  tag        String @unique
+  ute        String
+  technology String
+
+  PreventiveOS     PreventiveOS[]
+  PreventiveAction PreventiveAction[]
+}
+
+model Worker {
+  id           Int    @id @default(autoincrement())
+  registration Int    @unique
+  name         String
+  class        String
+
+  PreventiveOS PreventiveOS[]
+}
+
 model PreventiveAction {
-  id Int @id @default(autoincrement())
-  description String 
+  id             Int    @id @default(autoincrement())
+  description    String
+  machineId      Int
+  excution       String
+  frequency      Int
+  nextExecution  Int
+  preventiveOSId Int?
+  natureId       Int
+
+  machine      Machine       @relation(fields: [machineId], references: [id])
+  PreventiveOS PreventiveOS? @relation(fields: [preventiveOSId], references: [id])
+  nature       Nature        @relation(fields: [natureId], references: [id])
+}
+
+model PreventiveOS {
+  id            Int                @id @default(autoincrement())
+  machineId     Int
+  week          Int
+  responsibleId Int?
+  year          Int
+  date          DateTime?
+  natureId      Int
+  actions       PreventiveAction[]
+  concluded     Boolean?
+
+  nature      Nature  @relation(fields: [natureId], references: [id])
+  machine     Machine @relation(fields: [machineId], references: [id])
+  responsible Worker?  @relation(fields: [responsibleId], references: [id])
+
+  @@unique([machineId, natureId, week, year])
 }

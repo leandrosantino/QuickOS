@@ -38,7 +38,7 @@ model Worker {
 }
 
 model PreventiveAction {
-  id             Int    @id @default(autoincrement())
+  id             Int            @id @default(autoincrement())
   description    String
   machineId      Int
   excution       String
@@ -65,7 +65,7 @@ model PreventiveOS {
 
   nature      Nature  @relation(fields: [natureId], references: [id])
   machine     Machine @relation(fields: [machineId], references: [id])
-  responsible Worker?  @relation(fields: [responsibleId], references: [id])
+  responsible Worker? @relation(fields: [responsibleId], references: [id])
 
   @@unique([machineId, natureId, week, year])
 }

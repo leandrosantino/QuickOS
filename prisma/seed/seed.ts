@@ -4,7 +4,65 @@ export const prisma = new PrismaClient()
 
 async function main(){
 
-    const mecanica = await prisma.nature.create({
+    await prisma.machine.create({
+        data: {
+            tag: "M41",
+            technology: "WaterJet",
+            ute: "UTE-5",
+        }
+    })
+    await prisma.machine.create({
+        data: {
+            tag: "M42",
+            technology: "WaterJet",
+            ute: "UTE-5",
+        }
+    })
+    await prisma.machine.create({
+        data: {
+            tag: "M02",
+            technology: "LWF",
+            ute: "UTE-1",
+        }
+    })
+    await prisma.preventiveAction.create({
+        data:{
+            natureId: 2,
+            machineId: 2,
+            description: "Vedação o eixo da bomba de poliol",
+            excution: "Inpesão e troca",
+            frequency: 1,
+            nextExecution: 32,
+        },
+    }) 
+    await prisma.preventiveAction.create({
+        data:{
+            natureId: 2,
+            machineId: 2,
+            description: "Vedação o eixo da bomba de poliol",
+            excution: "Inpesão e troca",
+            frequency: 1,
+            nextExecution: 32,
+        },
+    }) 
+    await prisma.preventiveAction.create({
+        data:{
+            natureId: 1,
+            machineId: 3,
+            description: "Vedação o eixo da bomba de poliol",
+            excution: "Inpesão e troca",
+            frequency: 1,
+            nextExecution: 32,
+        },
+    }) 
+
+}   
+
+main()
+
+/*
+
+ const mecanica = await prisma.nature.create({
         data: {
             name: "Mecânica"
         }
@@ -84,6 +142,4 @@ async function main(){
         }
     })
 
-}   
-
-main()
+*/

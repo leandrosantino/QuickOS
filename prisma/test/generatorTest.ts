@@ -3,67 +3,78 @@ import { PrismaClient } from '../../database/client'
 
 export const prisma = new PrismaClient()
 
-async function main(){
+async function main() {
     try {
-        const week = 48
-        const actions = await prisma.preventiveAction.findMany({
-            where:{
-                nextExecution: week,
-                machineId: 1,
-                natureId: 1,
-            },
-            include:{
-                machine:{},
-                nature:{},
+
+        const OSs = await assembleOs(34, 2023)
+        console.log(JSON.stringify(OSs, null, 2))
+        if(OSs.length > 0){
+            for await (let os of OSs){
+                await generateOS(os)
             }
-        })
-
-        console.log(actions)
-
-        if(actions.length>0){
-
-            const os = await generateOS({
-                week,
-                actionsIds: actions.map(action=>{return {id: action.id}}),
-                year: 2023,
-                machineId: 1,
-                natureId: 1
-            })
-
-            console.log(os)
-
-            console.log(await registerOs({
-                date: new Date(),
-                id: os.id,
-                workerId: 1
-            }))
         }
+
     } catch (error) {
         console.log(String(error))
     }
 }
 
-interface generateOsParams {
+interface preventiveOsParams {
     machineId: number;
     week: number;
-    actionsIds: {id: number}[],
+    actionsIds: { id: number }[],
     year: number;
     natureId: number
 }
 
-async function generateOS({machineId,week, actionsIds, year, natureId}: generateOsParams){
+async function assembleOs(week: number, year: number) {
+
+    try {
+        const OSs: preventiveOsParams[] = []
+
+        const machines = await prisma.machine.findMany()
+        const natures = await prisma.nature.findMany()
+
+        for await (let mac of machines){
+            for await (let nat of natures){
+                const actions = await prisma.preventiveAction.findMany({
+                    where: {
+                        nextExecution: week,
+                        machineId: mac.id,
+                        natureId: nat.id,
+                    },
+                })
+                
+                if (actions.length > 0) {
+                    OSs.push({
+                        week, year,
+                        machineId: mac.id,
+                        natureId: nat.id,
+                        actionsIds: actions.map(({ id }) => { return { id } })
+                    })
+                }
+            }
+        }
+        return OSs
+    } catch (error) {
+        throw error
+    }
+
+}
+
+async function generateOS({ machineId, week, actionsIds, year, natureId }: preventiveOsParams) {
     try {
         const os = await prisma.preventiveOS.upsert({
             where: {
-                machineId_natureId_week_year:{
+                machineId_natureId_week_year: {
                     machineId,
                     week,
                     year,
                     natureId
                 }
             },
-            update:{},
-            create:{
+            update: {},
+            create: {
                 machineId,
                 week,
                 year,
@@ -73,7 +84,7 @@ async function generateOS({machineId,week, actionsIds, year, natureId}: generate
                     connect: actionsIds
                 }
             }
-        }) 
+        })
         return os
     } catch (error) {
         throw error
@@ -87,35 +98,33 @@ interface RegisterOsParams {
     workerId: number,
 }
 
-async function registerOs({date, id, workerId}:RegisterOsParams){
+async function registerOs({ date, id, workerId }: RegisterOsParams) {
     try {
         const os = await prisma.preventiveOS.update({
-            where:{
+            where: {
                 id
             },
-            data:{
+            data: {
                 date,
                 responsibleId: workerId,
                 concluded: true
             },
-            include:{
-                actions:{}
+            include: {
+                actions: {}
             }
         })
-
-        os.actions.forEach(async ({id}, index)=>{
+        os.actions.forEach(async ({ id }, index) => {
             await prisma.preventiveAction.update({
-                where:{id},
-                data:{
-                    nextExecution: os.actions[index].nextExecution + os.actions[index].frequency
+                where: { id },
+                data: {
+                    nextExecution: os.actions[index].nextExecution +
+                        os.actions[index].frequency
                 }
             })
         })
-
-
         return os
-    } catch (error) {   
-        return String(error)
+    } catch (error) {
+        throw error
     }
 }
 

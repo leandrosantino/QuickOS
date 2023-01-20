@@ -1,87 +1,18 @@
+import prisma from "../services/prisma"
+import {incrementWeekYear, weekYearStringToNumber, weekYearToDate, weekYearToString} from "../modules/weekTools"
 
-import { PrismaClient } from '../../database/client'
-import { getYear, getWeek, addWeeks } from 'date-fns'
 
-export const prisma = new PrismaClient()
-
-const weekYearRegex = new RegExp(/\d{4}-W\d{2}/)
-
-async function main() {
-    try {
-
-        // const week = incrementWeekYear(53, 2023, 1)
-        // console.log(weekYearToString(week.week, week.year))
-
-        // const OSs = await assembleOs(37, 2023)
-        // console.log(JSON.stringify(OSs, null, 2))
-        // if(OSs.length > 0){
-        //     for await (let os of OSs){
-        //         await generateOS(os)
-        //     }
-        // }
-
-        await registerOs({
-            id: 9,
-            date: new Date(),
-            workerId: 1
-        })
-
-    } catch (error) {
-        console.log(String(error))
-    }
-}
-
-function incrementWeekYear(week: number, year: number, increment: number) {
-    const weekDate = weekYearToDate(week, year)
-    const incrementedWeekDate = addWeeks(weekDate, increment)
-    return {
-        week: getWeek(incrementedWeekDate),
-        year: getYear(incrementedWeekDate),
-    }
-}
-
-function weekYearStringToNumber(string: string){
-    try {
-        if(!weekYearRegex.test(string)){
-            throw new Error('String week not compatible with the standard!')
-        }
-        return {
-            week: Number(string.split('-W')[1]),
-            year: Number( string.split('-W')[0]),
-        }
-    } catch (error) {
-        throw error
-    }
-}
-
-function weekYearToString(week: number, year: number){
-    try {
-        const weekStr = String(week).length < 2? `0${week}`: week
-        const weekYearStr = `${year}-W${weekStr}`
-        if(!weekYearRegex.test(weekYearStr)){
-            throw new Error('Week and year not compatible with the standard!')
-        }
-        return weekYearStr
-    } catch (error) {
-        throw error
-    }
-     
-}
-
-function weekYearToDate(week: number, year: number) {
-    const day = (1 + (week - 1) * 7) + 6
-    return new Date(year, 0, day)
-}
+type ObjectIds = { id: number }
 
 interface preventiveOsParams {
     machineId: number;
     week: number;
-    actionsIds: { id: number }[],
+    actionsIds: ObjectIds[],
     year: number;
     natureId: number
 }
 
-async function assembleOs(week: number, year: number) {
+async function assembleServiceOrders(week: number, year: number) {
 
     try {
         const OSs: preventiveOsParams[] = []
@@ -117,7 +48,7 @@ async function assembleOs(week: number, year: number) {
 
 }
 
-async function generateOS({ machineId, week, actionsIds, year, natureId }: preventiveOsParams) {
+async function registerServiceOrders({ machineId, week, actionsIds, year, natureId }: preventiveOsParams) {
     try {
         const weekCode = weekYearToString(week, year)
         const os = await prisma.preventiveOS.upsert({
@@ -149,9 +80,10 @@ interface RegisterOsParams {
     id: number;
     date: Date;
     workerId: number,
+    IdsOfActionsTaken?: ObjectIds[],
 }
 
-async function registerOs({ date, id, workerId }: RegisterOsParams) {
+async function executeServiceOrders({ date, id, workerId, IdsOfActionsTaken }: RegisterOsParams) {
     try {
         const os = await prisma.preventiveOS.update({
             where: {
@@ -166,7 +98,6 @@ async function registerOs({ date, id, workerId }: RegisterOsParams) {
                 actions: {}
             }
         })
-
 
         os.actions.forEach(async ({ id }, index) => {
 
@@ -201,5 +132,3 @@ async function registerOs({ date, id, workerId }: RegisterOsParams) {
         throw error
     }
 }
-
-main()

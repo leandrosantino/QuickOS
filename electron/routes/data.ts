@@ -1,7 +1,7 @@
 import { UseRoutesProps } from "../modules/useRoutes";
 import { MainRoutes, RenderRoutes } from "../../@types/Routes";
 
-import { prisma } from "../services/prisma";
+import prisma from "../services/prisma";
 import { store } from "../services/store";
 
 export function dataRoutes({ipcMain, window}: UseRoutesProps){

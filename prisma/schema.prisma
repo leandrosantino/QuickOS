@@ -37,35 +37,47 @@ model Worker {
   PreventiveOS PreventiveOS[]
 }
 
+model PreventiveActionTaken {
+  id       Int      @id @default(autoincrement())
+  date     DateTime
+  osId     Int
+  actionId Int
+  weekCode String
+
+  acction PreventiveAction @relation(fields: [actionId], references: [id])
+  os      PreventiveOS     @relation(fields: [osId], references: [id])
+}
+
 model PreventiveAction {
-  id             Int            @id @default(autoincrement())
+  id             Int    @id @default(autoincrement())
   description    String
   machineId      Int
   excution       String
   frequency      Int
-  nextExecution  Int
+  nextExecution  String
   preventiveOSId Int?
   natureId       Int
 
-  machine      Machine       @relation(fields: [machineId], references: [id])
-  PreventiveOS PreventiveOS? @relation(fields: [preventiveOSId], references: [id])
-  nature       Nature        @relation(fields: [natureId], references: [id])
+  machine                    Machine                      @relation(fields: [machineId], references: [id])
+  PreventiveOS               PreventiveOS?                @relation(fields: [preventiveOSId], references: [id])
+  nature                     Nature                       @relation(fields: [natureId], references: [id])
+  PeventiveActionsCarriedOut PreventiveActionTaken[]
 }
 
 model PreventiveOS {
   id            Int                @id @default(autoincrement())
   machineId     Int
-  week          Int
+  weekCode      String
   responsibleId Int?
-  year          Int
   date          DateTime?
   natureId      Int
   actions       PreventiveAction[]
-  concluded     Boolean?
+  concluded     Boolean?           @default(false)
 
-  nature      Nature  @relation(fields: [natureId], references: [id])
-  machine     Machine @relation(fields: [machineId], references: [id])
-  responsible Worker? @relation(fields: [responsibleId], references: [id])
+  nature                     Nature                       @relation(fields: [natureId], references: [id])
+  machine                    Machine                      @relation(fields: [machineId], references: [id])
+  responsible                Worker?                      @relation(fields: [responsibleId], references: [id])
+  PeventiveActionsCarriedOut PreventiveActionTaken[]
 
-  @@unique([machineId, natureId, week, year])
+  @@unique([machineId, natureId, weekCode])
 }

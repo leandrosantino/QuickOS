@@ -112,12 +112,19 @@ exports.Prisma.PreventiveActionScalarFieldEnum = makeEnum({
   natureId: 'natureId'
 });
 
+exports.Prisma.PreventiveActionTakenScalarFieldEnum = makeEnum({
+  id: 'id',
+  date: 'date',
+  osId: 'osId',
+  actionId: 'actionId',
+  weekCode: 'weekCode'
+});
+
 exports.Prisma.PreventiveOSScalarFieldEnum = makeEnum({
   id: 'id',
   machineId: 'machineId',
-  week: 'week',
+  weekCode: 'weekCode',
   responsibleId: 'responsibleId',
-  year: 'year',
   date: 'date',
   natureId: 'natureId',
   concluded: 'concluded'
@@ -144,6 +151,7 @@ exports.Prisma.ModelName = makeEnum({
   Nature: 'Nature',
   Machine: 'Machine',
   Worker: 'Worker',
+  PreventiveActionTaken: 'PreventiveActionTaken',
   PreventiveAction: 'PreventiveAction',
   PreventiveOS: 'PreventiveOS'
 });

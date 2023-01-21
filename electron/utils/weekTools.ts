@@ -1,5 +1,5 @@
 import { getYear, getWeek, addWeeks } from 'date-fns'
-const weekYearRegex = new RegExp(/\d{4}-W\d{2}/)
+export const weekYearRegex = new RegExp(/\d{4}-W\d{2}/)
 
 export function incrementWeekYear(week: number, year: number, increment: number) {
     const weekDate = weekYearToDate(week, year)

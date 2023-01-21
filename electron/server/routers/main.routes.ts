@@ -1,20 +1,22 @@
 import prisma from '../../services/prisma'
-import { initTRPC } from '@trpc/server'
+import { initTRPC, TRPCError } from '@trpc/server'
 import { z } from 'zod'
 
 const t = initTRPC.create()
 
 export const main = t.router({
-    t: t.procedure
-        .input(z.string())
-        .query((req) => {
-            console.log(req.input)
-            return req.input + '5'
-        }),
-    c: t.procedure
-        .input(z.string())
-        .query((req) => {
-            console.log(req.input)
-            return req.input + '6'
+    getMachines: t.procedure
+        .output(z.array(z.string()))
+        .query(async () => {
+            try {
+                const machines = await prisma.machine.findMany()
+                return machines.map(({tag})=>tag)
+            } catch (error) {
+                throw new TRPCError({
+                    code: 'INTERNAL_SERVER_ERROR',
+                    message: ''
+                })
+            }
         })
+
 })

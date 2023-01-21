@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { PageHeader } from '../../components/PageHeader'
 
@@ -24,10 +24,16 @@ interface PreventiveActionFormProps {
 
 export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
 
-  const a = api.main.c.useQuery('dd')
+  const [tags, setTags] = useState<string[] >(['loadind...'])
+  const getTags = api.main.getMachines.useQuery()
+
+
+  useEffect(()=>{
+    setTags(getTags.data?getTags.data:['loadind...'])
+    console.log(tags)
+  }, [getTags])
+
   
-  console.log(a.data)
-  const tags = ['M41', 'M42', 'M25', 'M26', 'M27', 'M28']
 
   const [tag, setTag] = useState(data ? data?.tag : tags[0])
   const [nature, setNature] = useState(data ? data?.nature : 'Mecânica')

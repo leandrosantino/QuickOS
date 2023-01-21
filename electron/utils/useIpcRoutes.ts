@@ -1,4 +1,5 @@
 import 'electron'
+import { ipcMain } from 'electron';
 
 export interface UseRoutesProps {
     window:Electron.BrowserWindow;
@@ -16,3 +17,18 @@ export function useRoutes(props:UseRoutesProps){
     }
 
 }
+
+class Route<T>{
+    constructor(path: string){
+        this.path = path
+    }
+    path: string;
+    send(func:any , params?: T){
+        func(params)
+    }
+    on(func:any){
+        func()
+    }
+}
+
+

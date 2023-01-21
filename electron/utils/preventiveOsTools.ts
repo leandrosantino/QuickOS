@@ -1,6 +1,5 @@
 import prisma from "../services/prisma"
-import {incrementWeekYear, weekYearStringToNumber, weekYearToDate, weekYearToString} from "../modules/weekTools"
-
+import { incrementWeekYear, weekYearStringToNumber, weekYearToString } from "./weekTools"
 
 type ObjectIds = { id: number }
 
@@ -12,7 +11,7 @@ interface preventiveOsParams {
     natureId: number
 }
 
-async function assembleServiceOrders(week: number, year: number) {
+export async function assembleServiceOrders(week: number, year: number) {
 
     try {
         const OSs: preventiveOsParams[] = []
@@ -48,7 +47,7 @@ async function assembleServiceOrders(week: number, year: number) {
 
 }
 
-async function registerServiceOrders({ machineId, week, actionsIds, year, natureId }: preventiveOsParams) {
+export async function registerServiceOrders({ machineId, week, actionsIds, year, natureId }: preventiveOsParams) {
     try {
         const weekCode = weekYearToString(week, year)
         const os = await prisma.preventiveOS.upsert({
@@ -83,7 +82,7 @@ interface RegisterOsParams {
     IdsOfActionsTaken?: ObjectIds[],
 }
 
-async function executeServiceOrders({ date, id, workerId, IdsOfActionsTaken }: RegisterOsParams) {
+export async function executeServiceOrders({ date, id, workerId, IdsOfActionsTaken }: RegisterOsParams) {
     try {
         const os = await prisma.preventiveOS.update({
             where: {
@@ -104,7 +103,7 @@ async function executeServiceOrders({ date, id, workerId, IdsOfActionsTaken }: R
             const weekYearNumber = weekYearStringToNumber(os.actions[index].nextExecution)
             const nextWeek = incrementWeekYear(
                 weekYearNumber.week,
-                weekYearNumber.year, 
+                weekYearNumber.year,
                 os.actions[index].frequency
             )
             const nexeWeekString = weekYearToString(nextWeek.week, nextWeek.year)
@@ -117,7 +116,7 @@ async function executeServiceOrders({ date, id, workerId, IdsOfActionsTaken }: R
             })
 
             await prisma.preventiveActionTaken.create({
-                data:{
+                data: {
                     date: new Date(),
                     weekCode: os.weekCode,
                     actionId: id,
@@ -125,7 +124,7 @@ async function executeServiceOrders({ date, id, workerId, IdsOfActionsTaken }: R
                 },
             })
 
-        })  
+        })
 
         return os
     } catch (error) {

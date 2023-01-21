@@ -8,8 +8,7 @@ import {
 } from "react-icons/vsc";
 
 import { usePages,} from '../../hooks/usePages'
-
-const { ipc } = window
+import {ipc} from '../../utils/ipc'
 
 export function NavBar() {
 

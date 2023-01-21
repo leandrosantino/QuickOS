@@ -10,7 +10,7 @@
     
     "esModuleInterop":true,
     "paths": {
-      "*": ["node_modules/*"]
+      "*": ["node_modules/*" ]
     }
   },
   "include": [

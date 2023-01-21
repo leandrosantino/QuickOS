@@ -2,12 +2,12 @@ import { app, globalShortcut, ipcMain } from "electron";
 import isDev from "electron-is-dev";
 import path from "path";
 
-import { windowCreator } from './modules/windowCreator'
-import { useRoutes } from "./modules/useRoutes";
+import { windowCreator } from './utils/windowCreator'
+import { useRoutes } from "./utils/useIpcRoutes";
 
-import { navBarRoutes } from "./routes/navbar";
-import { dataRoutes } from "./routes/data";
+import { navBarRoutes } from "./ipc.routes/navbar";
 
+!isDev && import('./server')
 
 async function main() {
 
@@ -15,7 +15,7 @@ async function main() {
         width: 1090,
         height: 650,
         devTools: isDev,
-        url: isDev? 'http://localhost:3000':`file://${path.join(__dirname, "./index.html")}`,
+        url: isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, "./index.html")}`,
         icon: '',
     })
 
@@ -24,13 +24,12 @@ async function main() {
     const routes = useRoutes({ window, ipcMain })
 
     routes.use(navBarRoutes)
-    routes.use(dataRoutes)
 
 }
 
 !isDev && app.on('browser-window-focus', () => {
     globalShortcut.register('CommandOrControl+R', () => { })
-    globalShortcut.register('F5', () => {})
+    globalShortcut.register('F5', () => { })
 })
 
 app.disableHardwareAcceleration()

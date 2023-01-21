@@ -12,15 +12,21 @@ import { PageModalContainer } from '../../components/containers/PageModalContain
 import { usePages } from '../../hooks/usePages';
 import { useDialog } from '../../hooks/useDialog';
 
-import {toast} from 'react-toastify'
-import { rejects } from 'assert';
+import { toast } from 'react-toastify'
+
+import { api } from '../../utils/trpc'
 
 interface PreventiveActionFormProps {
   data: ActionsType;
 }
 
+
+
 export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
 
+  const a = api.main.c.useQuery('dd')
+  
+  console.log(a.data)
   const tags = ['M41', 'M42', 'M25', 'M26', 'M27', 'M28']
 
   const [tag, setTag] = useState(data ? data?.tag : tags[0])
@@ -29,9 +35,9 @@ export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
   const [nextExecution, setNextExecution] = useState(data ? data?.nextExecution : '')
   const [description, setDescription] = useState(data ? data?.description : '')
 
-  const {dialogQuestion} = useDialog()
+  const { dialogQuestion } = useDialog()
 
-  function clearInputs(){
+  function clearInputs() {
     setTag('M41')
     setNature('Mecânica')
     setFrequency('1')
@@ -61,42 +67,32 @@ export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
 
       const actionInfo = validateSchema.parse(actionData)
 
-      dialogQuestion('Atenção!', 'Realmente deseja salvar as alterações??', 
-        ()=>{
-          toast.promise(async ()=>{
-            return new Promise((resolve, reject)=>{
-              setTimeout(() => {
-                if(false){
-                  reject('Erro no Banco de dados')
-                  return
-                }
-                console.log(actionInfo)
-                clearInputs()
-                resolve(true)
-                return
-              }, 1000);
-            })
+      dialogQuestion('Atenção!', 'Realmente deseja salvar as alterações??',
+        () => {
+          toast.promise(async () => {
+
+
           }, {
             pending: 'Processando as informações...',
-            error:{
-              render({data}){
+            error: {
+              render({ data }) {
                 return `${data}`
               }
             },
             success: 'Alteração realizada com sucesso!!'
           })
-          
+
         },
-        ()=>{
+        () => {
           console.log('Cancelado!')
         }
       )
 
     } catch (error) {
       const err = error as ZodError
-      const msgError = err.errors.map((entry)=>entry.message)[0]
+      const msgError = err.errors.map((entry) => entry.message)[0]
 
-      toast.error(msgError, {toastId: msgError})
+      toast.error(msgError, { toastId: msgError })
 
       //dialogError('Erro de Validação!!', err.errors.map((entry)=>entry.message)[0])
       return
@@ -225,12 +221,12 @@ export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
         <div
           className={`
             flex flex-row items-end mt-7
-            ${data?.id?'justify-between':'justify-end'}
+            ${data?.id ? 'justify-between' : 'justify-end'}
           `}
         >
           {data?.id &&
             <InputButton
-              onClick={()=>{}}
+              onClick={() => { }}
               title='Excluir'
               Icon={MdDeleteOutline}
               className="text-red-500"

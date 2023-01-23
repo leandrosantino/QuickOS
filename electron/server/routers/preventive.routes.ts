@@ -1,9 +1,16 @@
-import prisma from '../../services/prisma'
-import { initTRPC, TRPCError } from '@trpc/server'
+import { initTRPC } from '@trpc/server'
 import { z } from 'zod'
+import prisma from '../../services/prisma'
+import {internalServerError, successResponse,SuccessResponseSchema} from '../responseMessages'
 
 import {weekYearRegex} from '../../utils/weekTools'
-import {} from '../../utils/preventiveOsTools'
+import {
+    assembleServiceOrders,
+    registerServiceOrders,
+    executeServiceOrders,
+    serviceOrdersSchema,
+    executeServiceOrdersParamsSchema
+} from '../../utils/preventiveOsTools'
 
 const t = initTRPC.create()
 
@@ -17,25 +24,58 @@ const actionsSchema = z.object({
 })
 
 export const preventive = t.router({
+    
+    assembleServiceOrders: t.procedure
+        .input(z.object({
+            year: z.number(),
+            week: z.number()
+        }))
+        .output(z.array(serviceOrdersSchema))
+        .query(async ({input})=>{
+            try {
+                const OSs = await assembleServiceOrders(input.week, input.year )
+                return OSs
+            } catch (error) {
+                throw internalServerError(error)
+            }
+        })    
+    ,
+
+    registerServiceOrders: t.procedure
+        .input(serviceOrdersSchema)
+        .output(SuccessResponseSchema)
+        .query(async ({input})=>{
+            try {
+                await registerServiceOrders(input)
+                return successResponse()
+            } catch (error) {
+                throw internalServerError(error)
+            }
+        })
+    ,
+
+    executeServiceOrders: t.procedure
+        .input(executeServiceOrdersParamsSchema)
+        .query(async ({input})=>{
+            try {
+                await executeServiceOrders(input)
+                return successResponse()
+            } catch (error) {
+                throw internalServerError(error)
+            }
+        })
+    ,
+
     getActions: t.procedure
         .output(z.array(actionsSchema))
-        .query(async (req) => {
+        .query(async () => {
             try {
                 const actions = await prisma.preventiveAction.findMany() 
                 return actions
             } catch (error) {
-                throw new TRPCError({
-                    message: String(error),
-                    code: 'INTERNAL_SERVER_ERROR'
-                })
+                throw internalServerError(error)
             }
         })
-        ,
-    c: t.procedure
-        .input(z.string())
-        .output(z.string())
-        .mutation((req) => {
-            console.log(req.input)
-            return req.input + '6'
-        })
+    ,
+    
 })

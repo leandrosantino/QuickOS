@@ -1,20 +1,21 @@
+import { z } from "zod";
 import prisma from "../services/prisma"
 import { incrementWeekYear, weekYearStringToNumber, weekYearToString } from "./weekTools"
 
-type ObjectIds = { id: number }
+export const serviceOrdersSchema = z.object({
+    machineId: z.number(),
+    week: z.number(),
+    actionsIds: z.array(z.object({ id: z.number() })),
+    year: z.number(),
+    natureId: z.number()
+})
 
-interface preventiveOsParams {
-    machineId: number;
-    week: number;
-    actionsIds: ObjectIds[],
-    year: number;
-    natureId: number
-}
+type ServiceOrdersType = z.infer<typeof serviceOrdersSchema>
 
 export async function assembleServiceOrders(week: number, year: number) {
 
     try {
-        const OSs: preventiveOsParams[] = []
+        const OSs: ServiceOrdersType[] = []
 
         const machines = await prisma.machine.findMany()
         const natures = await prisma.nature.findMany()
@@ -47,7 +48,7 @@ export async function assembleServiceOrders(week: number, year: number) {
 
 }
 
-export async function registerServiceOrders({ machineId, week, actionsIds, year, natureId }: preventiveOsParams) {
+export async function registerServiceOrders({ machineId, week, actionsIds, year, natureId }: ServiceOrdersType) {
     try {
         const weekCode = weekYearToString(week, year)
         const os = await prisma.preventiveOS.upsert({
@@ -75,21 +76,24 @@ export async function registerServiceOrders({ machineId, week, actionsIds, year,
 }
 
 
-interface RegisterOsParams {
-    id: number;
-    date: Date;
-    workerId: number,
-    IdsOfActionsTaken?: ObjectIds[],
-}
+export const executeServiceOrdersParamsSchema = z.object({
+    id: z.number(),
+    date: z.string(),
+    workerId: z.number(),
+    IdsOfActionsTaken: z.array(z.object({ id: z.number() })).optional(),
+})
 
-export async function executeServiceOrders({ date, id, workerId, IdsOfActionsTaken }: RegisterOsParams) {
+export type ExecuteServiceOrdersType = z.input<typeof executeServiceOrdersParamsSchema>
+
+export async function executeServiceOrders({ date, id, workerId, IdsOfActionsTaken }: ExecuteServiceOrdersType) {
     try {
+        
         const os = await prisma.preventiveOS.update({
             where: {
                 id
             },
             data: {
-                date,
+                date: new Date(date),
                 responsibleId: workerId,
                 concluded: true
             },
@@ -117,7 +121,7 @@ export async function executeServiceOrders({ date, id, workerId, IdsOfActionsTak
 
             await prisma.preventiveActionTaken.create({
                 data: {
-                    date: new Date(),
+                    date: new Date(date),
                     weekCode: os.weekCode,
                     actionId: id,
                     osId: os.id,

@@ -73,7 +73,7 @@ function weekYearToDate(week: number, year: number) {
     return new Date(year, 0, day)
 }
 
-interface preventiveOsParams {
+interface PreventiveOsType {
     machineId: number;
     week: number;
     actionsIds: { id: number }[],
@@ -84,7 +84,7 @@ interface preventiveOsParams {
 async function assembleOs(week: number, year: number) {
 
     try {
-        const OSs: preventiveOsParams[] = []
+        const OSs: PreventiveOsType[] = []
 
         const machines = await prisma.machine.findMany()
         const natures = await prisma.nature.findMany()
@@ -117,7 +117,7 @@ async function assembleOs(week: number, year: number) {
 
 }
 
-async function generateOS({ machineId, week, actionsIds, year, natureId }: preventiveOsParams) {
+async function generateOS({ machineId, week, actionsIds, year, natureId }: PreventiveOsType) {
     try {
         const weekCode = weekYearToString(week, year)
         const os = await prisma.preventiveOS.upsert({

@@ -3,25 +3,16 @@ import { z } from 'zod'
 import prisma from '../../services/prisma'
 import { internalServerError, successResponse, SuccessResponseSchema } from '../responseMessages'
 
-import { weekYearRegex } from '../../utils/weekTools'
 import {
     assembleServiceOrders,
     registerServiceOrders,
     executeServiceOrders,
     serviceOrdersSchema,
-    executeServiceOrdersParamsSchema
+    executeServiceOrdersParamsSchema,
+    actionsSchema
 } from '../../utils/preventiveOsTools'
 
 const t = initTRPC.create()
-
-const actionsSchema = z.object({
-    id: z.number().optional(),
-    description: z.string(),
-    machineId: z.number(),
-    excution: z.string(),
-    frequency: z.number(),
-    nextExecution: z.string().regex(weekYearRegex)
-})
 
 export const preventive = t.router({
 
@@ -44,7 +35,7 @@ export const preventive = t.router({
     registerServiceOrders: t.procedure
         .input(serviceOrdersSchema)
         .output(SuccessResponseSchema)
-        .query(async ({ input }) => {
+        .mutation(async ({ input }) => {
             try {
                 await registerServiceOrders(input)
                 return successResponse()
@@ -57,7 +48,7 @@ export const preventive = t.router({
     executeServiceOrders: t.procedure
         .input(executeServiceOrdersParamsSchema)
         .output(SuccessResponseSchema)
-        .query(async ({ input }) => {
+        .mutation(async ({ input }) => {
             try {
                 await executeServiceOrders(input)
                 return successResponse()
@@ -82,14 +73,29 @@ export const preventive = t.router({
     createActions: t.procedure
         .input(actionsSchema)
         .output(SuccessResponseSchema)
-        .query(async ({ input }) => {
+        .mutation(async ({ input }) => {
             try {
-                const action = await prisma.preventiveAction.create({
-                    data: {
-                        description: input.description,
-                    }
+                await prisma.preventiveAction.create({
+                    data: input
                 })
-
+                return successResponse()
+            } catch (error) {
+                throw internalServerError(error)
+            }
+        })
+    ,
+    updateActions: t.procedure
+        .input(z.object({
+            id: z.number(),
+            data: actionsSchema
+        }))
+        .output(SuccessResponseSchema)
+        .mutation(async ({ input }) => {
+            try {
+                await prisma.preventiveAction.update({
+                    where: { id: input.id },
+                    data: input.data
+                })
                 return successResponse()
             } catch (error) {
                 throw internalServerError(error)

@@ -58,10 +58,10 @@ model PreventiveAction {
   preventiveOSId Int?
   natureId       Int
 
-  machine                    Machine                      @relation(fields: [machineId], references: [id])
-  PreventiveOS               PreventiveOS?                @relation(fields: [preventiveOSId], references: [id])
-  nature                     Nature                       @relation(fields: [natureId], references: [id])
-  PeventiveActionsCarriedOut PreventiveActionTaken[]
+  machine               Machine                 @relation(fields: [machineId], references: [id])
+  PreventiveOS          PreventiveOS?           @relation(fields: [preventiveOSId], references: [id])
+  nature                Nature                  @relation(fields: [natureId], references: [id])
+  PreventiveActionTaken PreventiveActionTaken[]
 }
 
 model PreventiveOS {
@@ -74,9 +74,9 @@ model PreventiveOS {
   actions       PreventiveAction[]
   concluded     Boolean?           @default(false)
 
-  nature                     Nature                       @relation(fields: [natureId], references: [id])
-  machine                    Machine                      @relation(fields: [machineId], references: [id])
-  responsible                Worker?                      @relation(fields: [responsibleId], references: [id])
+  nature                     Nature                  @relation(fields: [natureId], references: [id])
+  machine                    Machine                 @relation(fields: [machineId], references: [id])
+  responsible                Worker?                 @relation(fields: [responsibleId], references: [id])
   PeventiveActionsCarriedOut PreventiveActionTaken[]
 
   @@unique([machineId, natureId, weekCode])

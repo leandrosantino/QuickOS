@@ -1,44 +1,83 @@
 import { z } from "zod";
 import prisma from "../services/prisma"
-import { incrementWeekYear, weekYearStringToNumber, weekYearToString } from "./weekTools"
+import {
+    incrementWeekYear,
+    weekYearStringToNumber,
+    weekYearToString,
+    weekYearRegex
+} from "./weekTools"
+
+export const actionsSchema = z.object({
+    id: z.number().optional(),
+    description: z.string(),
+    machineId: z.number(),
+    excution: z.string(),
+    frequency: z.number(),
+    natureId: z.number(),
+    nextExecution: z.string().regex(weekYearRegex),
+    preventiveOSId: z.number().nullable()
+})
 
 export const serviceOrdersSchema = z.object({
+    id: z.number().optional(),
+    concluded: z.boolean().nullable().optional(),
+    responsibleId: z.number().nullable().optional(),
+    date: z.date().nullable().optional(),
     machineId: z.number(),
-    week: z.number(),
-    actionsIds: z.array(z.object({ id: z.number() })),
-    year: z.number(),
-    natureId: z.number()
+    weekCode: z.string().regex(weekYearRegex),
+    natureId: z.number(),
+    actions: z.array(actionsSchema),
 })
 
 type ServiceOrdersType = z.infer<typeof serviceOrdersSchema>
 
 export async function assembleServiceOrders(week: number, year: number) {
-
     try {
         const OSs: ServiceOrdersType[] = []
 
         const machines = await prisma.machine.findMany()
         const natures = await prisma.nature.findMany()
 
+        const weekCode = weekYearToString(week, year)
+
         for await (let mac of machines) {
             for await (let nat of natures) {
 
+
+                const savedOs = await prisma.preventiveOS.findUnique({
+                    where: {
+                        machineId_natureId_weekCode: {
+                            machineId: mac.id,
+                            natureId: nat.id,
+                            weekCode
+                        }
+                    },
+                    include: { actions: true }
+                })
+
+
+                if(savedOs){
+                    OSs.push(savedOs)
+                    break
+                }
+
                 const actions = await prisma.preventiveAction.findMany({
                     where: {
-                        nextExecution: weekYearToString(week, year),
+                        nextExecution: weekCode,
                         machineId: mac.id,
                         natureId: nat.id,
                     },
                 })
-
+                
                 if (actions.length > 0) {
                     OSs.push({
-                        week, year,
+                        weekCode,
                         machineId: mac.id,
                         natureId: nat.id,
-                        actionsIds: actions.map(({ id }) => { return { id } })
+                        actions
                     })
                 }
+                
             }
         }
         return OSs
@@ -48,9 +87,8 @@ export async function assembleServiceOrders(week: number, year: number) {
 
 }
 
-export async function registerServiceOrders({ machineId, week, actionsIds, year, natureId }: ServiceOrdersType) {
+export async function registerServiceOrders({ machineId, weekCode, actions, natureId }: ServiceOrdersType) {
     try {
-        const weekCode = weekYearToString(week, year)
         const os = await prisma.preventiveOS.upsert({
             where: {
                 machineId_natureId_weekCode: {
@@ -65,7 +103,7 @@ export async function registerServiceOrders({ machineId, week, actionsIds, year,
                 weekCode,
                 natureId,
                 actions: {
-                    connect: actionsIds
+                    connect: actions
                 }
             }
         })
@@ -87,7 +125,7 @@ export type ExecuteServiceOrdersType = z.input<typeof executeServiceOrdersParams
 
 export async function executeServiceOrders({ date, id, workerId, IdsOfActionsTaken }: ExecuteServiceOrdersType) {
     try {
-        
+
         const os = await prisma.preventiveOS.update({
             where: {
                 id

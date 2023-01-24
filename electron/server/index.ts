@@ -36,7 +36,7 @@ export class Server{
             })
         )
 
-        this.app.listen(9999, () => console.log('Server is online !'))
+        this.app.listen(9999, () => console.log('Server is online ! - http://localhost:9999/playground'))
     }
 }
 

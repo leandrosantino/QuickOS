@@ -3,6 +3,7 @@ export type MainRoutes = {
     "minimize" : {},
     "close" : {},
     "isMaximized" : {},
+    "printServiceOrder" : {},
 }
 
 export type RenderRoutes = 

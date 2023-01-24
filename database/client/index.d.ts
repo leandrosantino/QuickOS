@@ -81,6 +81,7 @@ export type PreventiveOS = {
   responsibleId: number | null
   date: Date | null
   natureId: number
+  actionsUniqueKey: string
   concluded: boolean | null
 }
 
@@ -6051,6 +6052,7 @@ export namespace Prisma {
     responsibleId: number | null
     date: Date | null
     natureId: number | null
+    actionsUniqueKey: string | null
     concluded: boolean | null
   }
 
@@ -6061,6 +6063,7 @@ export namespace Prisma {
     responsibleId: number | null
     date: Date | null
     natureId: number | null
+    actionsUniqueKey: string | null
     concluded: boolean | null
   }
 
@@ -6071,6 +6074,7 @@ export namespace Prisma {
     responsibleId: number
     date: number
     natureId: number
+    actionsUniqueKey: number
     concluded: number
     _all: number
   }
@@ -6097,6 +6101,7 @@ export namespace Prisma {
     responsibleId?: true
     date?: true
     natureId?: true
+    actionsUniqueKey?: true
     concluded?: true
   }
 
@@ -6107,6 +6112,7 @@ export namespace Prisma {
     responsibleId?: true
     date?: true
     natureId?: true
+    actionsUniqueKey?: true
     concluded?: true
   }
 
@@ -6117,6 +6123,7 @@ export namespace Prisma {
     responsibleId?: true
     date?: true
     natureId?: true
+    actionsUniqueKey?: true
     concluded?: true
     _all?: true
   }
@@ -6215,6 +6222,7 @@ export namespace Prisma {
     responsibleId: number | null
     date: Date | null
     natureId: number
+    actionsUniqueKey: string
     concluded: boolean | null
     _count: PreventiveOSCountAggregateOutputType | null
     _avg: PreventiveOSAvgAggregateOutputType | null
@@ -6245,6 +6253,7 @@ export namespace Prisma {
     date?: boolean
     natureId?: boolean
     actions?: boolean | PreventiveOS$actionsArgs
+    actionsUniqueKey?: boolean
     concluded?: boolean
     nature?: boolean | NatureArgs
     machine?: boolean | MachineArgs
@@ -7111,6 +7120,7 @@ export namespace Prisma {
     responsibleId: 'responsibleId',
     date: 'date',
     natureId: 'natureId',
+    actionsUniqueKey: 'actionsUniqueKey',
     concluded: 'concluded'
   };
 
@@ -7409,6 +7419,7 @@ export namespace Prisma {
     date?: DateTimeNullableFilter | Date | string | null
     natureId?: IntFilter | number
     actions?: PreventiveActionListRelationFilter
+    actionsUniqueKey?: StringFilter | string
     concluded?: BoolNullableFilter | boolean | null
     nature?: XOR<NatureRelationFilter, NatureWhereInput>
     machine?: XOR<MachineRelationFilter, MachineWhereInput>
@@ -7424,6 +7435,7 @@ export namespace Prisma {
     date?: SortOrder
     natureId?: SortOrder
     actions?: PreventiveActionOrderByRelationAggregateInput
+    actionsUniqueKey?: SortOrder
     concluded?: SortOrder
     nature?: NatureOrderByWithRelationInput
     machine?: MachineOrderByWithRelationInput
@@ -7433,7 +7445,7 @@ export namespace Prisma {
 
   export type PreventiveOSWhereUniqueInput = {
     id?: number
-    machineId_natureId_weekCode?: PreventiveOSMachineIdNatureIdWeekCodeCompoundUniqueInput
+    machineId_natureId_weekCode_actionsUniqueKey?: PreventiveOSMachineIdNatureIdWeekCodeActionsUniqueKeyCompoundUniqueInput
   }
 
   export type PreventiveOSOrderByWithAggregationInput = {
@@ -7443,6 +7455,7 @@ export namespace Prisma {
     responsibleId?: SortOrder
     date?: SortOrder
     natureId?: SortOrder
+    actionsUniqueKey?: SortOrder
     concluded?: SortOrder
     _count?: PreventiveOSCountOrderByAggregateInput
     _avg?: PreventiveOSAvgOrderByAggregateInput
@@ -7461,6 +7474,7 @@ export namespace Prisma {
     responsibleId?: IntNullableWithAggregatesFilter | number | null
     date?: DateTimeNullableWithAggregatesFilter | Date | string | null
     natureId?: IntWithAggregatesFilter | number
+    actionsUniqueKey?: StringWithAggregatesFilter | string
     concluded?: BoolNullableWithAggregatesFilter | boolean | null
   }
 
@@ -7700,6 +7714,7 @@ export namespace Prisma {
     weekCode: string
     date?: Date | string | null
     actions?: PreventiveActionCreateNestedManyWithoutPreventiveOSInput
+    actionsUniqueKey: string
     concluded?: boolean | null
     nature: NatureCreateNestedOneWithoutPreventiveOSInput
     machine: MachineCreateNestedOneWithoutPreventiveOSInput
@@ -7715,6 +7730,7 @@ export namespace Prisma {
     date?: Date | string | null
     natureId: number
     actions?: PreventiveActionUncheckedCreateNestedManyWithoutPreventiveOSInput
+    actionsUniqueKey: string
     concluded?: boolean | null
     PeventiveActionsCarriedOut?: PreventiveActionTakenUncheckedCreateNestedManyWithoutOsInput
   }
@@ -7723,6 +7739,7 @@ export namespace Prisma {
     weekCode?: StringFieldUpdateOperationsInput | string
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     actions?: PreventiveActionUpdateManyWithoutPreventiveOSNestedInput
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     nature?: NatureUpdateOneRequiredWithoutPreventiveOSNestedInput
     machine?: MachineUpdateOneRequiredWithoutPreventiveOSNestedInput
@@ -7738,6 +7755,7 @@ export namespace Prisma {
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     natureId?: IntFieldUpdateOperationsInput | number
     actions?: PreventiveActionUncheckedUpdateManyWithoutPreventiveOSNestedInput
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     PeventiveActionsCarriedOut?: PreventiveActionTakenUncheckedUpdateManyWithoutOsNestedInput
   }
@@ -7745,6 +7763,7 @@ export namespace Prisma {
   export type PreventiveOSUpdateManyMutationInput = {
     weekCode?: StringFieldUpdateOperationsInput | string
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
@@ -7755,6 +7774,7 @@ export namespace Prisma {
     responsibleId?: NullableIntFieldUpdateOperationsInput | number | null
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     natureId?: IntFieldUpdateOperationsInput | number
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
@@ -8107,10 +8127,11 @@ export namespace Prisma {
     isNot?: WorkerWhereInput | null
   }
 
-  export type PreventiveOSMachineIdNatureIdWeekCodeCompoundUniqueInput = {
+  export type PreventiveOSMachineIdNatureIdWeekCodeActionsUniqueKeyCompoundUniqueInput = {
     machineId: number
     natureId: number
     weekCode: string
+    actionsUniqueKey: string
   }
 
   export type PreventiveOSCountOrderByAggregateInput = {
@@ -8120,6 +8141,7 @@ export namespace Prisma {
     responsibleId?: SortOrder
     date?: SortOrder
     natureId?: SortOrder
+    actionsUniqueKey?: SortOrder
     concluded?: SortOrder
   }
 
@@ -8137,6 +8159,7 @@ export namespace Prisma {
     responsibleId?: SortOrder
     date?: SortOrder
     natureId?: SortOrder
+    actionsUniqueKey?: SortOrder
     concluded?: SortOrder
   }
 
@@ -8147,6 +8170,7 @@ export namespace Prisma {
     responsibleId?: SortOrder
     date?: SortOrder
     natureId?: SortOrder
+    actionsUniqueKey?: SortOrder
     concluded?: SortOrder
   }
 
@@ -8805,6 +8829,7 @@ export namespace Prisma {
     weekCode: string
     date?: Date | string | null
     actions?: PreventiveActionCreateNestedManyWithoutPreventiveOSInput
+    actionsUniqueKey: string
     concluded?: boolean | null
     machine: MachineCreateNestedOneWithoutPreventiveOSInput
     responsible?: WorkerCreateNestedOneWithoutPreventiveOSInput
@@ -8818,6 +8843,7 @@ export namespace Prisma {
     responsibleId?: number | null
     date?: Date | string | null
     actions?: PreventiveActionUncheckedCreateNestedManyWithoutPreventiveOSInput
+    actionsUniqueKey: string
     concluded?: boolean | null
     PeventiveActionsCarriedOut?: PreventiveActionTakenUncheckedCreateNestedManyWithoutOsInput
   }
@@ -8879,6 +8905,7 @@ export namespace Prisma {
     responsibleId?: IntNullableFilter | number | null
     date?: DateTimeNullableFilter | Date | string | null
     natureId?: IntFilter | number
+    actionsUniqueKey?: StringFilter | string
     concluded?: BoolNullableFilter | boolean | null
   }
 
@@ -8916,6 +8943,7 @@ export namespace Prisma {
     weekCode: string
     date?: Date | string | null
     actions?: PreventiveActionCreateNestedManyWithoutPreventiveOSInput
+    actionsUniqueKey: string
     concluded?: boolean | null
     nature: NatureCreateNestedOneWithoutPreventiveOSInput
     responsible?: WorkerCreateNestedOneWithoutPreventiveOSInput
@@ -8929,6 +8957,7 @@ export namespace Prisma {
     date?: Date | string | null
     natureId: number
     actions?: PreventiveActionUncheckedCreateNestedManyWithoutPreventiveOSInput
+    actionsUniqueKey: string
     concluded?: boolean | null
     PeventiveActionsCarriedOut?: PreventiveActionTakenUncheckedCreateNestedManyWithoutOsInput
   }
@@ -9000,6 +9029,7 @@ export namespace Prisma {
     weekCode: string
     date?: Date | string | null
     actions?: PreventiveActionCreateNestedManyWithoutPreventiveOSInput
+    actionsUniqueKey: string
     concluded?: boolean | null
     nature: NatureCreateNestedOneWithoutPreventiveOSInput
     machine: MachineCreateNestedOneWithoutPreventiveOSInput
@@ -9013,6 +9043,7 @@ export namespace Prisma {
     date?: Date | string | null
     natureId: number
     actions?: PreventiveActionUncheckedCreateNestedManyWithoutPreventiveOSInput
+    actionsUniqueKey: string
     concluded?: boolean | null
     PeventiveActionsCarriedOut?: PreventiveActionTakenUncheckedCreateNestedManyWithoutOsInput
   }
@@ -9068,6 +9099,7 @@ export namespace Prisma {
     weekCode: string
     date?: Date | string | null
     actions?: PreventiveActionCreateNestedManyWithoutPreventiveOSInput
+    actionsUniqueKey: string
     concluded?: boolean | null
     nature: NatureCreateNestedOneWithoutPreventiveOSInput
     machine: MachineCreateNestedOneWithoutPreventiveOSInput
@@ -9082,6 +9114,7 @@ export namespace Prisma {
     date?: Date | string | null
     natureId: number
     actions?: PreventiveActionUncheckedCreateNestedManyWithoutPreventiveOSInput
+    actionsUniqueKey: string
     concluded?: boolean | null
   }
 
@@ -9125,6 +9158,7 @@ export namespace Prisma {
     weekCode?: StringFieldUpdateOperationsInput | string
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     actions?: PreventiveActionUpdateManyWithoutPreventiveOSNestedInput
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     nature?: NatureUpdateOneRequiredWithoutPreventiveOSNestedInput
     machine?: MachineUpdateOneRequiredWithoutPreventiveOSNestedInput
@@ -9139,6 +9173,7 @@ export namespace Prisma {
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     natureId?: IntFieldUpdateOperationsInput | number
     actions?: PreventiveActionUncheckedUpdateManyWithoutPreventiveOSNestedInput
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
@@ -9165,6 +9200,7 @@ export namespace Prisma {
   export type PreventiveOSCreateWithoutActionsInput = {
     weekCode: string
     date?: Date | string | null
+    actionsUniqueKey: string
     concluded?: boolean | null
     nature: NatureCreateNestedOneWithoutPreventiveOSInput
     machine: MachineCreateNestedOneWithoutPreventiveOSInput
@@ -9179,6 +9215,7 @@ export namespace Prisma {
     responsibleId?: number | null
     date?: Date | string | null
     natureId: number
+    actionsUniqueKey: string
     concluded?: boolean | null
     PeventiveActionsCarriedOut?: PreventiveActionTakenUncheckedCreateNestedManyWithoutOsInput
   }
@@ -9250,6 +9287,7 @@ export namespace Prisma {
   export type PreventiveOSUpdateWithoutActionsInput = {
     weekCode?: StringFieldUpdateOperationsInput | string
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     nature?: NatureUpdateOneRequiredWithoutPreventiveOSNestedInput
     machine?: MachineUpdateOneRequiredWithoutPreventiveOSNestedInput
@@ -9264,6 +9302,7 @@ export namespace Prisma {
     responsibleId?: NullableIntFieldUpdateOperationsInput | number | null
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     natureId?: IntFieldUpdateOperationsInput | number
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     PeventiveActionsCarriedOut?: PreventiveActionTakenUncheckedUpdateManyWithoutOsNestedInput
   }
@@ -9499,6 +9538,7 @@ export namespace Prisma {
     weekCode?: StringFieldUpdateOperationsInput | string
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     actions?: PreventiveActionUpdateManyWithoutPreventiveOSNestedInput
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     machine?: MachineUpdateOneRequiredWithoutPreventiveOSNestedInput
     responsible?: WorkerUpdateOneWithoutPreventiveOSNestedInput
@@ -9512,6 +9552,7 @@ export namespace Prisma {
     responsibleId?: NullableIntFieldUpdateOperationsInput | number | null
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     actions?: PreventiveActionUncheckedUpdateManyWithoutPreventiveOSNestedInput
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     PeventiveActionsCarriedOut?: PreventiveActionTakenUncheckedUpdateManyWithoutOsNestedInput
   }
@@ -9522,6 +9563,7 @@ export namespace Prisma {
     weekCode?: StringFieldUpdateOperationsInput | string
     responsibleId?: NullableIntFieldUpdateOperationsInput | number | null
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
@@ -9560,6 +9602,7 @@ export namespace Prisma {
     weekCode?: StringFieldUpdateOperationsInput | string
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     actions?: PreventiveActionUpdateManyWithoutPreventiveOSNestedInput
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     nature?: NatureUpdateOneRequiredWithoutPreventiveOSNestedInput
     responsible?: WorkerUpdateOneWithoutPreventiveOSNestedInput
@@ -9573,6 +9616,7 @@ export namespace Prisma {
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     natureId?: IntFieldUpdateOperationsInput | number
     actions?: PreventiveActionUncheckedUpdateManyWithoutPreventiveOSNestedInput
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     PeventiveActionsCarriedOut?: PreventiveActionTakenUncheckedUpdateManyWithoutOsNestedInput
   }
@@ -9602,6 +9646,7 @@ export namespace Prisma {
     weekCode?: StringFieldUpdateOperationsInput | string
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     actions?: PreventiveActionUpdateManyWithoutPreventiveOSNestedInput
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     nature?: NatureUpdateOneRequiredWithoutPreventiveOSNestedInput
     machine?: MachineUpdateOneRequiredWithoutPreventiveOSNestedInput
@@ -9615,6 +9660,7 @@ export namespace Prisma {
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     natureId?: IntFieldUpdateOperationsInput | number
     actions?: PreventiveActionUncheckedUpdateManyWithoutPreventiveOSNestedInput
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     PeventiveActionsCarriedOut?: PreventiveActionTakenUncheckedUpdateManyWithoutOsNestedInput
   }

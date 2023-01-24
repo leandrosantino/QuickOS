@@ -5,7 +5,6 @@ import { internalServerError, successResponse, SuccessResponseSchema } from '../
 
 import {
     assembleServiceOrders,
-    registerServiceOrders,
     executeServiceOrders,
     serviceOrdersSchema,
     executeServiceOrdersParamsSchema,
@@ -16,7 +15,7 @@ const t = initTRPC.create()
 
 export const preventive = t.router({
 
-    assembleServiceOrders: t.procedure
+    getServiceOrders: t.procedure
         .input(z.object({
             year: z.number(),
             week: z.number()
@@ -32,12 +31,38 @@ export const preventive = t.router({
         })
     ,
 
-    registerServiceOrders: t.procedure
-        .input(serviceOrdersSchema)
+    updateServiceOrder: t.procedure
+        .input(z.object({
+            id: z.number(),
+            data: z.object({
+                date: z.date(),
+                responsibleId: z.number(),
+            }),
+        }))
         .output(SuccessResponseSchema)
-        .mutation(async ({ input }) => {
+        .mutation(async ({input})=>{
             try {
-                await registerServiceOrders(input)
+                await prisma.preventiveOS.update({
+                    where: {id: input.id},
+                    data: input.data
+                })
+                return successResponse()
+            } catch (error) {
+                throw internalServerError(error)
+            }
+        })
+    ,
+
+    deleteServiceOrder:t.procedure
+        .input(z.object({
+            id: z.number()
+        }))
+        .output(SuccessResponseSchema)
+        .mutation(async ({input})=>{
+            try {
+                await prisma.preventiveOS.delete({
+                    where:{id: input.id}
+                })
                 return successResponse()
             } catch (error) {
                 throw internalServerError(error)
@@ -70,7 +95,7 @@ export const preventive = t.router({
         })
     ,
 
-    createActions: t.procedure
+    createAction: t.procedure
         .input(actionsSchema)
         .output(SuccessResponseSchema)
         .mutation(async ({ input }) => {
@@ -84,7 +109,7 @@ export const preventive = t.router({
             }
         })
     ,
-    updateActions: t.procedure
+    updateAction: t.procedure
         .input(z.object({
             id: z.number(),
             data: actionsSchema
@@ -95,6 +120,20 @@ export const preventive = t.router({
                 await prisma.preventiveAction.update({
                     where: { id: input.id },
                     data: input.data
+                })
+                return successResponse()
+            } catch (error) {
+                throw internalServerError(error)
+            }
+        })
+    ,
+    deleteAction: t.procedure
+        .input(z.object({id: z.number()}))
+        .output(SuccessResponseSchema)
+        .mutation(async ({input})=>{
+            try {
+                await prisma.preventiveAction.delete({
+                    where:{id: input.id}
                 })
                 return successResponse()
             } catch (error) {

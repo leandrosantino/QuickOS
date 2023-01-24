@@ -21,6 +21,7 @@ async function main() {
 
 
     const window = browser.load()
+    
     const routes = useRoutes({ window, ipcMain })
 
     routes.use(navBarRoutes)

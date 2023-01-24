@@ -65,19 +65,20 @@ model PreventiveAction {
 }
 
 model PreventiveOS {
-  id            Int                @id @default(autoincrement())
-  machineId     Int
-  weekCode      String
-  responsibleId Int?
-  date          DateTime?
-  natureId      Int
-  actions       PreventiveAction[]
-  concluded     Boolean?           @default(false)
+  id               Int                @id @default(autoincrement())
+  machineId        Int
+  weekCode         String
+  responsibleId    Int?
+  date             DateTime?
+  natureId         Int
+  actions          PreventiveAction[]
+  actionsUniqueKey String             
+  concluded        Boolean?           @default(false)
 
   nature                     Nature                  @relation(fields: [natureId], references: [id])
   machine                    Machine                 @relation(fields: [machineId], references: [id])
   responsible                Worker?                 @relation(fields: [responsibleId], references: [id])
   PeventiveActionsCarriedOut PreventiveActionTaken[]
 
-  @@unique([machineId, natureId, weekCode])
+  @@unique([machineId, natureId, weekCode, actionsUniqueKey])
 }

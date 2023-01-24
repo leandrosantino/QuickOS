@@ -1,5 +1,6 @@
-import { z } from "zod";
+import { ostring, z } from "zod";
 import prisma from "../services/prisma"
+import { PreventiveOS } from '../../database/client'
 import {
     incrementWeekYear,
     weekYearStringToNumber,
@@ -7,15 +8,27 @@ import {
     weekYearRegex
 } from "./weekTools"
 
+const machineSchema = z.object({
+    id: z.number(),
+    tag: z.string(),
+    technology: z.string(),
+    ute: z.string()
+})
+
+const natureSchema = z.object({
+    id: z.number(),
+    name: z.string()
+})
+
 export const actionsSchema = z.object({
-    id: z.number().optional(),
+    id: z.number(),
     description: z.string(),
     machineId: z.number(),
     excution: z.string(),
     frequency: z.number(),
     natureId: z.number(),
     nextExecution: z.string().regex(weekYearRegex),
-    preventiveOSId: z.number().nullable()
+    preventiveOSId: z.number().nullable(),
 })
 
 export const serviceOrdersSchema = z.object({
@@ -27,9 +40,12 @@ export const serviceOrdersSchema = z.object({
     weekCode: z.string().regex(weekYearRegex),
     natureId: z.number(),
     actions: z.array(actionsSchema),
+    actionsUniqueKey: z.string(),
+    machine: machineSchema.optional(),
+    nature: natureSchema.optional(),
 })
 
-type ServiceOrdersType = z.infer<typeof serviceOrdersSchema>
+export type ServiceOrdersType = z.infer<typeof serviceOrdersSchema>
 
 export async function assembleServiceOrders(week: number, year: number) {
     try {
@@ -37,30 +53,10 @@ export async function assembleServiceOrders(week: number, year: number) {
 
         const machines = await prisma.machine.findMany()
         const natures = await prisma.nature.findMany()
-
         const weekCode = weekYearToString(week, year)
 
         for await (let mac of machines) {
             for await (let nat of natures) {
-
-
-                const savedOs = await prisma.preventiveOS.findUnique({
-                    where: {
-                        machineId_natureId_weekCode: {
-                            machineId: mac.id,
-                            natureId: nat.id,
-                            weekCode
-                        }
-                    },
-                    include: { actions: true }
-                })
-
-
-                if(savedOs){
-                    OSs.push(savedOs)
-                    break
-                }
-
                 const actions = await prisma.preventiveAction.findMany({
                     where: {
                         nextExecution: weekCode,
@@ -68,16 +64,30 @@ export async function assembleServiceOrders(week: number, year: number) {
                         natureId: nat.id,
                     },
                 })
-                
+                const actionsUniqueKey = generateActionsUniqueKey(actions)
+
                 if (actions.length > 0) {
-                    OSs.push({
+                    const os = {
                         weekCode,
                         machineId: mac.id,
                         natureId: nat.id,
-                        actions
-                    })
+                        actions,
+                        actionsUniqueKey,
+                    }
+                    OSs.push(await registerServiceOrders(os))
                 }
-                
+
+                const os = await prisma.preventiveOS.findMany({
+                    where:{
+                        weekCode,
+                        machineId: mac.id,
+                        natureId: nat.id,
+                        concluded: true,
+                    },
+                    include: {actions: true, nature:true, machine: true}
+                })
+
+                OSs.push(...os)
             }
         }
         return OSs
@@ -87,25 +97,31 @@ export async function assembleServiceOrders(week: number, year: number) {
 
 }
 
-export async function registerServiceOrders({ machineId, weekCode, actions, natureId }: ServiceOrdersType) {
+export async function registerServiceOrders({ machineId, weekCode, actions, natureId, actionsUniqueKey }: ServiceOrdersType) {
     try {
+
+        const osData = {
+            machineId,
+            weekCode,
+            natureId,
+            actionsUniqueKey,
+            actions: {
+                connect: actions.map(({ id }) => ({ id }))
+            }
+        }
+
         const os = await prisma.preventiveOS.upsert({
             where: {
-                machineId_natureId_weekCode: {
+                machineId_natureId_weekCode_actionsUniqueKey: {
                     machineId,
                     weekCode,
-                    natureId
+                    natureId,
+                    actionsUniqueKey
                 }
             },
-            update: {},
-            create: {
-                machineId,
-                weekCode,
-                natureId,
-                actions: {
-                    connect: actions
-                }
-            }
+            update: osData,
+            create: osData,
+            include: {actions: true, nature:true, machine: true}
         })
         return os
     } catch (error) {
@@ -172,4 +188,17 @@ export async function executeServiceOrders({ date, id, workerId, IdsOfActionsTak
     } catch (error) {
         throw error
     }
+}
+
+
+const generateActionsUniqueKeyParmsSchema = z.object({
+    id: z.number().optional(),
+    machineId: z.number(),
+    natureId: z.number(),
+})
+type GenerateActionsUniqueKeyParms = z.infer<typeof generateActionsUniqueKeyParmsSchema>[]
+export function generateActionsUniqueKey(actions: GenerateActionsUniqueKeyParms) {
+    let key = ''
+    actions.forEach(({ id, machineId, natureId }) => key += `A-I${id}/M${machineId}/N${natureId}_`)
+    return key
 }

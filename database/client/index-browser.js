@@ -127,6 +127,7 @@ exports.Prisma.PreventiveOSScalarFieldEnum = makeEnum({
   responsibleId: 'responsibleId',
   date: 'date',
   natureId: 'natureId',
+  actionsUniqueKey: 'actionsUniqueKey',
   concluded: 'concluded'
 });
 

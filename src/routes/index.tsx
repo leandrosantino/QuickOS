@@ -7,7 +7,9 @@ import { PagesContextProvider } from '../contexts/PagesContext';
 import { DialogContextProvider, Dialogs } from '../contexts/DialogContext'
 import { ToastProvider } from '../components/ToastProvider'
 
-window.ipc.send('maximize', {})
+import {ipc} from '../utils/ipc'
+
+ipc.send('printServiceOrder', {})
 
 export function Routes() {
 

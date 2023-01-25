@@ -35,7 +35,8 @@
       "theme.js"
     ],
     "asarUnpack": [
-      "database/app.db"
+      "database/app.db",
+      "view/serviceOrder.ejs"
     ],
     "directories": {
       "buildResources": "public"

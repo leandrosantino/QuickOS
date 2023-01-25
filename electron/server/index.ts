@@ -8,6 +8,8 @@ import {appRouter} from './routers';
 import {serviceOrdersSchema} from '../utils/preventiveOsTools'
 import {z} from 'zod'
 
+const isDev = false//true//
+
 export class Server{
 
     constructor (){}
@@ -15,9 +17,17 @@ export class Server{
     apiEndpoint = '/trpc'
     playgroundEndpoint = '/playground'
 
+    viewDirectory = isDev?
+    path.join(__dirname, './view'):
+    path.join(__dirname, '../../../app.asar.unpacked/view')
+
     app = express();
 
     useCreateServiceOrder() {
+
+        console.log(this.viewDirectory)
+
+        this.app.set('views', this.viewDirectory)
         this.app.set('view engine', 'ejs')
 
         this.app.get('/createServiceorder/:data', (req, res)=>{
@@ -47,7 +57,7 @@ export class Server{
                     ],
                     nature: { id: 1, name: 'Mecânica' }
                   }
-                res.render(path.join(__dirname, './serviceOrder.ejs'), serviceOrder)
+                res.render('serviceOrder.ejs', serviceOrder)
             } catch (error) {
                 res.statusCode = 500
                 res.send(error)

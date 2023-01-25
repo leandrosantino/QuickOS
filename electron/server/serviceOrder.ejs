@@ -5,12 +5,36 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        @media print {
+            #buttons{
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div id="buttons">
+        <button onclick="printPage()" >Imprimir</button>
+        <button onclick="printPageToPDF()" >Salvar Como PDF</button>
+    </div>
+    
     <h1>
         <%- machine.tag  %> 
-
-
     </h1>
+
+
+    <script>
+
+        function printPage(){
+            window.ipc.send('runPrint')
+        }
+
+        function printPageToPDF(){
+            window.ipc.send('runPrintToPdf')
+        }
+
+    </script>
+
 </body>
 </html>

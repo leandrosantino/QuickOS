@@ -26,7 +26,7 @@ export const preventive = t.router({
                 const OSs = await assembleServiceOrders(input.week, input.year)
                 return OSs
             } catch (error) {
-                throw internalServerError(error)
+                throw internalServerError(error) 
             }
         })
     ,

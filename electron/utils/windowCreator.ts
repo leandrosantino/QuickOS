@@ -1,22 +1,36 @@
-import {BrowserWindow} from 'electron'
+import { BrowserWindow } from 'electron'
 import path from 'path'
 
-interface BrowserWindowOptions extends Electron.BrowserWindowConstructorOptions {}
+interface BrowserWindowOptions extends Electron.BrowserWindowConstructorOptions { }
 export interface WindowCreatorProps {
     icon: string;
-    width: number; 
-    height: number; 
+    width: number;
+    height: number;
     devTools: boolean;
     url: string;
+    parent?: BrowserWindow;
+    minimizable?: boolean
+    maximizable?: boolean
+    resizable?: boolean
+    frame?: boolean
+    maximize?: boolean
 }
 
-export function windowCreator({icon, width, height, devTools, url} : WindowCreatorProps){
-    const options: BrowserWindowOptions  = {
+export function windowCreator({
+    icon, width, height, devTools, parent, url,
+    maximizable, minimizable, resizable, frame, maximize
+}: WindowCreatorProps) {
+    const options: BrowserWindowOptions = {
         width, height, icon,
-        frame: false,
+        frame,
         minHeight: height,
         minWidth: width,
         show: false,
+        maximizable,
+        minimizable,
+        resizable,
+        parent,
+        modal: parent ? true : false,
         webPreferences: {
             nodeIntegration: true,
             devTools,
@@ -24,12 +38,12 @@ export function windowCreator({icon, width, height, devTools, url} : WindowCreat
         }
     }
 
-    function load(){
+    function load() {
         let window = new BrowserWindow(options)
         window.loadURL(url)
-        window.once('ready-to-show', async ()=>{
+        window.once('ready-to-show', () => {
             window.show()
-            window.maximize()
+            maximize&&window.maximize()
         });
         window.on("closed", () => {
             window = {} as BrowserWindow;
@@ -37,7 +51,7 @@ export function windowCreator({icon, width, height, devTools, url} : WindowCreat
         return window
     }
 
-    return {load}
+    return { load }
 
 }
 

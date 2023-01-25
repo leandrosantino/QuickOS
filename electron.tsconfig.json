@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es2020",  
+    "target": "es5",  
     "module": "commonjs",
     "noImplicitAny": true,
     "sourceMap": true,
     "outDir": "build",
     "baseUrl": ".",
-    "jsx": "react-jsx", 
-    
+    "strict": true,
+    "skipLibCheck": true,
     "esModuleInterop":true,
     "paths": {
       "*": ["node_modules/*" ]

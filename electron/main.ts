@@ -6,25 +6,29 @@ import { windowCreator } from './utils/windowCreator'
 import { useRoutes } from "./utils/useIpcRoutes";
 
 import { navBarRoutes } from "./ipc.routes/navbar";
+import { printServiceOrder } from "./ipc.routes/printServiceOrder";
 
 !isDev && import('./server')
 
 async function main() {
 
-    const browser = windowCreator({
+    const window = windowCreator({
         width: 1090,
         height: 650,
         devTools: isDev,
+        maximizable: true,
+        minimizable: true,
+        frame: false,
+        resizable: true,
         url: isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, "./index.html")}`,
         icon: '',
-    })
+        maximize: true,
+    }).load()
 
-
-    const window = browser.load()
-    
     const routes = useRoutes({ window, ipcMain })
 
     routes.use(navBarRoutes)
+    routes.use(printServiceOrder)
 
 }
 

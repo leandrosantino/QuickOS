@@ -3,7 +3,6 @@ import { useEffect } from 'react'
 import { TabButton } from '../../components/Tab/TabButton'
 import { TabContainer } from '../../components/Tab/TabContainer'
 import { usePages } from '../../hooks/usePages'
-
 import { PreventiveRoutes } from '../../routes/preventive.routes'
 
 export function Preventive() {
@@ -12,6 +11,7 @@ export function Preventive() {
 
   useEffect(() => {
     if (currentPage === 'Preventive') goToPage('Preventive.Historic', {})
+    
   }, [currentPage, goToPage])
 
   return (

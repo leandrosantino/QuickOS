@@ -6,10 +6,14 @@ import { PagesContextProvider } from '../contexts/PagesContext';
 
 import { DialogContextProvider, Dialogs } from '../contexts/DialogContext'
 import { ToastProvider } from '../components/ToastProvider'
+import { ipc } from '../utils/ipc';
 
-import {ipc} from '../utils/ipc'
-
-ipc.send('printServiceOrder', {})
+ipc.send('printServiceOrder', {
+  id: 5,
+  weekCode: '2023-W32',
+  machine: {tag: 'M42'},
+  nature: {name: 'Elétrica'}
+})
 
 export function Routes() {
 

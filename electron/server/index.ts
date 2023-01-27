@@ -8,7 +8,7 @@ import {appRouter} from './routers';
 import {serviceOrdersSchema} from '../utils/preventiveOsTools'
 import {z} from 'zod'
 
-const isDev = false//true//
+const isDev = process.env.IS_DEV
 
 export class Server{
 
@@ -18,8 +18,8 @@ export class Server{
     playgroundEndpoint = '/playground'
 
     viewDirectory = isDev?
-    path.join(__dirname, './view'):
-    path.join(__dirname, '../../../app.asar.unpacked/view')
+    path.join(__dirname, '../../public/views'):
+    path.join(__dirname, '../../../app.asar.unpacked/public/views')
 
     app = express();
 
@@ -30,33 +30,11 @@ export class Server{
         this.app.set('views', this.viewDirectory)
         this.app.set('view engine', 'ejs')
 
-        this.app.get('/createServiceorder/:data', (req, res)=>{
+        this.app.get('/createServiceorder/', (req, res)=>{
             try {
-                //serviceOrdersSchema.parse(JSON.parse(req.params.data))
-                const serviceOrder: z.infer<typeof serviceOrdersSchema> = {
-                    id: 14,
-                    machineId: 2,
-                    weekCode: '2023-W36',
-                    responsibleId: null,
-                    date: null,
-                    natureId: 1,
-                    actionsUniqueKey: 'A-I6/M2/N1_',
-                    concluded: false,
-                    machine: { id: 2, tag: 'M43', ute: 'UTE-5', technology: 'WaterJet' },
-                    actions: [
-                      {
-                        id: 6,
-                        description: 'Vedação o eixo da bomba de poliol',
-                        machineId: 2,
-                        excution: 'Inpesão e troca',
-                        frequency: 1,
-                        nextExecution: '2023-W36',
-                        preventiveOSId: 14,
-                        natureId: 1
-                      }
-                    ],
-                    nature: { id: 1, name: 'Mecânica' }
-                  }
+                console.log(JSON.parse(String(req.query.data)))
+                const serviceOrder = serviceOrdersSchema.parse(JSON.parse(String(req.query.data)))
+                // const serviceOrder: z.infer<typeof serviceOrdersSchema> = {}
                 res.render('serviceOrder.ejs', serviceOrder)
             } catch (error) {
                 res.statusCode = 500

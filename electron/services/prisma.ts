@@ -1,8 +1,7 @@
 import { PrismaClient } from '../../database/client'
-import isDev from 'electron-is-dev' 
 import path from 'path'
 
-// const isDev = true
+const isDev = process.env.IS_DEV
 
 export default new PrismaClient({
     log: [],

@@ -11,9 +11,11 @@
     "esModuleInterop":true,
     "paths": {
       "*": ["node_modules/*" ]
-    }
+    },
+    "typeRoots": ["/@types"]
   },
   "include": [
-    "electron/**/*"
+    "electron/**/*",
+    "electron/.env"
   ]
 }

@@ -7,6 +7,7 @@ interface BalanceCardsProps {
   value: string;
   color: 'blue' | 'red' | 'green' | 'orange' ,
   clickable?: boolean;
+  onClick?: ()=>void;
 }
 
 const colors = {
@@ -16,7 +17,7 @@ const colors = {
   orange: 'bg-orange-500 ',
 }
 
-export function BalanceCards({Icon, title, value, color, clickable = false}:BalanceCardsProps){
+export function BalanceCards({Icon, title, value, color, clickable = false, onClick}:BalanceCardsProps){
   return (
     <div 
       className={`
@@ -33,6 +34,7 @@ export function BalanceCards({Icon, title, value, color, clickable = false}:Bala
           ''
         }
       `} 
+      onClick={onClick}
     >
 
       <div className='flex flex-col justify-center items-start'>

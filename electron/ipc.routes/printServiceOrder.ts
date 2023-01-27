@@ -22,14 +22,14 @@ export function printServiceOrder({ ipcMain, window }: UseRoutesProps) {
         serviceOrderWindow = windowCreator({
             devTools: true,
             height: 700,
-            width: 600,
+            width: 900,
             icon: '',
             parent: window,
             maximizable: false,
             minimizable: false,
             resizable: true,
             frame: true,
-            url: `http://localhost:9999/createServiceorder/${JSON.stringify(args)}`
+            url: `http://localhost:9999/createServiceorder?data=${JSON.stringify(args)}`
         }).load()
 
         serviceOrderWindow.removeMenu()
@@ -39,6 +39,12 @@ export function printServiceOrder({ ipcMain, window }: UseRoutesProps) {
             if (pdfpath) {
                 const pdf = await serviceOrderWindow.webContents.printToPDF({
                     pageSize: 'A4',
+                    margins: {
+                        bottom:0,
+                        left:0,
+                        right:0,
+                        top:0,
+                    }
                 })
                 fs.writeFileSync(path.join(pdfpath[0], pdfname), pdf, 'binary')
             }
@@ -47,6 +53,12 @@ export function printServiceOrder({ ipcMain, window }: UseRoutesProps) {
         ipcMain.on('runPrint', (event, args) => {
             serviceOrderWindow.webContents.print({
                 pageSize: 'A4',
+                margins: {
+                    bottom:0,
+                    left:0,
+                    right:0,
+                    top:0,
+                }
             })
         })
 

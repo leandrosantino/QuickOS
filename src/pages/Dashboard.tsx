@@ -14,6 +14,9 @@ import { MdOutlineReportGmailerrorred } from 'react-icons/md'
 import { MdWifiProtectedSetup } from 'react-icons/md'
 import { PreventiveOpenedList } from "../components/dashboard/PreventiveOpenedList"
 
+import { ipc } from '../utils/ipc';
+
+
 
 export interface HomeProps { nome: string }
 
@@ -49,6 +52,33 @@ export function Home() {
           color='green'
           title="MTTR"
           value="39 min"
+          clickable
+          onClick={()=>{
+            ipc.send('printServiceOrder', {
+              id: 14,
+              machineId: 2,
+              weekCode: '2023-W36',
+              responsibleId: null,
+              date: null,
+              natureId: 1,
+              actionsUniqueKey: 'A-I6/M2/N1_',
+              concluded: false,
+              machine: { id: 2, tag: 'M43', ute: 'UTE-5', technology: 'WaterJet' },
+              actions: [
+                {
+                  id: 6,
+                  description: 'Vedação o eixo da bomba de poliol',
+                  machineId: 2,
+                  excution: 'Inpesão e troca',
+                  frequency: 1,
+                  nextExecution: '2023-W36',
+                  preventiveOSId: 14,
+                  natureId: 1
+                }
+              ],
+              nature: { id: 1, name: 'Mecânica' }
+            })
+          }}
         />
         <BalanceCards
           Icon={CgTimelapse}

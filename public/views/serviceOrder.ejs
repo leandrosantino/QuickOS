@@ -6,11 +6,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        *{
+            margin: 0;
+            padding: 0;
+        }
+
         @media print {
             #buttons{
                 display: none;
             }
         }
+
+        .container{
+            width: 210mm;
+            height: 297mm;
+            border: 1px solid black;
+        }
+
     </style>
 </head>
 <body>
@@ -19,22 +39,18 @@
         <button onclick="printPageToPDF()" >Salvar Como PDF</button>
     </div>
     
-    <h1>
-        <%- machine.tag  %> 
-    </h1>
 
+    <div class="container" >
+        <h1><%-weekCode%></h1>
+    </div>
 
     <script>
-
         function printPage(){
             window.ipc.send('runPrint')
         }
-
         function printPageToPDF(){
             window.ipc.send('runPrintToPdf')
         }
-
     </script>
-
 </body>
 </html>

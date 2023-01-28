@@ -2,8 +2,6 @@
 import { ReactNode, useEffect, useState } from 'react'
 
 import { MdLibraryAdd } from 'react-icons/md'
-import { RiDeleteBack2Fill } from 'react-icons/ri'
-
 
 import { ScrollContainer } from '../../components/containers/ScrollContainer'
 import { FilterFrame } from '../../components/dashboard/FilterFrame'

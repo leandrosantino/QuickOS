@@ -13,7 +13,7 @@ import SideMenuTitle from './SideMenuTitle';
 
 export function SideMenu() {
 
-  const { goToPage, currentPage, sideMenuIsReduce, backPage } = usePages()
+  const { goToPage, currentPage, sideMenuIsReduce } = usePages()
 
   const reduced = sideMenuIsReduce
 

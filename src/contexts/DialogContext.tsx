@@ -2,9 +2,6 @@ import {
   createContext,
   ReactNode,
   useState,
-  useEffect,
-  ReactComponentElement,
-  JSXElementConstructor,
   useContext
 } from "react";
 
@@ -15,9 +12,9 @@ import { DialogQuestion } from "../components/dialogs/DialogQuestion";
 
 type DialogsNames = keyof typeof DialogComponents
 
-type DialogError = (title:string, message: string) => void
-type DialogAlert = (title:string, message: string) => void
-type DialogQuestion = (
+type DialogErrorType = (title:string, message: string) => void
+type DialogAlertType = (title:string, message: string) => void
+type DialogQuestionType = (
   title: string,
   message: string,
   yes: () => void,
@@ -25,9 +22,9 @@ type DialogQuestion = (
 ) => void
 
 export interface UseDialogProps {
-  dialogError: DialogError;
-  dialogAlert: DialogAlert;
-  dialogQuestion: DialogQuestion;
+  dialogError: DialogErrorType;
+  dialogAlert: DialogAlertType;
+  dialogQuestion: DialogQuestionType;
 }
 
 interface DialogContextDataProps {
@@ -36,9 +33,9 @@ interface DialogContextDataProps {
   title: string;
   message: string;
   callback: (condition:boolean)=>void;
-  dialogError: DialogError;
-  dialogAlert: DialogAlert;
-  dialogQuestion: DialogQuestion;
+  dialogError: DialogErrorType;
+  dialogAlert: DialogAlertType;
+  dialogQuestion: DialogQuestionType;
 }
 
 interface DialogContextProviderProps {
@@ -55,7 +52,7 @@ export function DialogContextProvider({ children }: DialogContextProviderProps) 
   const [type, setType] = useState<DialogsNames>('Alert')
   const [callback, setCallback] = useState<{func:(condition:boolean)=>void}>({func:(condition:boolean)=>{}})
 
-  const dialogError:DialogError = (title, message) => {
+  const dialogError:DialogErrorType = (title, message) => {
     setTitle(title)
     setMessage(message)
     
@@ -67,7 +64,7 @@ export function DialogContextProvider({ children }: DialogContextProviderProps) 
     setVisible(true)
   }
 
-  const dialogAlert:DialogAlert = (title, message) => {
+  const dialogAlert:DialogAlertType = (title, message) => {
     setTitle(title)
     setMessage(message)
 
@@ -79,7 +76,7 @@ export function DialogContextProvider({ children }: DialogContextProviderProps) 
     setVisible(true)
   }
 
-  const dialogQuestion:DialogQuestion = (title, message, yes, no ) => {
+  const dialogQuestion:DialogQuestionType = (title, message, yes, no ) => {
     setTitle(title)
     setMessage(message)
 

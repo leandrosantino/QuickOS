@@ -20,8 +20,6 @@ interface PreventiveActionFormProps {
   data: ActionsType;
 }
 
-
-
 export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
 
   const [tags, setTags] = useState<string[] >(['loadind...'])
@@ -31,6 +29,7 @@ export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
   useEffect(()=>{
     setTags(getTags.data?getTags.data:['loadind...'])
     console.log(tags)
+    // eslint-disable-next-line
   }, [getTags])
 
   
@@ -77,7 +76,8 @@ export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
         () => {
           toast.promise(async () => {
 
-
+            console.log(actionInfo)
+            clearInputs()
           }, {
             pending: 'Processando as informações...',
             error: {

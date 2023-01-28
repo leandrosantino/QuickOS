@@ -1,8 +1,5 @@
-import React from 'react'
 import { GoAlert } from 'react-icons/go'
 import { InputButton } from '../forms/InputButton'
-
-
 
 export function DialogAlert({message, title, callback}:DialogProps) {
 

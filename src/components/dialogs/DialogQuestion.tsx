@@ -1,7 +1,3 @@
-import React from 'react'
-import { FaQuestion } from 'react-icons/fa'
-import { InputButton } from '../forms/InputButton'
-
 export function DialogQuestion({message, title, callback}:DialogProps) {
   return (
     <div

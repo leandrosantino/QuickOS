@@ -25,14 +25,11 @@ export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
   const [tags, setTags] = useState<string[] >(['loadind...'])
   const getTags = api.main.getMachines.useQuery()
 
-
   useEffect(()=>{
     setTags(getTags.data?getTags.data:['loadind...'])
     console.log(tags)
     // eslint-disable-next-line
   }, [getTags])
-
-  
 
   const [tag, setTag] = useState(data ? data?.tag : tags[0])
   const [nature, setNature] = useState(data ? data?.nature : 'Mecânica')
@@ -100,16 +97,15 @@ export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
 
       toast.error(msgError, { toastId: msgError })
 
-      //dialogError('Erro de Validação!!', err.errors.map((entry)=>entry.message)[0])
       return
     }
   }
 
-  const { goToPage } = usePages()
+  const { goToPage, backPage } = usePages()
 
   return (
     <PageModalContainer
-      onClick={() => goToPage('Preventive.Actions', {})}
+      onClick={() => backPage()}
       width="60%"
       height="50%"
     >

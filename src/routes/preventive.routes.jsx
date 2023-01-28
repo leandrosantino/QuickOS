@@ -34,7 +34,7 @@ export function PreventiveRoutes() {
   );
 }
 
-export function PreventiveModalRoutes() {
+export function PreventiveActionsFormRoutes() {
   return (
     <PagesContainer>
       <Screen

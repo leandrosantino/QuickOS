@@ -33,7 +33,6 @@ export interface PageContextDataProps {
 	sideMenuIsReduce: boolean;
 	changeSideMenu: (value: boolean) => void,
 	PageNameLink: PageNameLinkType,
-
 }
 
 interface PagesContextProviderProps {
@@ -44,27 +43,19 @@ export const PagesContext = createContext({} as PageContextDataProps);
 
 export function PagesContextProvider({ children }: PagesContextProviderProps) {
 
-	const [navigateHistory, setNavigateHistory] = useState<string[]>([])
 	const [currentPage, setcurrentPage] = useState<string>('Dashboard')
+	const [lastPage, setlastPage] = useState<string>('Dashboard')
 	const [currentPageProps, setCurrentPageProps] = useState<any>()
 	const [sideMenuIsReduce, setSideMenuIsReduce] = useState<boolean>(false)
 
 	const goToPage: GoToPageType = (name, props) => {
-		setNavigateHistory([currentPage, ...navigateHistory])
+		setlastPage(currentPage)
 		setcurrentPage(name)
 		setCurrentPageProps(props)
 	}
 
 	function backPage(){
-		console.log(currentPage, navigateHistory)
-
-		let index = currentPage.split('.').length > 1? 1: 0
-
-		goToPage(navigateHistory[index] as Pages, {})
-		navigateHistory.splice(0, 1)
-		setNavigateHistory(navigateHistory)
-
-		console.log(currentPage, navigateHistory)
+		setcurrentPage(lastPage)
 	}
 
 	function changeSideMenu(value: boolean) {

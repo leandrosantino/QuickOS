@@ -85,9 +85,19 @@ export const preventive = t.router({
 
     getActions: t.procedure
         .output(z.array(actionsSchema))
-        .query(async () => {
+        .input(z.object({
+            description:z.string()
+        }))
+        .query(async ({input}) => {
             try {
-                const actions = await prisma.preventiveAction.findMany()
+                const actions = await prisma.preventiveAction.findMany({
+                    where:{
+                        description: {contains: input.description}
+                    },
+                    include:{
+                        nature:true, machine: true
+                    }
+                })
                 return actions
             } catch (error) {
                 throw internalServerError(error)
@@ -95,38 +105,40 @@ export const preventive = t.router({
         })
     ,
 
-    createAction: t.procedure
-        .input(actionsSchema)
-        .output(SuccessResponseSchema)
-        .mutation(async ({ input }) => {
-            try {
-                await prisma.preventiveAction.create({
-                    data: input
-                })
-                return successResponse()
-            } catch (error) {
-                throw internalServerError(error)
-            }
-        })
-    ,
-    updateAction: t.procedure
-        .input(z.object({
-            id: z.number(),
-            data: actionsSchema
-        }))
-        .output(SuccessResponseSchema)
-        .mutation(async ({ input }) => {
-            try {
-                await prisma.preventiveAction.update({
-                    where: { id: input.id },
-                    data: input.data
-                })
-                return successResponse()
-            } catch (error) {
-                throw internalServerError(error)
-            }
-        })
-    ,
+    // createAction: t.procedure
+    //     .input(actionsSchema)
+    //     .output(SuccessResponseSchema)
+    //     .mutation(async ({ input }) => {
+    //         try {
+    //             await prisma.preventiveAction.create({
+    //                 data: input
+    //             })
+    //             return successResponse()
+    //         } catch (error) {
+    //             throw internalServerError(error)
+    //         }
+    //     })
+    // ,
+
+    // updateAction: t.procedure
+    //     .input(z.object({
+    //         id: z.number(),
+    //         data: actionsSchema
+    //     }))
+    //     .output(SuccessResponseSchema)
+    //     .mutation(async ({ input }) => {
+    //         try {
+    //             await prisma.preventiveAction.update({
+    //                 where: { id: input.id },
+    //                 data: input.data
+    //             })
+    //             return successResponse()
+    //         } catch (error) {
+    //             throw internalServerError(error)
+    //         }
+    //     })
+    // ,
+
     deleteAction: t.procedure
         .input(z.object({id: z.number()}))
         .output(SuccessResponseSchema)

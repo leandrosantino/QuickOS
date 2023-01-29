@@ -20,18 +20,25 @@ const natureSchema = z.object({
     name: z.string()
 })
 
-export const actionsSchema = z.object({
-    id: z.number(),
+export const actionCreateSchema = z.object({
     description: z.string(),
     machineId: z.number(),
-    machine: machineSchema,
+
     excution: z.string(),
     frequency: z.number(),
     natureId: z.number(),
-    nature: natureSchema,
+
     nextExecution: z.string().regex(weekYearRegex),
     preventiveOSId: z.number().nullable(),
 })
+
+export const actionsSchema = z.object({
+    id: z.number(),
+    machine: machineSchema,
+    nature: natureSchema,
+    ...actionCreateSchema.shape
+})
+
 
 export const serviceOrdersSchema = z.object({
     id: z.number().optional(),
@@ -65,8 +72,8 @@ export async function assembleServiceOrders(week: number, year: number) {
                         machineId: mac.id,
                         natureId: nat.id,
                     },
-                    include:{
-                        machine:true, nature:true
+                    include: {
+                        machine: true, nature: true
                     }
                 })
                 const actionsUniqueKey = generateActionsUniqueKey(actions)
@@ -83,17 +90,19 @@ export async function assembleServiceOrders(week: number, year: number) {
                 }
 
                 const os = await prisma.preventiveOS.findMany({
-                    where:{
+                    where: {
                         weekCode,
                         machineId: mac.id,
                         natureId: nat.id,
                         concluded: true,
                     },
-                    include: {actions: {
-                        include:{
-                            nature:true, machine: true
-                        }
-                    }, nature:true, machine: true}
+                    include: {
+                        actions: {
+                            include: {
+                                nature: true, machine: true
+                            }
+                        }, nature: true, machine: true
+                    }
                 })
 
                 OSs.push(...os)
@@ -130,11 +139,13 @@ export async function registerServiceOrders({ machineId, weekCode, actions, natu
             },
             update: osData,
             create: osData,
-            include: {actions: {
-                include:{
-                    nature:true, machine: true
-                }
-            }, nature:true, machine: true}
+            include: {
+                actions: {
+                    include: {
+                        nature: true, machine: true
+                    }
+                }, nature: true, machine: true
+            }
         })
         return os
     } catch (error) {

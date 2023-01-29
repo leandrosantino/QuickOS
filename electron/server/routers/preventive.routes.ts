@@ -8,7 +8,8 @@ import {
     executeServiceOrders,
     serviceOrdersSchema,
     executeServiceOrdersParamsSchema,
-    actionsSchema
+    actionsSchema,
+    actionCreateSchema
 } from '../../utils/preventiveOsTools'
 
 const t = initTRPC.create()
@@ -105,39 +106,39 @@ export const preventive = t.router({
         })
     ,
 
-    // createAction: t.procedure
-    //     .input(actionsSchema)
-    //     .output(SuccessResponseSchema)
-    //     .mutation(async ({ input }) => {
-    //         try {
-    //             await prisma.preventiveAction.create({
-    //                 data: input
-    //             })
-    //             return successResponse()
-    //         } catch (error) {
-    //             throw internalServerError(error)
-    //         }
-    //     })
-    // ,
+    createAction: t.procedure
+        .input(actionCreateSchema)
+        .output(SuccessResponseSchema)
+        .mutation(async ({ input }) => {
+            try {
+                await prisma.preventiveAction.create({
+                    data: input
+                })
+                return successResponse()
+            } catch (error) {
+                throw internalServerError(error)
+            }
+        })
+    ,
 
-    // updateAction: t.procedure
-    //     .input(z.object({
-    //         id: z.number(),
-    //         data: actionsSchema
-    //     }))
-    //     .output(SuccessResponseSchema)
-    //     .mutation(async ({ input }) => {
-    //         try {
-    //             await prisma.preventiveAction.update({
-    //                 where: { id: input.id },
-    //                 data: input.data
-    //             })
-    //             return successResponse()
-    //         } catch (error) {
-    //             throw internalServerError(error)
-    //         }
-    //     })
-    // ,
+    updateAction: t.procedure
+        .input(z.object({
+            id: z.number(),
+            data: actionCreateSchema
+        }))
+        .output(SuccessResponseSchema)
+        .mutation(async ({ input }) => {
+            try {
+                await prisma.preventiveAction.update({
+                    where: { id: input.id },
+                    data: input.data
+                })
+                return successResponse()
+            } catch (error) {
+                throw internalServerError(error)
+            }
+        })
+    ,
 
     deleteAction: t.procedure
         .input(z.object({id: z.number()}))

@@ -32,8 +32,9 @@ export class Server{
 
         this.app.get('/createServiceorder/', (req, res)=>{
             try {
-                console.log(JSON.parse(String(req.query.data)))
-                const serviceOrder = serviceOrdersSchema.parse(JSON.parse(String(req.query.data)))
+                const data = JSON.parse(String(req.query.data))
+                console.log(data)
+                const serviceOrder = serviceOrdersSchema.parse(data)
                 // const serviceOrder: z.infer<typeof serviceOrdersSchema> = {}
                 res.render('serviceOrder.ejs', serviceOrder)
             } catch (error) {

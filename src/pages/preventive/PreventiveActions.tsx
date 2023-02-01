@@ -65,7 +65,7 @@ export function PreventiveActions() {
                   onClick={
                     () => goToPage(
                       'Preventive.Actions.EditActions',
-                      { data: entry }
+                      { data: entry, id: entry.id}
                     )
                   }
                   key={index}

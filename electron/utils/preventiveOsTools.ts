@@ -8,14 +8,14 @@ import {
     weekYearRegex
 } from "./weekTools"
 
-const machineSchema = z.object({
+export const machineSchema = z.object({
     id: z.number(),
     tag: z.string(),
     technology: z.string(),
     ute: z.string()
 })
 
-const natureSchema = z.object({
+export const natureSchema = z.object({
     id: z.number(),
     name: z.string()
 })
@@ -34,8 +34,8 @@ export const actionCreateSchema = z.object({
 
 export const actionsSchema = z.object({
     id: z.number(),
-    machine: machineSchema,
-    nature: natureSchema,
+    machine: machineSchema.optional(),
+    nature: natureSchema.optional(),
     ...actionCreateSchema.shape
 })
 

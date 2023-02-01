@@ -7,7 +7,7 @@ import { MdDeleteOutline } from 'react-icons/md'
 
 import { InputButton } from '../../components/forms/InputButton';
 import { InputCaseForm } from '../../components/forms/InputCaseForm';
-import z, { ZodError } from 'zod';
+import { ZodError } from 'zod';
 import { PageModalContainer } from '../../components/containers/PageModalContainer';
 import { usePages } from '../../hooks/usePages';
 import { useDialog } from '../../hooks/useDialog';
@@ -16,58 +16,52 @@ import { toast } from 'react-toastify'
 
 import { api } from '../../utils/trpc'
 
+import { ActionsInfoType, actionInfoSchema, MachineInfoType, NatureInfoType } from '../../utils/schemas'
+
 interface PreventiveActionFormProps {
-  data: ActionsType;
+  id?: number;
+  data?: ActionsInfoType;
 }
 
-export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
+export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
 
-  const [tags, setTags] = useState<string[] >(['loadind...'])
-  const getTags = api.main.getMachines.useQuery()
+  const [machines, setMachines] = useState<MachineInfoType[]>([{} as MachineInfoType])
+  const [natures, setNatures] = useState<NatureInfoType[]>([{} as NatureInfoType])
+  const getMachine = api.main.getMachines.useQuery()
+  const getNature = api.main.getNatures.useQuery()
 
   useEffect(()=>{
-    setTags(getTags.data?getTags.data:['loadind...'])
-    console.log(tags)
+    setNatures(getNature.data ? getNature.data : [{} as NatureInfoType])
     // eslint-disable-next-line
-  }, [getTags])
+  },[getNature])
 
-  const [tag, setTag] = useState(data ? data?.tag : tags[0])
-  const [nature, setNature] = useState(data ? data?.nature : 'Mecânica')
-  const [frequency, setFrequency] = useState(data ? data?.frequency : '1')
+  useEffect(() => {
+    setMachines(getMachine.data ? getMachine.data : [{} as MachineInfoType])
+    // eslint-disable-next-line
+  }, [getMachine])
+
+  const [machineId, setMachineId] = useState(data ? data?.machineId : 1)
+  const [natureId, setNatureId] = useState(data ? data?.natureId : 1)
+  const [frequency, setFrequency] = useState(data ? data?.frequency : 1)
   const [nextExecution, setNextExecution] = useState(data ? data?.nextExecution : '')
   const [description, setDescription] = useState(data ? data?.description : '')
 
   const { dialogQuestion } = useDialog()
 
   function clearInputs() {
-    setTag('M41')
-    setNature('Mecânica')
-    setFrequency('1')
+    setMachineId(1)
+    setNatureId(1)
+    setFrequency(1)
     setNextExecution('')
     setDescription('')
   }
 
   function handleSubmit() {
-    const actionData: ActionsType = { tag, nature, frequency, nextExecution, description }
-    const validateSchema = z
-      .object({
-        tag: z.string(),
-        nature: z.string(),
-
-        frequency: z.string()
-          .min(1, 'A a quantidade de semanas não pode ser menor que 1 !!')
-          .transform((val) => Number(val)),
-
-        nextExecution: z.string()
-          .regex(/\d{4}-W\d{2}/, 'A semana selecionada é inválida !!'),
-
-        description: z.string()
-          .min(10, 'A descrição tem que ter no mínimo 10 caracteres !!')
-      })
+    const actionData: ActionsInfoType = { machineId, natureId, frequency, nextExecution, description }
 
     try {
 
-      const actionInfo = validateSchema.parse(actionData)
+      const actionInfo = actionInfoSchema.parse(actionData)
 
       dialogQuestion('Atenção!', 'Realmente deseja salvar as alterações??',
         () => {
@@ -101,7 +95,7 @@ export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
     }
   }
 
-  const { goToPage, backPage } = usePages()
+  const { backPage } = usePages()
 
   return (
     <PageModalContainer
@@ -125,7 +119,7 @@ export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
             <div
               className='font-medium text-xl mr-5'
             >
-              COD: {data?.id}
+              COD: {id}
             </div>
           }
         </PageHeader>
@@ -138,16 +132,16 @@ export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
             labelName='Tag'
           >
             <select
-              value={tag}
-              onChange={(e) => setTag(e.target.value)}
+              value={machineId}
+              onChange={(e) => setMachineId(Number(e.target.value))}
               className={`
                 w-full h-full p-[2px]
                 bg-transparent
               `}
             >
               {
-                tags.map((entry, index) => (
-                  <option key={index} value={entry}> {entry} </option>
+                machines.map((entry, index) => (
+                  <option key={index} value={entry.id}> {entry.tag} </option>
                 ))
               }
             </select>
@@ -157,15 +151,17 @@ export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
             labelName='Natureza'
           >
             <select
-              value={nature}
-              onChange={(e) => setNature(e.target.value)}
+              value={natureId}
+              onChange={(e) => setNatureId(Number(e.target.value))}
               className={`
                 w-full h-full p-[2px]
                 bg-transparent
               `}
             >
-              <option value="Elétrica" > Elétrica </option>
-              <option value="Mecânica" > Mecânica </option>
+              {natures.map((entry, index)=>
+                <option key={index} value={entry.id}> {entry.name} </option>
+              )}
+
             </select>
           </InputCaseForm>
 
@@ -176,7 +172,7 @@ export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
               value={frequency}
               type="number"
               min={1}
-              onChange={(e) => setFrequency(e.target.value)}
+              onChange={(e) => setFrequency(Number(e.target.value))}
               className={`
                 w-full h-full p-[2px]
                 bg-transparent
@@ -223,10 +219,10 @@ export function PreventiveActionForm({ data }: PreventiveActionFormProps) {
         <div
           className={`
             flex flex-row items-end mt-7
-            ${data?.id ? 'justify-between' : 'justify-end'}
+            ${id ? 'justify-between' : 'justify-end'}
           `}
         >
-          {data?.id &&
+          {id &&
             <InputButton
               onClick={() => { }}
               title='Excluir'

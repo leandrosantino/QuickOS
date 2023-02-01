@@ -1,7 +1,7 @@
 import { usePages } from '../../hooks/usePages'
 
-import { IoMdSettings } from 'react-icons/io'
-import { FaTools } from 'react-icons/fa'
+// import { IoMdSettings } from 'react-icons/io'
+// import { FaTools } from 'react-icons/fa'
 import { BsFillCalendar2CheckFill } from 'react-icons/bs'
 import { IoBarChartSharp } from 'react-icons/io5'
 
@@ -56,7 +56,7 @@ export function SideMenu() {
           title="Preventivas"
           onclick={() => goToPage('Preventive', {})}
         />
-        <SideMenuPageButton
+        {/* <SideMenuPageButton
           reduced={reduced}
           Icon={FaTools}
           activated={currentPage.search("Corrective") > -1}
@@ -69,7 +69,7 @@ export function SideMenu() {
           activated={currentPage.search("Settings") > -1}
           title="Configurações"
           onclick={() => goToPage('Settings', {})}
-        />
+        /> */}
       </div>
 
     </div>

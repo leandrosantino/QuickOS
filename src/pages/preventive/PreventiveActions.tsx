@@ -20,7 +20,10 @@ export function PreventiveActions() {
   })
   const [actions, setActions] = useState<typeof getActions.data>()
 
+  
+
   useEffect(()=>{
+    getActions.refetch()
     setActions(getActions?.data)
   }, [getActions])
 
@@ -54,6 +57,7 @@ export function PreventiveActions() {
             frequency: 'Priodicidade',
             nature: 'Natureza',
             nextExecution: 'Próxima Execução',
+            excution: 'Execução'
           }}
         />
 
@@ -63,10 +67,12 @@ export function PreventiveActions() {
               actions?.map((entry, index) => (
                 <TableRow
                   onClick={
-                    () => goToPage(
-                      'Preventive.Actions.EditActions',
-                      { data: entry, id: entry.id}
-                    )
+                    () => {
+                      goToPage(
+                        'Preventive.Actions.EditActions',
+                        { data: entry, id: entry.id}
+                      )
+                    }
                   }
                   key={index}
                   data={entry}
@@ -138,7 +144,8 @@ function TableRow({ data, className, istitle, onClick }: TableRowProps) {
       >
         <TableCell className='w-[12%]' >{data?.machine?.tag??data.tag} </TableCell>
         <TableCell className='w-[10%]' >{data?.nature?.name??data.nature} </TableCell>
-        <TableCell className='w-[53%]' >{data.description} </TableCell>
+        <TableCell className='w-[26.5%]' >{data.description} </TableCell>
+        <TableCell className='w-[26.5%]' >{data.excution} </TableCell>
         <TableCell className='w-[10%]' >{data.frequency} {istitle ? '' : ' Sem'}</TableCell>
         <TableCell className='w-[15%]' >{
           istitle ? data.nextExecution :

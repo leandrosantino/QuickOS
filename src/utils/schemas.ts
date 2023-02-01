@@ -11,7 +11,7 @@ export type MachineInfoType = z.infer<typeof machineInfoSchema>
 
 export const natureInfoSchema = z.object({
     id: z.number(),
-    name: z.string()
+    name: z.string(),
 })
 
 export type NatureInfoType = z.infer<typeof natureInfoSchema>
@@ -21,6 +21,8 @@ export const actionInfoSchema = z.object({
     natureId: z.number(),
     machine: machineInfoSchema.optional(),
     nature: natureInfoSchema.optional(),
+    excution: z.string(),
+    preventiveOSId: z.number().optional(),
     frequency: z.string()
         .min(1, 'A a quantidade de semanas não pode ser menor que 1 !!')
         .transform((val) => Number(val)),
@@ -33,6 +35,7 @@ export const actionInfoSchema = z.object({
 })
 
 export type ActionsInfoType = z.output<typeof actionInfoSchema>
+export type ActionsInfoTypeInupt = z.input<typeof actionInfoSchema>
 
 
 export {}

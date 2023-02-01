@@ -29,7 +29,7 @@ export const actionCreateSchema = z.object({
     natureId: z.number(),
 
     nextExecution: z.string().regex(weekYearRegex),
-    preventiveOSId: z.number().nullable(),
+    preventiveOSId: z.number().nullable().optional(),
 })
 
 export const actionsSchema = z.object({
@@ -38,7 +38,6 @@ export const actionsSchema = z.object({
     nature: natureSchema.optional(),
     ...actionCreateSchema.shape
 })
-
 
 export const serviceOrdersSchema = z.object({
     id: z.number().optional(),

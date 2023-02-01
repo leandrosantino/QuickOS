@@ -13,7 +13,7 @@ import { printServiceOrder } from "./ipc.routes/printServiceOrder";
 async function main() {
 
     const window = windowCreator({
-        width: 1090,
+        width: 1300,
         height: 650,
         devTools: isDev,
         maximizable: true,

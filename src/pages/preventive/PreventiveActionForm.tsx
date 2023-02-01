@@ -16,7 +16,7 @@ import { toast } from 'react-toastify'
 
 import { api } from '../../utils/trpc'
 
-import { ActionsInfoType, actionInfoSchema, MachineInfoType, NatureInfoType } from '../../utils/schemas'
+import { ActionsInfoType, ActionsInfoTypeInupt, actionInfoSchema, MachineInfoType, NatureInfoType } from '../../utils/schemas'
 
 interface PreventiveActionFormProps {
   id?: number;
@@ -30,10 +30,14 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
   const getMachine = api.main.getMachines.useQuery()
   const getNature = api.main.getNatures.useQuery()
 
-  useEffect(()=>{
+  const saveAction = api.preventive.createAction.useMutation()
+  const updateAction = api.preventive.updateAction.useMutation()
+  const deleteAction = api.preventive.deleteAction.useMutation()
+
+  useEffect(() => {
     setNatures(getNature.data ? getNature.data : [{} as NatureInfoType])
     // eslint-disable-next-line
-  },[getNature])
+  }, [getNature])
 
   useEffect(() => {
     setMachines(getMachine.data ? getMachine.data : [{} as MachineInfoType])
@@ -42,38 +46,99 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
 
   const [machineId, setMachineId] = useState(data ? data?.machineId : 1)
   const [natureId, setNatureId] = useState(data ? data?.natureId : 1)
-  const [frequency, setFrequency] = useState(data ? data?.frequency : 1)
+  const [frequency, setFrequency] = useState(data ? String(data?.frequency) : '1')
   const [nextExecution, setNextExecution] = useState(data ? data?.nextExecution : '')
   const [description, setDescription] = useState(data ? data?.description : '')
+  // eslint-disable-next-line
+  const [excution, setExecution] = useState(data ? data?.description : '')
 
   const { dialogQuestion } = useDialog()
+  const { backPage } = usePages()
 
   function clearInputs() {
     setMachineId(1)
     setNatureId(1)
-    setFrequency(1)
+    setFrequency('1')
     setNextExecution('')
     setDescription('')
   }
 
+  function handleActionCreate(actionInfo: ActionsInfoType) {
+    return new Promise((resolve, reject) => {
+      saveAction.mutateAsync(actionInfo)
+        .then(resp => {
+          resolve(resp)
+          clearInputs()
+        })
+        .catch(err => {
+          reject(err)
+        })
+    })
+  }
+
+  function handleActionUpdate(actionInfo: ActionsInfoType) {
+    return new Promise((resolve, reject) => {
+      updateAction.mutateAsync({ data: actionInfo, id: id ?? 0 })
+        .then(resp => {
+          resolve(resp)
+          clearInputs()
+        })
+        .catch(err => {
+          reject(err)
+        })
+    })
+  }
+
+  function handleDelete() {
+    try {
+      dialogQuestion('Atenção!', 'Realmente Deseja excluir está ação?',
+        () => {
+          toast.promise(()=>new Promise((resolve, reject)=>{
+            deleteAction.mutateAsync({id: id??0})
+            .then(resp=>{
+              resolve(resp)
+              backPage()
+            })
+            .catch(err=>{
+              reject(err)
+            })
+          }), {
+            pending: 'Processando as informações...',
+            error: {
+              render({ data }) {
+                return `Error ${data}`
+              }
+            },
+            success: 'Alteração realizada com sucesso!!'
+          })
+        },
+        () => {}
+      )
+    } catch (error) {
+      toast.error('Erro ao excluir Acão!!', { toastId: String(error) })
+      return
+    }
+  }
+
   function handleSubmit() {
-    const actionData: ActionsInfoType = { machineId, natureId, frequency, nextExecution, description }
+    const actionData: ActionsInfoTypeInupt = {
+      machineId, natureId, frequency,
+      nextExecution, description, excution
+    }
 
     try {
-
       const actionInfo = actionInfoSchema.parse(actionData)
-
       dialogQuestion('Atenção!', 'Realmente deseja salvar as alterações??',
         () => {
-          toast.promise(async () => {
-
-            console.log(actionInfo)
-            clearInputs()
+          toast.promise(() => {
+            return id ?
+              handleActionUpdate(actionInfo) :
+              handleActionCreate(actionInfo)
           }, {
             pending: 'Processando as informações...',
             error: {
               render({ data }) {
-                return `${data}`
+                return `Error ${data}`
               }
             },
             success: 'Alteração realizada com sucesso!!'
@@ -84,18 +149,15 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
           console.log('Cancelado!')
         }
       )
-
     } catch (error) {
       const err = error as ZodError
       const msgError = err.errors.map((entry) => entry.message)[0]
-
       toast.error(msgError, { toastId: msgError })
-
       return
     }
   }
 
-  const { backPage } = usePages()
+
 
   return (
     <PageModalContainer
@@ -158,7 +220,7 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
                 bg-transparent
               `}
             >
-              {natures.map((entry, index)=>
+              {natures.map((entry, index) =>
                 <option key={index} value={entry.id}> {entry.name} </option>
               )}
 
@@ -172,7 +234,7 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
               value={frequency}
               type="number"
               min={1}
-              onChange={(e) => setFrequency(Number(e.target.value))}
+              onChange={(e) => setFrequency(e.target.value)}
               className={`
                 w-full h-full p-[2px]
                 bg-transparent
@@ -224,7 +286,7 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
         >
           {id &&
             <InputButton
-              onClick={() => { }}
+              onClick={() => handleDelete()}
               title='Excluir'
               Icon={MdDeleteOutline}
               className="text-red-500"
@@ -238,7 +300,6 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
             className="bg-green-500 text-gray-100"
           />
         </div>
-
 
       </div>
 

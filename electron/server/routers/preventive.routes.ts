@@ -10,7 +10,7 @@ import {
     executeServiceOrdersParamsSchema,
     actionsSchema,
     actionCreateSchema
-} from '../../utils/preventiveOsTools'
+} from '../preventiveOsTools'
 
 const t = initTRPC.create()
 
@@ -27,7 +27,7 @@ export const preventive = t.router({
                 const OSs = await assembleServiceOrders(input.week, input.year)
                 return OSs
             } catch (error) {
-                throw internalServerError(error) 
+                throw internalServerError(error)
             }
         })
     ,
@@ -41,10 +41,10 @@ export const preventive = t.router({
             }),
         }))
         .output(SuccessResponseSchema)
-        .mutation(async ({input})=>{
+        .mutation(async ({ input }) => {
             try {
                 await prisma.preventiveOS.update({
-                    where: {id: input.id},
+                    where: { id: input.id },
                     data: input.data
                 })
                 return successResponse()
@@ -54,15 +54,15 @@ export const preventive = t.router({
         })
     ,
 
-    deleteServiceOrder:t.procedure
+    deleteServiceOrder: t.procedure
         .input(z.object({
             id: z.number()
         }))
         .output(SuccessResponseSchema)
-        .mutation(async ({input})=>{
+        .mutation(async ({ input }) => {
             try {
                 await prisma.preventiveOS.delete({
-                    where:{id: input.id}
+                    where: { id: input.id }
                 })
                 return successResponse()
             } catch (error) {
@@ -87,16 +87,16 @@ export const preventive = t.router({
     getActions: t.procedure
         .output(z.array(actionsSchema))
         .input(z.object({
-            description:z.string()
+            description: z.string()
         }))
-        .query(async ({input}) => {
+        .query(async ({ input }) => {
             try {
                 const actions = await prisma.preventiveAction.findMany({
-                    where:{
-                        description: {contains: input.description}
+                    where: {
+                        description: { contains: input.description }
                     },
-                    include:{
-                        nature:true, machine: true
+                    include: {
+                        nature: true, machine: true
                     }
                 })
                 return actions
@@ -141,12 +141,12 @@ export const preventive = t.router({
     ,
 
     deleteAction: t.procedure
-        .input(z.object({id: z.number()}))
+        .input(z.object({ id: z.number() }))
         .output(SuccessResponseSchema)
-        .mutation(async ({input})=>{
+        .mutation(async ({ input }) => {
             try {
                 await prisma.preventiveAction.delete({
-                    where:{id: input.id}
+                    where: { id: input.id }
                 })
                 return successResponse()
             } catch (error) {

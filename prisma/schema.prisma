@@ -49,7 +49,7 @@ model PreventiveActionTaken {
 }
 
 model PreventiveAction {
-  id             Int    @id @default(autoincrement())
+  id             Int     @id @default(autoincrement())
   description    String
   machineId      Int
   excution       String
@@ -57,6 +57,7 @@ model PreventiveAction {
   nextExecution  String
   preventiveOSId Int?
   natureId       Int
+  ignore         Boolean @default(false)
 
   machine               Machine                 @relation(fields: [machineId], references: [id])
   PreventiveOS          PreventiveOS?           @relation(fields: [preventiveOSId], references: [id])
@@ -72,7 +73,7 @@ model PreventiveOS {
   date             DateTime?
   natureId         Int
   actions          PreventiveAction[]
-  actionsUniqueKey String             
+  actionsUniqueKey String
   concluded        Boolean?           @default(false)
 
   nature                     Nature                  @relation(fields: [natureId], references: [id])

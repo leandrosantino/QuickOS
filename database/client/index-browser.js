@@ -109,7 +109,8 @@ exports.Prisma.PreventiveActionScalarFieldEnum = makeEnum({
   frequency: 'frequency',
   nextExecution: 'nextExecution',
   preventiveOSId: 'preventiveOSId',
-  natureId: 'natureId'
+  natureId: 'natureId',
+  ignore: 'ignore'
 });
 
 exports.Prisma.PreventiveActionTakenScalarFieldEnum = makeEnum({

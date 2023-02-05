@@ -6,7 +6,7 @@ import {
     weekYearStringToNumber,
     weekYearToString,
     weekYearRegex
-} from "./weekTools"
+} from "../utils/weekTools"
 
 export const machineSchema = z.object({
     id: z.number(),
@@ -23,13 +23,12 @@ export const natureSchema = z.object({
 export const actionCreateSchema = z.object({
     description: z.string(),
     machineId: z.number(),
-
     excution: z.string(),
     frequency: z.number(),
     natureId: z.number(),
-
     nextExecution: z.string().regex(weekYearRegex),
     preventiveOSId: z.number().nullable().optional(),
+    ignore: z.boolean()
 })
 
 export const actionsSchema = z.object({
@@ -70,9 +69,10 @@ export async function assembleServiceOrders(week: number, year: number) {
                         nextExecution: weekCode,
                         machineId: mac.id,
                         natureId: nat.id,
+                        ignore: false,
                     },
                     include: {
-                        machine: true, nature: true
+                        machine: true, nature: true, PreventiveActionTaken: true,
                     }
                 })
                 const actionsUniqueKey = generateActionsUniqueKey(actions)

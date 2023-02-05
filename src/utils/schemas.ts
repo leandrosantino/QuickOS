@@ -21,7 +21,6 @@ export const actionInfoSchema = z.object({
     natureId: z.number(),
     machine: machineInfoSchema.optional(),
     nature: natureInfoSchema.optional(),
-    excution: z.string(),
     preventiveOSId: z.number().optional(),
     frequency: z.string()
         .min(1, 'A a quantidade de semanas não pode ser menor que 1 !!')
@@ -30,8 +29,11 @@ export const actionInfoSchema = z.object({
     nextExecution: z.string()
         .regex(/\d{4}-W\d{2}/, 'A semana selecionada é inválida !!'),
 
+    excution: z.string()
+        .min(10, 'O campo Execução precisa ter no mínimo 10 caracteres !!'),
+
     description: z.string()
-        .min(10, 'A descrição tem que ter no mínimo 10 caracteres !!')
+        .min(10, 'O campo Descrição precisa ter no mínimo 10 caracteres !!')
 })
 
 export type ActionsInfoType = z.output<typeof actionInfoSchema>

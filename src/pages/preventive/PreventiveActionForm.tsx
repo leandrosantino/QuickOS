@@ -50,7 +50,7 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
   const [nextExecution, setNextExecution] = useState(data ? data?.nextExecution : '')
   const [description, setDescription] = useState(data ? data?.description : '')
   // eslint-disable-next-line
-  const [excution, setExecution] = useState(data ? data?.description : '')
+  const [excution, setExecution] = useState(data ? data?.excution : '')
 
   const { dialogQuestion } = useDialog()
   const { backPage } = usePages()
@@ -81,7 +81,6 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
       updateAction.mutateAsync({ data: actionInfo, id: id ?? 0 })
         .then(resp => {
           resolve(resp)
-          clearInputs()
         })
         .catch(err => {
           reject(err)
@@ -163,7 +162,7 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
     <PageModalContainer
       onClick={() => backPage()}
       width="60%"
-      height="50%"
+      height="60%"
     >
       <div
         className="
@@ -270,6 +269,24 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
               value={description}
               type="text"
               onChange={(e) => setDescription(e.target.value)}
+              className={`
+                w-full h-full p-[2px]
+                bg-transparent
+              `}
+            />
+          </InputCaseForm>
+        </div>
+
+        <div
+          className="w-full mt-5"
+        >
+          <InputCaseForm
+            labelName='Execução'
+          >
+            <input
+              value={excution}
+              type="text"
+              onChange={(e) => setExecution(e.target.value)}
               className={`
                 w-full h-full p-[2px]
                 bg-transparent

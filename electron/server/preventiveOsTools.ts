@@ -35,6 +35,7 @@ export const actionsSchema = z.object({
     id: z.number(),
     machine: machineSchema.optional(),
     nature: natureSchema.optional(),
+    _count: z.object({ PreventiveActionTaken: z.number() }).optional(),
     ...actionCreateSchema.shape
 })
 

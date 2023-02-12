@@ -1,4 +1,4 @@
-import {z} from 'zod'
+import { z } from 'zod'
 
 export const machineInfoSchema = z.object({
     id: z.number(),
@@ -22,9 +22,9 @@ export const actionInfoSchema = z.object({
     machine: machineInfoSchema.optional(),
     nature: natureInfoSchema.optional(),
     preventiveOSId: z.number().optional(),
-    frequency: z.string()
-        .min(1, 'A a quantidade de semanas não pode ser menor que 1 !!')
-        .transform((val) => Number(val)),
+    ignore: z.boolean(),
+    frequency: z.number()
+        .positive('A a quantidade de semanas não pode ser menor que 1 !!'),
 
     nextExecution: z.string()
         .regex(/\d{4}-W\d{2}/, 'A semana selecionada é inválida !!'),
@@ -33,11 +33,20 @@ export const actionInfoSchema = z.object({
         .min(10, 'O campo Execução precisa ter no mínimo 10 caracteres !!'),
 
     description: z.string()
-        .min(10, 'O campo Descrição precisa ter no mínimo 10 caracteres !!')
+        .min(10, 'O campo Descrição precisa ter no mínimo 10 caracteres !!'),
+   
 })
+
+
+const actionsInfoSchemaWithActonsTaken = z.object({
+    ...actionInfoSchema.shape,
+     _count: z.object({ PreventiveActionTaken: z.number() }),
+})
+
+export type ActionsInfoTypeWithActonsTaken = z.output<typeof actionsInfoSchemaWithActonsTaken>
 
 export type ActionsInfoType = z.output<typeof actionInfoSchema>
 export type ActionsInfoTypeInupt = z.input<typeof actionInfoSchema>
 
 
-export {}
+export { }

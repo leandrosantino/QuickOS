@@ -16,11 +16,19 @@ import { toast } from 'react-toastify'
 
 import { api } from '../../utils/trpc'
 
-import { ActionsInfoType, ActionsInfoTypeInupt, actionInfoSchema, MachineInfoType, NatureInfoType } from '../../utils/schemas'
+import {
+  ActionsInfoType,
+  ActionsInfoTypeInupt,
+  actionInfoSchema,
+  MachineInfoType,
+  NatureInfoType,
+  ActionsInfoTypeWithActonsTaken
+} from '../../utils/schemas'
+import { CheckBox } from '../../components/forms/CheckBox';
 
 interface PreventiveActionFormProps {
   id?: number;
-  data?: ActionsInfoType;
+  data?: ActionsInfoTypeWithActonsTaken;
 }
 
 export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
@@ -46,11 +54,11 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
 
   const [machineId, setMachineId] = useState(data ? data?.machineId : 1)
   const [natureId, setNatureId] = useState(data ? data?.natureId : 1)
-  const [frequency, setFrequency] = useState(data ? String(data?.frequency) : '1')
+  const [frequency, setFrequency] = useState(data ? data?.frequency : 1)
   const [nextExecution, setNextExecution] = useState(data ? data?.nextExecution : '')
   const [description, setDescription] = useState(data ? data?.description : '')
-  // eslint-disable-next-line
   const [excution, setExecution] = useState(data ? data?.excution : '')
+  const [ignore, setIgnore] = useState(data ? data?.ignore : false)
 
   const { dialogQuestion } = useDialog()
   const { backPage } = usePages()
@@ -58,7 +66,7 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
   function clearInputs() {
     setMachineId(1)
     setNatureId(1)
-    setFrequency('1')
+    setFrequency(1)
     setNextExecution('')
     setDescription('')
   }
@@ -66,11 +74,11 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
   function handleActionCreate(actionInfo: ActionsInfoType) {
     return new Promise((resolve, reject) => {
       saveAction.mutateAsync(actionInfo)
-        .then(resp => {
+        .then((resp: any) => {
           resolve(resp)
           clearInputs()
         })
-        .catch(err => {
+        .catch((err: any) => {
           reject(err)
         })
     })
@@ -92,15 +100,15 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
     try {
       dialogQuestion('Atenção!', 'Realmente Deseja excluir está ação?',
         () => {
-          toast.promise(()=>new Promise((resolve, reject)=>{
-            deleteAction.mutateAsync({id: id??0})
-            .then(resp=>{
-              resolve(resp)
-              backPage()
-            })
-            .catch(err=>{
-              reject(err)
-            })
+          toast.promise(() => new Promise((resolve, reject) => {
+            deleteAction.mutateAsync({ id: id ?? 0 })
+              .then(resp => {
+                resolve(resp)
+                backPage()
+              })
+              .catch(err => {
+                reject(err)
+              })
           }), {
             pending: 'Processando as informações...',
             error: {
@@ -111,7 +119,7 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
             success: 'Alteração realizada com sucesso!!'
           })
         },
-        () => {}
+        () => { }
       )
     } catch (error) {
       toast.error('Erro ao excluir Acão!!', { toastId: String(error) })
@@ -122,7 +130,8 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
   function handleSubmit() {
     const actionData: ActionsInfoTypeInupt = {
       machineId, natureId, frequency,
-      nextExecution, description, excution
+      nextExecution, description, excution,
+      ignore,
     }
 
     try {
@@ -141,6 +150,8 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
               }
             },
             success: 'Alteração realizada com sucesso!!'
+          }).then(()=>{
+            data&&backPage()
           })
 
         },
@@ -233,7 +244,7 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
               value={frequency}
               type="number"
               min={1}
-              onChange={(e) => setFrequency(e.target.value)}
+              onChange={(e) => setFrequency(Number(e.target.value))}
               className={`
                 w-full h-full p-[2px]
                 bg-transparent
@@ -297,25 +308,48 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
 
         <div
           className={`
-            flex flex-row items-end mt-7
-            ${id ? 'justify-between' : 'justify-end'}
+            h-[40px]   
+            flex flex-row items-end mt-7 justify-between
           `}
         >
-          {id &&
-            <InputButton
-              onClick={() => handleDelete()}
-              title='Excluir'
-              Icon={MdDeleteOutline}
-              className="text-red-500"
-            />
-          }
 
-          <InputButton
-            onClick={handleSubmit}
-            title='Salvar'
-            Icon={BiSave}
-            className="bg-green-500 text-gray-100"
-          />
+          <div
+            className='
+              w-1/2 h-full 
+              flex flex-row justify-start items-center
+            '
+          >
+
+            {data && data?._count?.PreventiveActionTaken <= 0 &&
+              <InputButton
+                onClick={() => handleDelete()}
+                title='Excluir'
+                Icon={MdDeleteOutline}
+                className="text-red-500"
+              />
+            }
+
+            <CheckBox
+              title='Ignorar'
+              checked={ignore}
+              onChange={setIgnore}
+            />
+
+          </div>
+
+          <div
+            className='
+              w-1/2 h-full
+              flex justify-end items-center
+            '
+          >
+            <InputButton
+              onClick={handleSubmit}
+              title='Salvar'
+              Icon={BiSave}
+              className="bg-green-500 text-gray-100"
+            />
+          </div>
         </div>
 
       </div>

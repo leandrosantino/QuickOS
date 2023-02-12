@@ -99,7 +99,6 @@ export const preventive = t.router({
                         nature: true, machine: true, _count:{select:{PreventiveActionTaken:true}}
                     }
                 })
-                console.log(actions)
                 return actions
             } catch (error) {
                 throw internalServerError(error)

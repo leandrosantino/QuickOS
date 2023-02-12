@@ -63,6 +63,7 @@ export function Home() {
               natureId: 1,
               actionsUniqueKey: 'A-I6/M2/N1_',
               concluded: false,
+              
               machine: { id: 2, tag: 'M43', ute: 'UTE-5', technology: 'WaterJet' },
               actions: [
                 {
@@ -73,7 +74,8 @@ export function Home() {
                   frequency: 1,
                   nextExecution: '2023-W36',
                   preventiveOSId: 14,
-                  natureId: 1
+                  natureId: 1,
+                  ignore: false,
                 }
               ],
               nature: { id: 1, name: 'Mecânica' }

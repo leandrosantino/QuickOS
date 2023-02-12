@@ -76,6 +76,8 @@ export async function assembleServiceOrders(week: number, year: number) {
                         machine: true, nature: true, PreventiveActionTaken: true,
                     }
                 })
+
+                
                 const actionsUniqueKey = generateActionsUniqueKey(actions)
 
                 if (actions.length > 0) {
@@ -86,6 +88,7 @@ export async function assembleServiceOrders(week: number, year: number) {
                         actions,
                         actionsUniqueKey,
                     }
+                    console.log(os)
                     OSs.push(await registerServiceOrders(os))
                 }
 

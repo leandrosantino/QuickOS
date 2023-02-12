@@ -134,6 +134,7 @@ function TableRow({ data, className, istitle, onClick }: TableRowProps) {
         className={`
           w-[100%]
           flex flex-row 
+          ${data.ignore?'text-gray-500':''}
           justify-center items-center 
           ${istitle ? `` : `
             bg-gray-300

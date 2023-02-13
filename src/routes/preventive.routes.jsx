@@ -1,9 +1,7 @@
 import { PagesContainer, Screen } from "../contexts/PagesContext";
 
-import { PreventiveHistoric } from "../pages/preventive/PreventiveHistoric";
-import { PreventiveOpened } from "../pages/preventive/PreventiveOpened";
+import { PreventivePlan } from "../pages/preventive/PreventivePlan";
 import { PreventiveActions } from "../pages/preventive/PreventiveActions";
-import { RegisterPreventive } from "../pages/preventive/RegisterPreventive";
 import { PreventiveActionForm } from "../pages/preventive/PreventiveActionForm";
 
 export function PreventiveRoutes() {
@@ -11,13 +9,8 @@ export function PreventiveRoutes() {
     <PagesContainer className="w-[100%] h-tabPage flex items-center justify-center">
 
       <Screen 
-        name="Preventive.Historic" 
-        component={PreventiveHistoric} 
-      />
-
-      <Screen 
-        name="Preventive.Opened" 
-        component={PreventiveOpened} 
+        name="Preventive.Plan" 
+        component={PreventivePlan} 
       />
 
       <Screen 
@@ -25,9 +18,22 @@ export function PreventiveRoutes() {
         component={PreventiveActions} 
       />
 
-      <Screen
-        name="Preventive.RegisterPreventive"
-        component={RegisterPreventive}
+    </PagesContainer>
+  );
+}
+
+export function PreventiveOsRoutes() {
+  return (
+    <PagesContainer className="w-[100%] h-tabPage flex items-center justify-center">
+
+      <Screen 
+        name="Preventive.Historic." 
+        component={PreventivePlan} 
+      />
+
+      <Screen 
+        name="Preventive.Actions" 
+        component={PreventiveActions} 
       />
 
     </PagesContainer>

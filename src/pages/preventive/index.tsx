@@ -10,7 +10,7 @@ export function Preventive() {
   const { currentPage, goToPage } = usePages()
 
   useEffect(() => {
-    if (currentPage === 'Preventive') goToPage('Preventive.Historic', {})
+    if (currentPage === 'Preventive') goToPage('Preventive.Plan', {})
     
   }, [currentPage, goToPage])
 
@@ -22,8 +22,8 @@ export function Preventive() {
     >
       <TabContainer>
         <TabButton
-          activated={currentPage === 'Preventive.Historic'}
-          onclick={() => { goToPage('Preventive.Historic', {}) }}
+          activated={currentPage === 'Preventive.Plan'}
+          onclick={() => { goToPage('Preventive.Plan', {}) }}
           title="Plano Anual"
         />
         <TabButton

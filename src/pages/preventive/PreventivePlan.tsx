@@ -3,7 +3,7 @@ import { PageHeader } from "../../components/PageHeader";
 
 import { api } from '../../utils/trpc'
 
-export function PreventiveHistoric() {
+export function PreventivePlan() {
 
   // eslint-disable-next-line
   const [year, setYear] = useState<number>(2023)
@@ -42,15 +42,16 @@ interface WeekCardType {
 
 function WeekCard({ week, year }: WeekCardType) {
 
-  const {data} = api.preventive.getcountPreventiveOs.useQuery({
-    weekCode: `${year}-W${String(week).length > 1?week:'0'+week}`
+  const { data } = api.preventive.getcountPreventiveOs.useQuery({
+    weekCode: `${year}-W${String(week).length > 1 ? week : '0' + week}`
   })
 
 
-  function getPecernt(){
+  function getPecernt() {
     if (data) {
-      if(data?.unfinished > 0 || data?.finished > 0){
-        const value = (data?.finished / (data?.finished+data?.unfinished))*100
+      console.log(data)
+      if (data?.unfinished > 0 || data?.finished > 0) {
+        const value = data.finished = 0?0:(data.finished / (data.finished + data.unfinished)) * 100
         return value
       }
     }
@@ -87,8 +88,7 @@ function WeekCard({ week, year }: WeekCardType) {
       >
         <div
           className={`
-            w-[${percent > 0?percent+'%': '0%'}] h-1.5
-            
+            w-[${percent > 0 ? percent + '%' : '0%'}] h-1.5
             bg-green-500
           `}
         ></div>

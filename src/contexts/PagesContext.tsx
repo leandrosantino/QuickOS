@@ -12,7 +12,7 @@ import {
 export type Pages =
 	'Dashboard' |
 	'Preventive' |
-	'Preventive.Historic' |
+	'Preventive.Plan' |
 	'Preventive.Opened' |
 	'Preventive.Actions' |
 	'Preventive.Actions.NewActions' |
@@ -64,7 +64,7 @@ export function PagesContextProvider({ children }: PagesContextProviderProps) {
 
 	function PageNameLink({ page }: PageNamesLinkProps) {
 		const names = {
-			'Historic': 'Histórico',
+			'Plan': 'Plano',
 			'Dashboard': 'Dashboard',
 			'Preventive': 'Preventiva',
 			'Opened': 'Em Aberto',

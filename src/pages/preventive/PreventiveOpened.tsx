@@ -67,11 +67,11 @@ export function PreventiveOpened() {
                   grid grid-cols-2 xl:grid-cols-3 gap-4 p-4 
                 "
               >
-                {
+                {/* {
                   data.map((entry, index) => (
                     <PreventiveCard key={index} data={entry} />
                   ))
-                }
+                } */}
               </div>
 
           }

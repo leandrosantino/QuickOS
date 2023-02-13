@@ -29,5 +29,25 @@ export const main = t.router({
                 throw internalServerError(error)
             }
         })
+    ,
+
+    getWorker: t.procedure
+        .input(z.number())
+        .output(z.object({
+            id: z.number(),
+            registration: z.number(),
+            name: z.string(),
+            class:z.string(),
+        }).nullable())
+        .query(async ({input}) => {
+    try {
+        const worker = await prisma.worker.findUnique({
+            where:{id: input}
+        })
+        return worker
+    } catch (error) {
+        throw internalServerError(error)
+    }
+})
 
 })

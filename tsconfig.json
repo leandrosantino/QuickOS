@@ -24,6 +24,6 @@
   "include": [
     "src",
     "@types",
-    "electron/server/routers"
+    "electron/server/routers",
   ]
 }

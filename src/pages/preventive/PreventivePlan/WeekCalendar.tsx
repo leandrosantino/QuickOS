@@ -21,7 +21,7 @@ export function WeekCalendar() {
       "
     >
 
-      <PageHeader title='Plano Anual de Preventivas' />
+      <PageHeader title='Calendário Semanal' />
 
       <div
         className="
@@ -53,9 +53,7 @@ interface WeekCardType {
 
 function WeekCard({ week, year, onClick }: WeekCardType) {
 
-  const { data } = api.preventive.getcountPreventiveOs.useQuery({
-    weekCode: `${year}-W${String(week).length > 1 ? week : '0' + week}`
-  })
+  const { data } = api.preventive.getcountPreventiveOs.useQuery({week, year})
 
   function getPecernt() {
     let value: number = 0
@@ -65,7 +63,7 @@ function WeekCard({ week, year, onClick }: WeekCardType) {
       }
     }
     console.log(week, '-', value)
-    return value
+    return Math.round(value)
   }
 
   const percent = getPecernt()
@@ -92,14 +90,17 @@ function WeekCard({ week, year, onClick }: WeekCardType) {
         {week}
       </div>
       <div
-        className={`
+        className={`  
           w-full h-1.5
           bg-gray-500
         `}
       >
         <div
+          style={{
+            width: percent + '%'
+          }}
           className={`
-            w-[${percent > 0 ? percent : 0}%] h-1.5
+            h-1.5
             bg-green-500
           `}
         ></div>

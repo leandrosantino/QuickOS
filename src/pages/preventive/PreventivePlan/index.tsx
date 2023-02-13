@@ -8,7 +8,7 @@ export function PreventivePlan() {
   const { currentPage, goToPage } = usePages()
 
   useEffect(() => {
-    if (currentPage === 'Preventive') goToPage('Preventive.Plan', {})
+    if (currentPage === 'Preventive.Plan') goToPage('Preventive.Plan.Calendar', {})
     
   }, [currentPage, goToPage])
 

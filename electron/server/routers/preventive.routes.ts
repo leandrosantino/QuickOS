@@ -12,7 +12,7 @@ import {
     actionCreateSchema
 } from '../preventiveOsTools'
 
-import {weekYearRegex} from '../../utils/weekTools'
+import {weekYearToString} from '../../utils/weekTools'
 
 const t = initTRPC.create()
 
@@ -158,7 +158,7 @@ export const preventive = t.router({
     ,
 
     getcountPreventiveOs: t.procedure
-        .input(z.object({weekCode: z.string().regex(weekYearRegex)}))
+        .input(z.object({week: z.number(), year: z.number()}))
         .output(z.object({
             finished: z.number(),
             unfinished: z.number(),
@@ -166,15 +166,17 @@ export const preventive = t.router({
         .query(async ({input})=>{
             try {
 
+                const weekCode = weekYearToString(input.week, input.year)
+
                 const finished = await prisma.preventiveOS.count({
                     where:{
-                        weekCode: input.weekCode,
+                        weekCode,
                         concluded: true
                     }
                 })
                 const unfinished = await prisma.preventiveOS.count({
                     where:{
-                        weekCode: input.weekCode,
+                        weekCode,
                         concluded: false
                     }
                 })

@@ -12,6 +12,8 @@ import {
     actionCreateSchema
 } from '../preventiveOsTools'
 
+import {weekYearRegex} from '../../utils/weekTools'
+
 const t = initTRPC.create()
 
 export const preventive = t.router({
@@ -149,6 +151,38 @@ export const preventive = t.router({
                     where: { id: input.id }
                 })
                 return successResponse()
+            } catch (error) {
+                throw internalServerError(error)
+            }
+        })
+    ,
+
+    getcountPreventiveOs: t.procedure
+        .input(z.object({weekCode: z.string().regex(weekYearRegex)}))
+        .output(z.object({
+            finished: z.number(),
+            unfinished: z.number(),
+        }))
+        .query(async ({input})=>{
+            try {
+
+                const finished = await prisma.preventiveOS.count({
+                    where:{
+                        weekCode: input.weekCode,
+                        concluded: true
+                    }
+                })
+                const unfinished = await prisma.preventiveOS.count({
+                    where:{
+                        weekCode: input.weekCode,
+                        concluded: false
+                    }
+                })
+
+                return {
+                    finished, unfinished
+                }
+
             } catch (error) {
                 throw internalServerError(error)
             }

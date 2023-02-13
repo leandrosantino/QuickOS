@@ -24,22 +24,12 @@ export function Preventive() {
         <TabButton
           activated={currentPage === 'Preventive.Historic'}
           onclick={() => { goToPage('Preventive.Historic', {}) }}
-          title="Hístorico"
-        />
-        <TabButton
-          activated={currentPage.search('Opened') > -1}
-          onclick={() => { goToPage('Preventive.Opened', {}) }}
-          title="Em Aberto"
+          title="Plano Anual"
         />
         <TabButton
           activated={currentPage.split('.')[1] === 'Actions'}
           onclick={() => { goToPage('Preventive.Actions', {}) }}
           title="Ações"
-        />
-        <TabButton
-          activated={currentPage.search('RegisterPreventive') > -1}
-          onclick={() => { goToPage('Preventive.RegisterPreventive', {}) }}
-          title="Lançamento"
         />
       </TabContainer>
 

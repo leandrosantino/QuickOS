@@ -1,65 +1,15 @@
-import { PreventiveCard } from "../../components/cards/PreventiveCard";
-import { ScrollContainer } from "../../components/containers/ScrollContainer";
-import { FilterFrame } from "../../components/dashboard/FilterFrame";
+import { useState } from "react";
 import { PageHeader } from "../../components/PageHeader";
 
-const data: PreventiveType[] = [
-  {
-    id: 105,
-    tag: 'M20',
-    actions: [
-      { description: 'Troca do Relé', concluded: true },
-      { description: 'Troca do Filtro', concluded: true },
-      { description: 'Troca do Óleo', concluded: true },
-    ],
-    date: '21/02/2022',
-    duration: 43,
-    responsible: 'Robert'
-  },
-  {
-    id: 106,
-    tag: 'M15',
-    actions: [
-      { description: 'Troca do Relé', concluded: true },
-      { description: 'Troca do Filtro', concluded: true },
-      { description: 'Troca da Bomba', concluded: true },
-      { description: 'Troca do Disjuntor', concluded: false },
-      { description: 'Troca do Oring', concluded: false },
-    ],
-    date: '21/03/2022',
-    duration: 25,
-    responsible: 'Felipe'
-  },
-  {
-    id: 106,
-    tag: 'M15',
-    actions: [
-      { description: 'Troca do Relé', concluded: true },
-      { description: 'Troca do Filtro', concluded: true },
-      { description: 'Troca da Bomba', concluded: true },
-      { description: 'Troca do Disjuntor', concluded: false },
-      { description: 'Troca do Oring', concluded: false },
-    ],
-    date: '21/03/2022',
-    duration: 25,
-    responsible: 'Felipe'
-  },
-  {
-    id: 106,
-    tag: 'M15',
-    actions: [
-      { description: 'Troca do Relé', concluded: true },
-      { description: 'Troca do Filtro', concluded: true },
-      { description: 'Troca da Bomba', concluded: true },
-      { description: 'Troca do Oring', concluded: false },
-    ],
-    date: '21/03/2022',
-    duration: 25,
-    responsible: 'Felipe'
-  },
-]
+import { api } from '../../utils/trpc'
 
 export function PreventiveHistoric() {
+
+  // eslint-disable-next-line
+  const [year, setYear] = useState<number>(2023)
+
+  const semanas = new Array<string>(52).fill('teste')
+
   return (
     <div
       className="
@@ -68,43 +18,81 @@ export function PreventiveHistoric() {
       "
     >
 
-      <PageHeader title='Histórico de Preventivas' />
+      <PageHeader title='Plano Anual de Preventivas' />
 
       <div
-        className="w-full mt-3 flex justify-center items-center"
+        className="
+          w-full h-[75%] mt-5
+          grid grid-cols-8 grid-rows-7 gap-2
+        "
       >
-        <FilterFrame width={70} opened />
+        {
+          semanas.map((entry, index) => (<WeekCard key={index} week={index + 1} year={year} />))
+        }
       </div>
 
-      <div className="w-full h-[calc(100vh-185px)]">
-        <ScrollContainer className="mt-3 h-full  rounded-md" >
-          {
-            data.length === 0 ?
-              <div
-                className="
-                  w-full h-full 
-                  flex justify-center items-center
-                  font-medium
-                "
-              >
-                Não há Preventivas em aberto no momento
-              </div>
-              : <div
-                className="
-                  grid grid-cols-2 xl:grid-cols-3 gap-4 px-4 pb-4
-                "
-              >
-                {
-                  data.map((entry, index) => (
-                    <PreventiveCard key={index} data={entry} />
-                  ))
-                }
-              </div>
+    </div>
+  )
+}
 
-          }
-        </ScrollContainer>
+interface WeekCardType {
+  week: number,
+  year: number,
+}
+
+function WeekCard({ week, year }: WeekCardType) {
+
+  const {data} = api.preventive.getcountPreventiveOs.useQuery({
+    weekCode: `${year}-W${String(week).length > 1?week:'0'+week}`
+  })
+
+
+  function getPecernt(){
+    if (data) {
+      if(data?.unfinished > 0 || data?.finished > 0){
+        const value = (data?.finished / (data?.finished+data?.unfinished))*100
+        return value
+      }
+    }
+    return 0
+  }
+
+  const percent = getPecernt()
+
+  return (
+    <div
+      className="
+        w-full h-full 
+        bg-gray-300 rounded-md
+        flex flex-col justify-center items-center
+        font-medium text-xl
+        cursor-pointer
+        active:bg-opacity-90
+        hover:bg-opacity-70
+      "
+    >
+      <div
+        className={`
+          w-full h-full
+          flex flex-row justify-center items-center
+        `}
+      >
+        {week}
       </div>
-
+      <div
+        className={`
+          w-full h-1.5
+          bg-gray-500
+        `}
+      >
+        <div
+          className={`
+            w-[${percent > 0?percent+'%': '0%'}] h-1.5
+            
+            bg-green-500
+          `}
+        ></div>
+      </div>
     </div>
   )
 }

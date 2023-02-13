@@ -22,7 +22,7 @@ export function Preventive() {
     >
       <TabContainer>
         <TabButton
-          activated={currentPage === 'Preventive.Plan'}
+          activated={currentPage.search('Preventive.Plan') >= 0}
           onclick={() => { goToPage('Preventive.Plan', {}) }}
           title="Plano Anual"
         />

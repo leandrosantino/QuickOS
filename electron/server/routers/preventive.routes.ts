@@ -179,9 +179,11 @@ export const preventive = t.router({
                     }
                 })
 
-                return {
+                const resp = {
                     finished, unfinished
                 }
+
+                return resp
 
             } catch (error) {
                 throw internalServerError(error)

@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { PageHeader } from "../../components/PageHeader";
+import { PageHeader } from "../../../components/PageHeader";
+import { usePages } from "../../../hooks/usePages";
 
-import { api } from '../../utils/trpc'
+import { api } from '../../../utils/trpc'
 
-export function PreventivePlan() {
+export function WeekCalendar() {
+
+  const { goToPage } = usePages()
 
   // eslint-disable-next-line
   const [year, setYear] = useState<number>(2023)
@@ -27,7 +30,14 @@ export function PreventivePlan() {
         "
       >
         {
-          semanas.map((entry, index) => (<WeekCard key={index} week={index + 1} year={year} />))
+          semanas.map((entry, index) => (
+            <WeekCard
+              onClick={()=>goToPage('Preventive.Plan.ServiceOrders', {week:index + 1, year})}
+              key={index}
+              week={index + 1}
+              year={year}
+            />
+          ))
         }
       </div>
 
@@ -38,24 +48,24 @@ export function PreventivePlan() {
 interface WeekCardType {
   week: number,
   year: number,
+  onClick: () => void
 }
 
-function WeekCard({ week, year }: WeekCardType) {
+function WeekCard({ week, year, onClick }: WeekCardType) {
 
   const { data } = api.preventive.getcountPreventiveOs.useQuery({
     weekCode: `${year}-W${String(week).length > 1 ? week : '0' + week}`
   })
 
-
   function getPecernt() {
+    let value: number = 0
     if (data) {
-      console.log(data)
       if (data?.unfinished > 0 || data?.finished > 0) {
-        const value = data.finished = 0?0:(data.finished / (data.finished + data.unfinished)) * 100
-        return value
+        value = data.finished === 0 ? 0 : (data.finished / (data.finished + data.unfinished)) * 100
       }
     }
-    return 0
+    console.log(week, '-', value)
+    return value
   }
 
   const percent = getPecernt()
@@ -71,6 +81,7 @@ function WeekCard({ week, year }: WeekCardType) {
         active:bg-opacity-90
         hover:bg-opacity-70
       "
+      onClick={() => onClick()}
     >
       <div
         className={`
@@ -88,7 +99,7 @@ function WeekCard({ week, year }: WeekCardType) {
       >
         <div
           className={`
-            w-[${percent > 0 ? percent + '%' : '0%'}] h-1.5
+            w-[${percent > 0 ? percent : 0}%] h-1.5
             bg-green-500
           `}
         ></div>

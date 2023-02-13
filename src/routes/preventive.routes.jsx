@@ -1,6 +1,7 @@
 import { PagesContainer, Screen } from "../contexts/PagesContext";
-
 import { PreventivePlan } from "../pages/preventive/PreventivePlan";
+import {WeekCalendar} from '../pages/preventive/PreventivePlan/WeekCalendar'
+import {ServiceOrders} from '../pages/preventive/PreventivePlan/ServiceOrders'
 import { PreventiveActions } from "../pages/preventive/PreventiveActions";
 import { PreventiveActionForm } from "../pages/preventive/PreventiveActionForm";
 
@@ -27,13 +28,13 @@ export function PreventiveOsRoutes() {
     <PagesContainer className="w-[100%] h-tabPage flex items-center justify-center">
 
       <Screen 
-        name="Preventive.Historic." 
-        component={PreventivePlan} 
+        name="Preventive.Plan.Calendar" 
+        component={WeekCalendar} 
       />
 
       <Screen 
-        name="Preventive.Actions" 
-        component={PreventiveActions} 
+        name="Preventive.Plan.ServiceOrders" 
+        component={ServiceOrders} 
       />
 
     </PagesContainer>

@@ -13,6 +13,8 @@ export type Pages =
 	'Dashboard' |
 	'Preventive' |
 	'Preventive.Plan' |
+	'Preventive.Plan.ServiceOrders' |
+	'Preventive.Plan.Calendar' |
 	'Preventive.Opened' |
 	'Preventive.Actions' |
 	'Preventive.Actions.NewActions' |
@@ -64,7 +66,9 @@ export function PagesContextProvider({ children }: PagesContextProviderProps) {
 
 	function PageNameLink({ page }: PageNamesLinkProps) {
 		const names = {
-			'Plan': 'Plano',
+			'Plan': 'Plano Anual',
+			'ServiceOrders': 'Ordem de Serviço',
+			'Calendar': 'Calendário',
 			'Dashboard': 'Dashboard',
 			'Preventive': 'Preventiva',
 			'Opened': 'Em Aberto',

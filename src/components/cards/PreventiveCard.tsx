@@ -70,7 +70,7 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
               "
             >
               {
-                index <= 5 ?
+                index <= 3 ?
                   <>
                     {
                       data.concluded ?
@@ -83,7 +83,7 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
                 "
                     >{entry.description}</div>
                   </> :
-                  <div>mais...</div>
+                  <div className="italic font-medium" >mais...</div>
               }
             </li>
           ))
@@ -97,10 +97,15 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
           
         "
       >
-        {data.concluded && <div className='w-full'>
-          <span className='mr-1 font-medium '>Responsável:</span>
-          {responsable.data?.name}
-        </div>}
+         <div className='w-full flex flex-row justify-between items-center'>
+          {data.concluded &&<div>
+            <span className='mr-1 font-medium w-full text-end'>Responsável:</span>
+            {responsable.data?.name}
+          </div>}
+          <div className='mr-1 font-medium w-full text-end'>
+            {data.nature?.name}
+          </div>
+        </div>
 
         <div
           className={`

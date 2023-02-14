@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { InputCaseForm } from "../../../components/forms/InputCaseForm";
 import { PageHeader } from "../../../components/PageHeader";
 import { usePages } from "../../../hooks/usePages";
 
@@ -8,7 +9,6 @@ export function WeekCalendar() {
 
   const { goToPage } = usePages()
 
-  // eslint-disable-next-line
   const [year, setYear] = useState<number>(2023)
 
   const semanas = new Array<string>(52).fill('teste')
@@ -21,7 +21,28 @@ export function WeekCalendar() {
       "
     >
 
-      <PageHeader title='Calendário Semanal' />
+      <PageHeader title={'Calendário Semanal - '+year} >
+        <div
+          className="flex flex-row justify-center items-center"
+        >
+          <label htmlFor="year"
+            className="font-medium text-lg mr-2"
+          >Ano: </label>
+          <input
+            id="year"
+            value={year}
+            type="number"
+            min={2019}
+            minLength={4}
+            onChange={(e) => setYear(Number(e.target.value))}
+            className={`
+              w-1/3 h-full p-[2px]
+              border-gray-900 border rounded
+              indent-2
+            `}
+          />
+        </div>
+      </PageHeader>
 
       <div
         className="

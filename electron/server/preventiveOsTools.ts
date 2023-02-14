@@ -40,7 +40,7 @@ export const actionsSchema = z.object({
 
 export const actionsTakenSchema = z.object({
     id: z.number(),
-    date: z.date(),
+    date: z.date().or(z.string()),
     osId: z.number(),
     actionId: z.number(),
     weekCode: z.string().regex(weekYearRegex),
@@ -51,7 +51,7 @@ export const serviceOrdersSchema = z.object({
     id: z.number().optional(),
     concluded: z.boolean().nullable().optional(),
     responsibleId: z.number().nullable().optional(),
-    date: z.date().nullable().optional(),
+    date: z.date().nullable().optional().or(z.string()),
     machineId: z.number(),
     weekCode: z.string().regex(weekYearRegex),
     natureId: z.number(),

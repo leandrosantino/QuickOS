@@ -18,7 +18,9 @@
     "dist": "npm run react:build && npm run electron:build && electron-builder -w -c.extraMetadata.main=build/main.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "server": "tsx watch ./electron/server/index.ts"
+    "server": "tsx watch ./electron/server/index.ts",
+    "dbstudio": "npx prisma studio",
+    "dbmigrate": "npx prisma migrate dev"
   },
   "prisma": {
     "seed": "tsx prisma/seed/seed.ts"

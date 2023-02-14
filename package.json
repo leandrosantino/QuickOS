@@ -14,7 +14,7 @@
     "react:build": "react-scripts build",
     "electron:build": "tsc -p ./electron.tsconfig.json",
     "electron:watch": "tsc -w -p ./electron.tsconfig.json",
-    "start": "cls && npm run electron:build && cls && electron . && cls",
+    "app": "cls && npm run electron:build && cls && electron . && cls",
     "dist": "npm run react:build && npm run electron:build && electron-builder -w -c.extraMetadata.main=build/main.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

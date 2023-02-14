@@ -41,13 +41,22 @@ export const actionInfoSchema = z.object({
 
 const actionsInfoSchemaWithActonsTaken = z.object({
     ...actionInfoSchema.shape,
-     _count: z.object({ PreventiveActionTaken: z.number() }),
+     _count: z.object({ actionsTaken: z.number() }),
 })
 
 export type ActionsInfoTypeWithActonsTaken = z.output<typeof actionsInfoSchemaWithActonsTaken>
 
 export type ActionsInfoType = z.output<typeof actionInfoSchema>
 export type ActionsInfoTypeInupt = z.input<typeof actionInfoSchema>
+
+export const actionsTakenSchema = z.object({
+    id: z.number(),
+    date: z.string(),
+    osId: z.number(),
+    actionId: z.number(),
+    weekCode: z.string().regex(weekYearRegex),
+    action: actionInfoSchema
+})
 
 export const serviceOrdersSchema = z.object({
     id: z.number().optional(),
@@ -57,11 +66,12 @@ export const serviceOrdersSchema = z.object({
     machineId: z.number(),
     weekCode: z.string().regex(weekYearRegex),
     natureId: z.number(),
-    actions: z.array(actionInfoSchema),
+    actions: z.array(actionInfoSchema).optional(),
     actionsUniqueKey: z.string(),
     machine: machineInfoSchema.optional(),
     nature: natureInfoSchema.optional(),
-    duration: z.number().optional(),
+    duration: z.number().optional().nullable(),
+    actionsTaken: z.array(actionsTakenSchema).optional(),
 })
 
 export type ServiceOrderType = z.infer<typeof serviceOrdersSchema>

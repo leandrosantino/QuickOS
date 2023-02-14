@@ -13,7 +13,7 @@ export type Pages =
 	'Dashboard' |
 	'Preventive' |
 	'Preventive.Plan' |
-	'Preventive.Plan.ServiceOrders' |
+	'Preventive.Plan.Calendar.ServiceOrders' |
 	'Preventive.Plan.Calendar' |
 	'Preventive.Opened' |
 	'Preventive.Actions' |

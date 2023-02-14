@@ -44,7 +44,7 @@ export const actionsTakenSchema = z.object({
     osId: z.number(),
     actionId: z.number(),
     weekCode: z.string().regex(weekYearRegex),
-    action: actionsSchema
+    action: actionsSchema 
 })
 
 export const serviceOrdersSchema = z.object({
@@ -125,6 +125,21 @@ export async function assembleServiceOrders(week: number, year: number) {
 
                 OSs.push(...os)
             }
+        }
+
+        {
+            const os = await prisma.preventiveOS.findMany({
+                include:{
+                    _count:{select:{actions:true, actionsTaken:true}}
+                }
+            })
+            os.forEach(async (entry)=>{
+                if(entry._count.actions == 0 && entry._count.actionsTaken == 0){
+                    await prisma.preventiveOS.delete({
+                        where: {id: entry.id}
+                    })
+                }
+            })
         }
         
         return OSs

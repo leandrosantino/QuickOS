@@ -320,7 +320,7 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
             '
           >
 
-            {data && data?._count?.PreventiveActionTaken <= 0 &&
+            {data && data?._count?.actionsTaken <= 0 &&
               <InputButton
                 onClick={() => handleDelete()}
                 title='Excluir'

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { VscDebugBreakpointLogUnverified, VscDebugBreakpointLog } from 'react-icons/vsc'
+import { VscDebugBreakpointLogUnverified, VscDebugBreakpointLog, VscSaveAs } from 'react-icons/vsc'
 import { BsPrinterFill } from 'react-icons/bs'
 import { InputButton } from '../forms/InputButton'
 import { ServiceOrderType } from '../../utils/schemas'
@@ -12,15 +12,17 @@ interface PreventiveCardProps {
 }
 
 export function PreventiveCard({ data }: PreventiveCardProps) {
-  
-  const responsable = api.main.getWorker.useQuery(data?.responsibleId?data?.responsibleId:0)
 
-  function toDate(entry:string){
+  const responsable = api.main.getWorker.useQuery(data?.responsibleId ? data?.responsibleId : 0)
+
+  const actions = !data.concluded ? data.actions : data?.actionsTaken?.map(entry => entry.action)
+
+  function toDate(entry: string) {
     let date = entry.split('T')
     date = date[0].split('-')
     return `${date[2]}/${date[1]}/${date[0]}`
   }
-  
+
   return (
     <div
       className='
@@ -35,7 +37,7 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
       <header
         className={`
           flex flex-row justify-center items-center w-full px-2
-          border-b-2 ${data.concluded?'border-green-600':'border-gray-900'} font-medium text-lg 
+          border-b-2 ${data.concluded ? 'border-green-600' : 'border-gray-900'} font-medium text-lg 
         `}
       >
         <div className='w-1/2 text-start py-2' >Nº {data.id}</div>
@@ -58,7 +60,7 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
         "
       >
         {
-          data.actions.map((entry, index) => (
+          actions?.map((entry, index) => (
             <li
               key={index}
               className="
@@ -68,15 +70,21 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
               "
             >
               {
-                data.concluded?
-                  <span className='text-green-500'><VscDebugBreakpointLog /></span> :
-                  <span><VscDebugBreakpointLogUnverified /></span>
-              }
-              <div
-                className="
+                index <= 5 ?
+                  <>
+                    {
+                      data.concluded ?
+                        <span className='text-green-500'><VscDebugBreakpointLog /></span> :
+                        <span><VscDebugBreakpointLogUnverified /></span>
+                    }
+                    <div
+                      className="
                   p-1 text-lg
                 "
-              >{entry.description}</div>
+                    >{entry.description}</div>
+                  </> :
+                  <div>mais...</div>
+              }
             </li>
           ))
         }
@@ -84,49 +92,70 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
 
       <div
         className="
-          h-full w-full
-          flex flex-row justify-end items-end
+          h-full w-full mt-2
+          flex flex-col justify-end items-end
           
         "
       >
+        {data.concluded && <div className='w-full'>
+          <span className='mr-1 font-medium '>Responsável:</span>
+          {responsable.data?.name}
+        </div>}
+
         <div
           className={`
             w-full mt-2
-            border-t ${data.concluded?'border-green-600':'border-gray-500'} p-2
+            border-t ${data.concluded ? 'border-green-600' : 'border-gray-500'} p-2
             flex flex-row justify-end 
           `}
         >
-          {
-            data.concluded ?
-              <div
-                className="
-                  h-full w-full text-base
-                  flex flex-row justify-center items-center
-                "
-              >
-                <div className="w-1/2 flex justify-start items-center" >
-                  <span className='mr-1 font-medium '>Responsável:</span>
-                  {responsable.data?.name}
-                </div>
-                <div className={`
-                  w-1/2 flex justify-end items-center font-bold
-                 text-green-600
-                `} >
-                  Concluído 
-                </div>
-              </div>
-              :
 
-              <InputButton 
-                title='Imprimir'
-                className="text-gray-100 bg-orange-500 "
-                Icon={BsPrinterFill}
-                onClick={()=>{
-                  ipc.send('printServiceOrder', data)
-                }}
-              />
+          <div
+            className="
+              h-full w-full text-base
+              flex flex-row justify-center items-center
+            "
+          >
+            <div className="w-1/2 flex flex-col justify-start items-center" >
+              <div className={`w-full mr-1 font-medium ${data.concluded ? 'text-green-600' : ''}`}>{
+                data.concluded ? 'Concluído' : 'Em Aberto'
+              }</div>
+            </div>
+            <div className={`
+              w-1/2 flex justify-end items-center font-bold
+            `} >
+              {
+                data.concluded ?
+                  <InputButton
+                    title='Imprimir'
+                    className="text-gray-100 bg-green-500 "
+                    Icon={BsPrinterFill}
+                    onClick={() => {
+                      ipc.send('printServiceOrder', data)
+                    }}
+                  /> :
+                  <>
+                    <InputButton
+                      title='Execultar'
+                      className="text-gray-100 bg-yellow-500 mr-2"
+                      Icon={VscSaveAs}
+                      onClick={() => {
 
-          }
+                      }}
+                    />
+                    <InputButton
+                      title='Imprimir'
+                      className="text-gray-100 bg-orange-500 "
+                      Icon={BsPrinterFill}
+                      onClick={() => {
+                        ipc.send('printServiceOrder', data)
+                      }}
+                    />
+                  </>
+              }
+            </div>
+          </div>
+
         </div>
       </div>
 

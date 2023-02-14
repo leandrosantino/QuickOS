@@ -33,7 +33,7 @@ export function PreventiveOsRoutes() {
       />
 
       <Screen 
-        name="Preventive.Plan.ServiceOrders" 
+        name="Preventive.Plan.Calendar.ServiceOrders" 
         component={ServiceOrders} 
       />
 

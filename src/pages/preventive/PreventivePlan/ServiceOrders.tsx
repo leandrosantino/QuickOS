@@ -2,20 +2,23 @@
 
 import { PreventiveCard } from '../../../components/cards/PreventiveCard';
 import { ScrollContainer } from '../../../components/containers/ScrollContainer';
+import { InputButton } from '../../../components/forms/InputButton';
 import { PageHeader } from '../../../components/PageHeader';
 import { usePages } from '../../../hooks/usePages'
 import { api } from '../../../utils/trpc';
+
+import {IoIosArrowBack} from 'react-icons/io'
 
 interface type {
   week: number;
   year: number;
 }
 
-export function ServiceOrders({week, year} : type) {
+export function ServiceOrders({ week, year }: type) {
 
-  const {data} = api.preventive.getServiceOrders.useQuery({week, year})
+  const { data } = api.preventive.getServiceOrders.useQuery({ week, year })
 
-  const {backPage} = usePages()
+  const { backPage } = usePages()
 
   return (
     <div
@@ -24,7 +27,12 @@ export function ServiceOrders({week, year} : type) {
         px-5
       "
     >
-      <button onClick={()=>backPage()} >back</button>
+      <InputButton
+        title=''
+        className="text-gray-100 bg-gray-500 ml-[-15px] mt-2"
+        Icon={IoIosArrowBack}
+        onClick={()=>{backPage()}}
+      />
 
       <PageHeader title='Ordens de Serviço Preventivas' ></PageHeader>
 

@@ -32,7 +32,7 @@ export function WeekCalendar() {
         {
           semanas.map((entry, index) => (
             <WeekCard
-              onClick={()=>goToPage('Preventive.Plan.ServiceOrders', {week:index + 1, year})}
+              onClick={()=>goToPage('Preventive.Plan.Calendar.ServiceOrders', {week:index + 1, year})}
               key={index}
               week={index + 1}
               year={year}
@@ -62,7 +62,6 @@ function WeekCard({ week, year, onClick }: WeekCardType) {
         value = data.finished === 0 ? 0 : (data.finished / (data.finished + data.unfinished)) * 100
       }
     }
-    console.log(week, '-', value)
     return Math.round(value)
   }
 

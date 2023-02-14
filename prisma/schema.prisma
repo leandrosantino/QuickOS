@@ -44,8 +44,8 @@ model PreventiveActionTaken {
   actionId Int
   weekCode String
 
-  acction PreventiveAction @relation(fields: [actionId], references: [id])
-  os      PreventiveOS     @relation(fields: [osId], references: [id])
+  action PreventiveAction @relation(fields: [actionId], references: [id])
+  os     PreventiveOS     @relation(fields: [osId], references: [id])
 }
 
 model PreventiveAction {
@@ -59,10 +59,10 @@ model PreventiveAction {
   natureId       Int
   ignore         Boolean @default(false)
 
-  machine               Machine                 @relation(fields: [machineId], references: [id])
-  PreventiveOS          PreventiveOS?           @relation(fields: [preventiveOSId], references: [id])
-  nature                Nature                  @relation(fields: [natureId], references: [id])
-  PreventiveActionTaken PreventiveActionTaken[]
+  machine      Machine                 @relation(fields: [machineId], references: [id])
+  PreventiveOS PreventiveOS?           @relation(fields: [preventiveOSId], references: [id])
+  nature       Nature                  @relation(fields: [natureId], references: [id])
+  actionsTaken PreventiveActionTaken[]
 }
 
 model PreventiveOS {
@@ -74,12 +74,13 @@ model PreventiveOS {
   natureId         Int
   actions          PreventiveAction[]
   actionsUniqueKey String
+  duration         Int?
   concluded        Boolean?           @default(false)
 
-  nature                     Nature                  @relation(fields: [natureId], references: [id])
-  machine                    Machine                 @relation(fields: [machineId], references: [id])
-  responsible                Worker?                 @relation(fields: [responsibleId], references: [id])
-  PeventiveActionsCarriedOut PreventiveActionTaken[]
+  nature                Nature                  @relation(fields: [natureId], references: [id])
+  machine               Machine                 @relation(fields: [machineId], references: [id])
+  responsible           Worker?                 @relation(fields: [responsibleId], references: [id])
+  actionsTaken PreventiveActionTaken[]
 
   @@unique([machineId, natureId, weekCode, actionsUniqueKey])
 }

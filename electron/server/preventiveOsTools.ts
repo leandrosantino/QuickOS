@@ -1,6 +1,5 @@
-import { ostring, z } from "zod";
+import { z } from "zod";
 import prisma from "../services/prisma"
-import { PreventiveOS } from '../../database/client'
 import {
     incrementWeekYear,
     weekYearStringToNumber,
@@ -35,8 +34,17 @@ export const actionsSchema = z.object({
     id: z.number(),
     machine: machineSchema.optional(),
     nature: natureSchema.optional(),
-    _count: z.object({ PreventiveActionTaken: z.number() }).optional(),
+    _count: z.object({ actionsTaken: z.number() }).optional(),
     ...actionCreateSchema.shape
+})
+
+export const actionsTakenSchema = z.object({
+    id: z.number(),
+    date: z.date(),
+    osId: z.number(),
+    actionId: z.number(),
+    weekCode: z.string().regex(weekYearRegex),
+    action: actionsSchema
 })
 
 export const serviceOrdersSchema = z.object({
@@ -47,10 +55,12 @@ export const serviceOrdersSchema = z.object({
     machineId: z.number(),
     weekCode: z.string().regex(weekYearRegex),
     natureId: z.number(),
-    actions: z.array(actionsSchema),
+    actions: z.array(actionsSchema).optional(),
     actionsUniqueKey: z.string(),
     machine: machineSchema.optional(),
     nature: natureSchema.optional(),
+    duration: z.number().optional().nullable(),
+    actionsTaken: z.array(actionsTakenSchema).optional(),
 })
 
 export type ServiceOrdersType = z.infer<typeof serviceOrdersSchema>
@@ -73,7 +83,7 @@ export async function assembleServiceOrders(week: number, year: number) {
                         ignore: false,
                     },
                     include: {
-                        machine: true, nature: true, PreventiveActionTaken: true,
+                        machine: true, nature: true, actionsTaken: true
                     }
                 })
 
@@ -99,18 +109,26 @@ export async function assembleServiceOrders(week: number, year: number) {
                         concluded: true,
                     },
                     include: {
-                        actions: {
-                            include: {
-                                nature: true, machine: true
+                        nature: true,
+                        machine: true,
+                        actionsTaken: {
+                            include:{
+                                action: {
+                                    include: {
+                                        nature: true, machine: true
+                                    }
+                                },
                             }
-                        }, nature: true, machine: true
+                        }
                     }
                 })
 
                 OSs.push(...os)
             }
         }
+        
         return OSs
+
     } catch (error) {
         throw error
     }
@@ -126,7 +144,7 @@ export async function registerServiceOrders({ machineId, weekCode, actions, natu
             natureId,
             actionsUniqueKey,
             actions: {
-                connect: actions.map(({ id }) => ({ id }))
+                connect: actions?.map(({ id }) => ({ id }))
             }
         }
 
@@ -146,7 +164,7 @@ export async function registerServiceOrders({ machineId, weekCode, actions, natu
                     include: {
                         nature: true, machine: true
                     }
-                }, nature: true, machine: true
+                }, nature: true, machine: true,
             }
         })
         return os
@@ -160,12 +178,13 @@ export const executeServiceOrdersParamsSchema = z.object({
     id: z.number(),
     date: z.string(),
     workerId: z.number(),
+    duration: z.number(),
     IdsOfActionsTaken: z.array(z.object({ id: z.number() })).optional(),
 })
 
 export type ExecuteServiceOrdersType = z.input<typeof executeServiceOrdersParamsSchema>
 
-export async function executeServiceOrders({ date, id, workerId, IdsOfActionsTaken }: ExecuteServiceOrdersType) {
+export async function executeServiceOrders({ date, id, workerId, duration }: ExecuteServiceOrdersType) {
     try {
 
         const os = await prisma.preventiveOS.update({
@@ -175,6 +194,7 @@ export async function executeServiceOrders({ date, id, workerId, IdsOfActionsTak
             data: {
                 date: new Date(date),
                 responsibleId: workerId,
+                duration,
                 concluded: true
             },
             include: {

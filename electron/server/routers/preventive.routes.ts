@@ -98,7 +98,7 @@ export const preventive = t.router({
                         description: { contains: input.description }
                     },
                     include: {
-                        nature: true, machine: true, _count:{select:{PreventiveActionTaken:true}}
+                        nature: true, machine: true, _count:{select:{actionsTaken:true}}
                     }
                 })
                 return actions

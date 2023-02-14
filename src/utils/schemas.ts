@@ -61,6 +61,7 @@ export const serviceOrdersSchema = z.object({
     actionsUniqueKey: z.string(),
     machine: machineInfoSchema.optional(),
     nature: natureInfoSchema.optional(),
+    duration: z.number().optional(),
 })
 
 export type ServiceOrderType = z.infer<typeof serviceOrdersSchema>

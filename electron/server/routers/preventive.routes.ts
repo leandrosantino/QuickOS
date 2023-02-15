@@ -9,24 +9,22 @@ import {
     serviceOrdersSchema,
     executeServiceOrdersParamsSchema,
     actionsSchema,
-    actionCreateSchema
+    actionCreateSchema,
+    assembleServiceOrdersParamsSchema
 } from '../preventiveOsTools'
 
-import {weekYearToString} from '../../utils/weekTools'
+import { weekYearToString } from '../../utils/weekTools'
 
 const t = initTRPC.create()
 
 export const preventive = t.router({
 
     getServiceOrders: t.procedure
-        .input(z.object({
-            year: z.number(),
-            week: z.number()
-        }))
+        .input(assembleServiceOrdersParamsSchema)
         .output(z.array(serviceOrdersSchema))
         .query(async ({ input }) => {
             try {
-                const OSs = await assembleServiceOrders(input.week, input.year)
+                const OSs = await assembleServiceOrders(input)
                 return OSs
             } catch (error) {
                 throw internalServerError(error)
@@ -98,7 +96,7 @@ export const preventive = t.router({
                         description: { contains: input.description }
                     },
                     include: {
-                        nature: true, machine: true, _count:{select:{actionsTaken:true}}
+                        nature: true, machine: true, _count: { select: { actionsTaken: true } }
                     }
                 })
                 return actions
@@ -158,24 +156,24 @@ export const preventive = t.router({
     ,
 
     getcountPreventiveOs: t.procedure
-        .input(z.object({week: z.number(), year: z.number()}))
+        .input(z.object({ week: z.number(), year: z.number() }))
         .output(z.object({
             finished: z.number(),
             unfinished: z.number(),
         }))
-        .query(async ({input})=>{
+        .query(async ({ input }) => {
             try {
 
                 const weekCode = weekYearToString(input.week, input.year)
 
                 const finished = await prisma.preventiveOS.count({
-                    where:{
+                    where: {
                         weekCode,
                         concluded: true
                     }
                 })
                 const unfinished = await prisma.preventiveOS.count({
-                    where:{
+                    where: {
                         weekCode,
                         concluded: false
                     }

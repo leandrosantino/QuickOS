@@ -44,7 +44,7 @@ export const actionsTakenSchema = z.object({
     osId: z.number(),
     actionId: z.number(),
     weekCode: z.string().regex(weekYearRegex),
-    action: actionsSchema 
+    action: actionsSchema
 })
 
 export const serviceOrdersSchema = z.object({
@@ -65,13 +65,25 @@ export const serviceOrdersSchema = z.object({
 
 export type ServiceOrdersType = z.infer<typeof serviceOrdersSchema>
 
-export async function assembleServiceOrders(week: number, year: number) {
+export const assembleServiceOrdersParamsSchema = z.object({
+    week: z.number(),
+    year: z.number(),
+    status: z.string(),
+    nature: z.string(),
+    machine: z.string(),
+})
+
+export type AssembleServiceOrdersParamsType = z.infer<typeof assembleServiceOrdersParamsSchema>
+
+export async function assembleServiceOrders({ machine, nature, status, week, year }: AssembleServiceOrdersParamsType) {
     try {
         const OSs: ServiceOrdersType[] = []
 
         const machines = await prisma.machine.findMany()
         const natures = await prisma.nature.findMany()
         const weekCode = weekYearToString(week, year)
+
+        const concluded = status == 'true' ? true : false
 
         for await (let mac of machines) {
             for await (let nat of natures) {
@@ -87,7 +99,7 @@ export async function assembleServiceOrders(week: number, year: number) {
                     }
                 })
 
-                
+
                 const actionsUniqueKey = generateActionsUniqueKey(actions)
 
                 if (actions.length > 0) {
@@ -98,50 +110,55 @@ export async function assembleServiceOrders(week: number, year: number) {
                         actions,
                         actionsUniqueKey,
                     }
-                    OSs.push(await registerServiceOrders(os))
+                    !concluded && OSs.push(await registerServiceOrders(os))
                 }
 
-                const os = await prisma.preventiveOS.findMany({
-                    where: {
-                        weekCode,
-                        machineId: mac.id,
-                        natureId: nat.id,
-                        concluded: true,
-                    },
-                    include: {
-                        nature: true,
-                        machine: true,
-                        actionsTaken: {
-                            include:{
-                                action: {
-                                    include: {
-                                        nature: true, machine: true
-                                    }
-                                },
+                if (concluded) {
+
+                    const os = await prisma.preventiveOS.findMany({
+                        where: {
+                            weekCode,
+                            machineId: mac.id,
+                            natureId: nat.id,
+                            concluded: true,
+                        },
+                        include: {
+                            nature: true,
+                            machine: true,
+                            actionsTaken: {
+                                include: {
+                                    action: {
+                                        include: {
+                                            nature: true, machine: true
+                                        }
+                                    },
+                                }
                             }
                         }
-                    }
-                })
+                    })
 
-                OSs.push(...os)
+                    OSs.push(...os)
+                }
+
             }
         }
 
         {
             const os = await prisma.preventiveOS.findMany({
-                include:{
-                    _count:{select:{actions:true, actionsTaken:true}}
+                include: {
+                    _count: { select: { actions: true, actionsTaken: true } }
                 }
             })
-            os.forEach(async (entry)=>{
-                if(entry._count.actions == 0 && entry._count.actionsTaken == 0){
+            os.forEach(async (entry) => {
+                if (entry._count.actions == 0 && entry._count.actionsTaken == 0) {
                     await prisma.preventiveOS.delete({
-                        where: {id: entry.id}
+                        where: { id: entry.id }
                     })
                 }
             })
         }
-        
+
+
         return OSs
 
     } catch (error) {

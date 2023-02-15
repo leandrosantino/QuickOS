@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { InputCaseForm } from "../../../components/forms/InputCaseForm";
 import { PageHeader } from "../../../components/PageHeader";
 import { usePages } from "../../../hooks/usePages";
 
@@ -21,7 +20,7 @@ export function WeekCalendar() {
       "
     >
 
-      <PageHeader title={'Calendário Semanal - '+year} >
+      <PageHeader title={'Calendário Semanal - ' + year} >
         <div
           className="flex flex-row justify-center items-center"
         >
@@ -36,9 +35,9 @@ export function WeekCalendar() {
             minLength={4}
             onChange={(e) => setYear(Number(e.target.value))}
             className={`
-              w-1/3 h-full p-[2px]
-              border-gray-900 border rounded
-              indent-2
+              w-1/3 h-full text-center text-lg
+              bg-transparent
+              border-gray-900 border-b indent-2
             `}
           />
         </div>
@@ -53,7 +52,7 @@ export function WeekCalendar() {
         {
           semanas.map((entry, index) => (
             <WeekCard
-              onClick={()=>goToPage('Preventive.Plan.Calendar.ServiceOrders', {week:index + 1, year})}
+              onClick={() => goToPage('Preventive.Plan.Calendar.ServiceOrders', { week: index + 1, year })}
               key={index}
               week={index + 1}
               year={year}
@@ -74,7 +73,7 @@ interface WeekCardType {
 
 function WeekCard({ week, year, onClick }: WeekCardType) {
 
-  const { data } = api.preventive.getcountPreventiveOs.useQuery({week, year})
+  const { data } = api.preventive.getcountPreventiveOs.useQuery({ week, year })
 
   function getPecernt() {
     let value: number = 0

@@ -42,8 +42,6 @@ export function printServiceOrder({ ipcMain, window }: UseRoutesProps) {
 
             serviceOrderWindow.removeMenu()
 
-
-
             ipcMain.on('runPrint', (event, args) => {
                 serviceOrderWindow?.webContents.print({
                     pageSize: 'A4',

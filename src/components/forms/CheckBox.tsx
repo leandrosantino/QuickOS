@@ -7,10 +7,11 @@ interface InputButtonProps {
     className?: string;
     type?: "button" | "submit" | "reset" | undefined
     onChange: (value: boolean) => void;
-    checked: boolean
+    checked: boolean,
+    fontSize?: number
 }
 
-export function CheckBox({ title, className, checked, onChange }: InputButtonProps) {
+export function CheckBox({ title, className, checked, onChange, fontSize }: InputButtonProps) {
     return (
         <div
             className={`
@@ -18,14 +19,16 @@ export function CheckBox({ title, className, checked, onChange }: InputButtonPro
 				flex justify-center items-center rounded-lg
 			` + className}
         >
-            <label 
+            <label
                 className='
-                    w-full
+                    w-full h-full
                     flex justify-center items-center
-                    
                 '
             >
                 <span
+                    style={{
+                        fontSize
+                    }}
                     className='p-2 font-medium'
                 >{title}:</span>
                 <Switch

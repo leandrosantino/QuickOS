@@ -14,8 +14,6 @@ import { MdOutlineReportGmailerrorred } from 'react-icons/md'
 import { MdWifiProtectedSetup } from 'react-icons/md'
 import { PreventiveOpenedList } from "../components/dashboard/PreventiveOpenedList"
 
-import { ipc } from '../utils/ipc';
-
 
 
 export interface HomeProps { nome: string }

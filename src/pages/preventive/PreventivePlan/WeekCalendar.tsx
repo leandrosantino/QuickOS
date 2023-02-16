@@ -52,7 +52,9 @@ export function WeekCalendar() {
         {
           semanas.map((entry, index) => (
             <WeekCard
-              onClick={() => goToPage('Preventive.Plan.Calendar.ServiceOrders', { week: index + 1, year })}
+              onClick={() => goToPage('Preventive.Plan.Calendar.ServiceOrders', {
+                _week: index + 1, _year: year
+              })}
               key={index}
               week={index + 1}
               year={year}

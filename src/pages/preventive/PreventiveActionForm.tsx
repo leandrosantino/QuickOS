@@ -331,7 +331,7 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
             }
 
             <CheckBox
-              title='Ignorar'
+              title='Desativar'
               checked={ignore}
               onChange={setIgnore}
             />

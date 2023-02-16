@@ -6,6 +6,7 @@ import { RiFilterFill, RiFilterOffFill } from 'react-icons/ri'
 
 import { ScrollContainer } from '../../components/containers/ScrollContainer'
 import { CheckBox } from '../../components/forms/CheckBox'
+
 import { InputButton } from '../../components/forms/InputButton'
 import { InputSearch } from '../../components/forms/InputSearch'
 import { PageHeader } from '../../components/PageHeader'
@@ -13,12 +14,13 @@ import { usePages } from '../../hooks/usePages'
 import { PreventiveActionsFormRoutes } from '../../routes/preventive.routes'
 import { api } from '../../utils/trpc'
 
+
 export function PreventiveActions() {
 
   const [nature, setNature] = useState(-1)
   const [machine, setMachine] = useState(-1)
   const [weekCode, setWeekCode] = useState<string>('')
-  const [showIgnore, setShowIgnore] = useState(true)
+  const [showIgnore, setShowIgnore] = useState(false)
 
   const { goToPage } = usePages()
   const [inputSearchText, setInputSearchText] = useState<string>('')
@@ -26,7 +28,8 @@ export function PreventiveActions() {
     searchText: inputSearchText,
     machineId: machine,
     natureId: nature,
-    weekCode
+    weekCode,
+    showIgnore,
   })
 
   const machines = api.main.getMachines.useQuery()
@@ -55,39 +58,31 @@ export function PreventiveActions() {
         "
       >
         <PageHeader title='Ações Preventivas'>
-          <div
-            className='w-[80%] flex flex-row justify-center items-center'
-          >
-            <div
-              className='w-1/2'
-            >
-
-            </div>
-            <div
-              className='w-1/2'
-            >
-              <InputButton
-                Icon={MdLibraryAdd}
-                onClick={() => { goToPage('Preventive.Actions.NewActions', {}) }}
-                title='Criar'
-                className="bg-green-500 text-gray-100 mr-2"
-              />
-            </div>
-
-          </div>
-
+          <InputButton
+            Icon={MdLibraryAdd}
+            onClick={() => { goToPage('Preventive.Actions.NewActions', {}) }}
+            title='Criar'
+            className="bg-green-500 text-gray-100 mr-2"
+          />
         </PageHeader>
 
         <div
-          className={`w-full px-10 h-16 flex flex-row gap-1 justify-end, items-center`}
+          className={`w-full h-16 flex flex-row gap-1 justify-end, items-center`}
         >
+
+          <CheckBox
+            title='Mostar Desativados'
+            checked={showIgnore}
+            onChange={setShowIgnore}
+            fontSize={12}
+          />
 
           <div
             className='w-1/4 h-full flex flex-col p-1.5'
           >
             <label
               className="w-full h-1/3 font-medium text-gray-900 indent-0"
-            >Status:</label>
+            >Próxima Execução:</label>
             <input
               className='w-full h-2/3 bg-transparent border-b border-gray-900 py-1'
               type={'week'}

@@ -35,10 +35,6 @@
 </head>
 <body>
 
-    <input id="pdfName" type="hidden" 
-        value="<%-id%>_<%-weekCode.replace('W', 'S')%>_<%-machine.tag%>-<%-nature.name%>"
-    >
-
     <div id="buttons">
         <button onclick="printPage()" >Imprimir</button>
         <button onclick="printPageToPDF()" >Salvar Como PDF</button>
@@ -48,15 +44,17 @@
     <div class="container" >
         <h1><%-weekCode%></h1>
         <h1><%-machine.tag%></h1>
-        <h1><%-nature.name%></h1>
+        <h1 id="tt"><%-nature.name%></h1>
     </div>
 
     <script>
+        const pdfName = "<%-id%>_<%-weekCode.replace('W', 'S')%>_<%-machine.tag%>-<%-nature.name%>"
+
         function printPage(){
             window.ipc.send('runPrint')
         }
         function printPageToPDF(){
-            window.ipc.send('runPrintToPdf', document.querySelector('#pdfName').value)
+            window.ipc.send('runPrintToPdf', pdfName)
         }
     </script>
 </body>

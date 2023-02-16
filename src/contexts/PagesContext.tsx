@@ -7,21 +7,8 @@ import {
 	JSXElementConstructor,
 	useContext
 } from "react";
- 
 
-export type Pages =
-	'Dashboard' |
-	'Preventive' |
-	'Preventive.Plan' |
-	'Preventive.Plan.Calendar.ServiceOrders' |
-	'Preventive.Plan.Calendar' |
-	'Preventive.Opened' |
-	'Preventive.Actions' |
-	'Preventive.Actions.NewActions' |
-	'Preventive.Actions.EditActions' |
-	'Preventive.RegisterPreventive' |
-	'Corrective' |
-	'Settings'
+import { Pages, translatedPageNames } from '../utils/pageNames'
 
 type GoToPageType = <T>(name: Pages, props: T) => void
 type PageNamesLinkProps = { page: Pages | any }
@@ -29,7 +16,7 @@ type PageNameLinkType = (props: PageNamesLinkProps) => JSX.Element
 
 export interface PageContextDataProps {
 	goToPage: GoToPageType;
-	backPage: ()=>void;
+	backPage: () => void;
 	currentPage: string;
 	currentPageProps: any;
 	sideMenuIsReduce: boolean;
@@ -56,7 +43,7 @@ export function PagesContextProvider({ children }: PagesContextProviderProps) {
 		setCurrentPageProps(props)
 	}
 
-	function backPage(){
+	function backPage() {
 		setcurrentPage(lastPage)
 	}
 
@@ -65,20 +52,7 @@ export function PagesContextProvider({ children }: PagesContextProviderProps) {
 	}
 
 	function PageNameLink({ page }: PageNamesLinkProps) {
-		const names = {
-			'Plan': 'Plano Anual',
-			'ServiceOrders': 'Ordem de Serviço',
-			'Calendar': 'Calendário',
-			'Dashboard': 'Dashboard',
-			'Preventive': 'Preventiva',
-			'Opened': 'Em Aberto',
-			'NewActions': 'Nova Ação',
-			'EditActions': 'Editar Ação',
-			'Actions': 'Ações',
-			'RegisterPreventive': 'Lançamento',
-			'Corrective': 'Corretiva',
-			'Settings': 'Configurações'
-		}
+		const names = translatedPageNames
 		const pageNames: typeof names | any = { ...names }
 
 		const pageNameSplit: string[] = page.split('.')

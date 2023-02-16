@@ -6,12 +6,15 @@ import { InputButton } from '../forms/InputButton'
 import { ServiceOrderType } from '../../utils/schemas'
 import { api } from '../../utils/trpc'
 import { ipc } from '../../utils/ipc'
+import { usePages } from '../../hooks/usePages'
 
 interface PreventiveCardProps {
   data: ServiceOrderType
 }
 
 export function PreventiveCard({ data }: PreventiveCardProps) {
+
+  const { goToPage } = usePages()
 
   const responsable = api.main.getWorker.useQuery(data?.responsibleId ? data?.responsibleId : 0)
 
@@ -145,7 +148,8 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
                       className="text-gray-100 bg-yellow-500 mr-2"
                       Icon={VscSaveAs}
                       onClick={() => {
-
+                        console.log(data)
+                        goToPage('Preventive.Plan.Calendar.ServiceOrders.Execute', { data })
                       }}
                     />
                     <InputButton

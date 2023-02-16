@@ -1,7 +1,7 @@
 
 import { useEffect } from 'react'
 import { usePages } from '../../../hooks/usePages'
-import { PreventiveOsRoutes } from '../../../routes/preventive.routes'
+import { PreventiveOsModalRoutes, PreventiveOsRoutes } from '../../../routes/preventive.routes'
 
 export function PreventivePlan() {
 
@@ -9,17 +9,22 @@ export function PreventivePlan() {
 
   useEffect(() => {
     if (currentPage === 'Preventive.Plan') goToPage('Preventive.Plan.Calendar', {})
-    
+
   }, [currentPage, goToPage])
 
   return (
-    <div
-      className="
+    <>
+
+      <div
+        className="
         w-full h-full
       "
-    >
-      <PreventiveOsRoutes />
-    </div>
+      >
+        <PreventiveOsRoutes />
+      </div>
+
+      <PreventiveOsModalRoutes />
+    </>
   )
 }
 

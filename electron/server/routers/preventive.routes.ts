@@ -90,11 +90,12 @@ export const preventive = t.router({
             searchText: z.string(),
             weekCode: z.string(),
             machineId: z.number(),
-            natureId: z.number()
+            natureId: z.number(),
+            showIgnore: z.boolean(),
         }))
         .query(async ({ input }) => {
             try {
-                const { machineId, natureId, searchText, weekCode } = input
+                const { machineId, natureId, searchText, weekCode, showIgnore } = input
                 const nextExecution = weekCode
                 const actions = await prisma.preventiveAction.findMany({
                     where: {
@@ -104,6 +105,7 @@ export const preventive = t.router({
                         ...machineId >= 0 ? { machineId } : {},
                         ...natureId >= 0 ? { natureId } : {},
                         ...nextExecution != '' ? { nextExecution } : {},
+                        ...showIgnore ? {} : { ignore: false }
                     },
                     include: {
                         nature: true, machine: true, _count: { select: { actionsTaken: true } }

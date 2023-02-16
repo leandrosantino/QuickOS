@@ -11,6 +11,11 @@ datasource db {
   url      = "file:../database/app.db"
 }
 
+generator erd {
+  provider = "prisma-erd-generator"
+  output   = "./ERD.svg"
+}
+
 model Nature {
   id               Int                @id @default(autoincrement())
   name             String
@@ -77,9 +82,9 @@ model PreventiveOS {
   duration         Int?
   concluded        Boolean?           @default(false)
 
-  nature                Nature                  @relation(fields: [natureId], references: [id])
-  machine               Machine                 @relation(fields: [machineId], references: [id])
-  responsible           Worker?                 @relation(fields: [responsibleId], references: [id])
+  nature       Nature                  @relation(fields: [natureId], references: [id])
+  machine      Machine                 @relation(fields: [machineId], references: [id])
+  responsible  Worker?                 @relation(fields: [responsibleId], references: [id])
   actionsTaken PreventiveActionTaken[]
 
   @@unique([machineId, natureId, weekCode, actionsUniqueKey])

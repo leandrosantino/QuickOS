@@ -69,6 +69,7 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
     setFrequency(1)
     setNextExecution('')
     setDescription('')
+    setExecution('')
   }
 
   function handleActionCreate(actionInfo: ActionsInfoType) {
@@ -150,8 +151,8 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
               }
             },
             success: 'Alteração realizada com sucesso!!'
-          }).then(()=>{
-            data&&backPage()
+          }).then(() => {
+            data && backPage()
           })
 
         },

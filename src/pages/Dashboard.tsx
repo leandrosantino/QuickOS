@@ -53,34 +53,7 @@ export function Home() {
           title="MTTR"
           value="39 min"
           clickable
-          onClick={()=>{
-            ipc.send('printServiceOrder', {
-              id: 14,
-              machineId: 2,
-              weekCode: '2023-W36',
-              responsibleId: null,
-              date: null,
-              natureId: 1,
-              actionsUniqueKey: 'A-I6/M2/N1_',
-              concluded: false,
-              
-              machine: { id: 2, tag: 'M43', ute: 'UTE-5', technology: 'WaterJet' },
-              actions: [
-                {
-                  id: 6,
-                  description: 'Vedação o eixo da bomba de poliol',
-                  machineId: 2,
-                  excution: 'Inpesão e troca',
-                  frequency: 1,
-                  nextExecution: '2023-W36',
-                  preventiveOSId: 14,
-                  natureId: 1,
-                  ignore: false,
-                }
-              ],
-              nature: { id: 1, name: 'Mecânica' }
-            })
-          }}
+          onClick={() => { }}
         />
         <BalanceCards
           Icon={CgTimelapse}

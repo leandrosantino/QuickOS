@@ -13,14 +13,17 @@ export interface WindowCreatorProps {
     maximizable?: boolean
     resizable?: boolean
     frame?: boolean
-    maximize?: boolean
+    maximize?: boolean,
+    title: string
 }
 
 export function windowCreator({
     icon, width, height, devTools, parent, url,
-    maximizable, minimizable, resizable, frame, maximize
+    maximizable, minimizable, resizable, frame, maximize,
+    title
 }: WindowCreatorProps) {
     const options: BrowserWindowOptions = {
+        title,
         width, height, icon,
         frame,
         minHeight: height,
@@ -39,14 +42,14 @@ export function windowCreator({
     }
 
     function load() {
-        let window = new BrowserWindow(options)
+        let window: BrowserWindow | null = new BrowserWindow(options)
         window.loadURL(url)
         window.once('ready-to-show', () => {
-            window.show()
-            maximize&&window.maximize()
+            window?.show()
+            maximize && window?.maximize()
         });
         window.on("closed", () => {
-            window = {} as BrowserWindow;
+            window = null;
         });
         return window
     }

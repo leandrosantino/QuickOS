@@ -13,6 +13,7 @@ import { printServiceOrder } from "./ipc.routes/printServiceOrder";
 async function main() {
 
     const window = windowCreator({
+        title: 'QuikOs',
         width: 1300,
         height: 650,
         devTools: isDev,

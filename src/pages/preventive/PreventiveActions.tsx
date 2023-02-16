@@ -2,27 +2,45 @@
 import { ReactNode, useEffect, useState } from 'react'
 
 import { MdLibraryAdd } from 'react-icons/md'
+import { RiFilterFill, RiFilterOffFill } from 'react-icons/ri'
 
 import { ScrollContainer } from '../../components/containers/ScrollContainer'
+import { CheckBox } from '../../components/forms/CheckBox'
 import { InputButton } from '../../components/forms/InputButton'
 import { InputSearch } from '../../components/forms/InputSearch'
 import { PageHeader } from '../../components/PageHeader'
 import { usePages } from '../../hooks/usePages'
 import { PreventiveActionsFormRoutes } from '../../routes/preventive.routes'
-import {api} from '../../utils/trpc'
+import { api } from '../../utils/trpc'
 
 export function PreventiveActions() {
+
+  const [nature, setNature] = useState(-1)
+  const [machine, setMachine] = useState(-1)
+  const [weekCode, setWeekCode] = useState<string>('')
+  const [showIgnore, setShowIgnore] = useState(true)
 
   const { goToPage } = usePages()
   const [inputSearchText, setInputSearchText] = useState<string>('')
   const getActions = api.preventive.getActions.useQuery({
-    description: inputSearchText
+    searchText: inputSearchText,
+    machineId: machine,
+    natureId: nature,
+    weekCode
   })
+
+  const machines = api.main.getMachines.useQuery()
+  const natures = api.main.getNatures.useQuery()
+
   const [actions, setActions] = useState<typeof getActions.data>()
 
-  
+  const [filtered, setFiltered] = useState<boolean>(false)
 
-  useEffect(()=>{
+  useEffect(() => {
+    setFiltered(nature !== -1 || machine !== -1 || weekCode !== '')
+  }, [nature, machine, weekCode])
+
+  useEffect(() => {
     getActions.refetch()
     setActions(getActions?.data)
   }, [getActions])
@@ -37,15 +55,113 @@ export function PreventiveActions() {
         "
       >
         <PageHeader title='Ações Preventivas'>
-          <InputButton
-            Icon={MdLibraryAdd}
-            onClick={() => { goToPage('Preventive.Actions.NewActions', {}) }}
-            title='Criar'
-            className="bg-green-500 text-gray-100 mr-2"
-          />
-          <InputSearch returnSearchText={(value: string) => setInputSearchText(value)} />
+          <div
+            className='w-[80%] flex flex-row justify-center items-center'
+          >
+            <div
+              className='w-1/2'
+            >
+
+            </div>
+            <div
+              className='w-1/2'
+            >
+              <InputButton
+                Icon={MdLibraryAdd}
+                onClick={() => { goToPage('Preventive.Actions.NewActions', {}) }}
+                title='Criar'
+                className="bg-green-500 text-gray-100 mr-2"
+              />
+            </div>
+
+          </div>
 
         </PageHeader>
+
+        <div
+          className={`w-full px-10 h-16 flex flex-row gap-1 justify-end, items-center`}
+        >
+
+          <div
+            className='w-1/4 h-full flex flex-col p-1.5'
+          >
+            <label
+              className="w-full h-1/3 font-medium text-gray-900 indent-0"
+            >Status:</label>
+            <input
+              className='w-full h-2/3 bg-transparent border-b border-gray-900 py-1'
+              type={'week'}
+              value={weekCode}
+              onChange={(e) => setWeekCode(e.target.value)}
+            />
+          </div>
+
+          <div
+            className='w-1/4 h-full flex flex-col p-1.5'
+          >
+            <label
+              className="w-full h-1/3 font-medium text-gray-900 indent-0"
+            >Máquina:</label>
+            <select
+              className='w-full h-2/3 bg-transparent border-b border-gray-900 py-1'
+              value={machine}
+              onChange={(e) => setMachine(Number(e.target.value))}
+            >
+              <option value="-1">Todos</option>
+              {machines.data?.map((entry, index) => (
+                <option key={index} value={entry.id}>{entry.tag}</option>
+              ))}
+            </select>
+          </div>
+
+          <div
+            className='w-1/4 h-full flex flex-col p-1.5'
+          >
+            <label
+              className="w-full h-1/3 font-medium text-gray-900 indent-0"
+            >Natureza:</label>
+            <select
+              className='w-full h-2/3 bg-transparent border-b border-gray-900 py-1'
+              value={nature}
+              onChange={(e) => setNature((Number(e.target.value)))}
+            >
+              <option value="-1">Todos</option>
+              {natures.data?.map((entry, index) => (
+                <option key={index} value={entry.id}>{entry.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div
+            className='w-12 h-full flex flex-col p-1.5 justify-center items-end'
+          >
+            <InputButton
+              Icon={
+                filtered ? RiFilterOffFill : RiFilterFill
+              }
+              className={`
+                w-full text-xl 
+                ${filtered ?
+                  'hover:text-red-400 text-red-500' :
+                  'text-gray-300'
+                }
+              `}
+              onClick={() => {
+                console.log(weekCode, nature, machine)
+                setNature(-1)
+                setMachine(-1)
+                setWeekCode('')
+              }}
+            />
+          </div>
+
+          <div
+            className='w-1/4 h-full flex flex-col justify-center items-center p-1.5'
+          >
+            <InputSearch returnSearchText={(value: string) => setInputSearchText(value)} />
+          </div>
+
+        </div>
 
         <TableRow
 
@@ -70,7 +186,7 @@ export function PreventiveActions() {
                     () => {
                       goToPage(
                         'Preventive.Actions.EditActions',
-                        { data: entry, id: entry.id}
+                        { data: entry, id: entry.id }
                       )
                     }
                   }
@@ -134,7 +250,7 @@ function TableRow({ data, className, istitle, onClick }: TableRowProps) {
         className={`
           w-[100%]
           flex flex-row 
-          ${data.ignore?'text-gray-500':''}
+          ${data.ignore ? 'text-gray-500' : ''}
           justify-center items-center 
           ${istitle ? `` : `
             bg-gray-300
@@ -143,8 +259,8 @@ function TableRow({ data, className, istitle, onClick }: TableRowProps) {
         `}
         onClick={() => onClick ? onClick() : {}}
       >
-        <TableCell className='w-[12%]' >{data?.machine?.tag??data.tag} </TableCell>
-        <TableCell className='w-[10%]' >{data?.nature?.name??data.nature} </TableCell>
+        <TableCell className='w-[12%]' >{data?.machine?.tag ?? data.tag} </TableCell>
+        <TableCell className='w-[10%]' >{data?.nature?.name ?? data.nature} </TableCell>
         <TableCell className='w-[26.5%]' >{data.description} </TableCell>
         <TableCell className='w-[26.5%]' >{data.excution} </TableCell>
         <TableCell className='w-[10%]' >{data.frequency} {istitle ? '' : ' Sem'}</TableCell>

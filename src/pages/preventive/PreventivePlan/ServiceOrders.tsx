@@ -1,5 +1,3 @@
-
-
 import { PreventiveCard } from '../../../components/cards/PreventiveCard';
 import { ScrollContainer } from '../../../components/containers/ScrollContainer';
 import { InputButton } from '../../../components/forms/InputButton';
@@ -9,8 +7,8 @@ import { api } from '../../../utils/trpc';
 
 
 import { IoIosArrowBack } from 'react-icons/io'
-import { AiOutlineClear } from 'react-icons/ai'
-import { useState } from 'react';
+import { RiFilterOffFill, RiFilterFill } from 'react-icons/ri'
+import { useEffect, useState } from 'react';
 
 interface type {
   week: number;
@@ -19,9 +17,15 @@ interface type {
 
 export function ServiceOrders({ week, year }: type) {
 
-  const [nature, setNature] = useState('')
-  const [machine, setMachine] = useState('')
-  const [status, setStatus] = useState('todos')
+  const [nature, setNature] = useState(-1)
+  const [machine, setMachine] = useState(-1)
+  const [status, setStatus] = useState('all')
+
+  const [filtered, setFiltered] = useState<boolean>(false)
+
+  useEffect(() => {
+    setFiltered(nature !== -1 || machine !== -1 || status !== 'all')
+  }, [nature, machine, status])
 
   const { data } = api.preventive.getServiceOrders.useQuery({
     week,
@@ -51,7 +55,7 @@ export function ServiceOrders({ week, year }: type) {
 
       <PageHeader title={`Ordens de Serviço Preventivas - Semana ${week}, ${year}`} >
         <div
-          className={`w-full h-full flex flex-row gap-1 justify-end, items-center`}
+          className={`w-[450px] h-full flex flex-row gap-1 justify-end, items-center`}
         >
 
           <div
@@ -65,7 +69,7 @@ export function ServiceOrders({ week, year }: type) {
               value={status}
               onChange={(e) => setStatus(e.target.value)}
             >
-              <option value="Todos">Todos</option>
+              <option value="all">Todos</option>
               <option value="true">Concluído</option>
               <option value="false">Em Aberto</option>
             </select>
@@ -80,9 +84,9 @@ export function ServiceOrders({ week, year }: type) {
             <select
               className='w-full h-1/2 bg-transparent border-b border-gray-900'
               value={machine}
-              onChange={(e) => setMachine(e.target.value)}
+              onChange={(e) => setMachine(Number(e.target.value))}
             >
-              <option value="">Todos</option>
+              <option value="-1">Todos</option>
               {machines.data?.map((entry, index) => (
                 <option key={index} value={entry.id}>{entry.tag}</option>
               ))}
@@ -100,9 +104,9 @@ export function ServiceOrders({ week, year }: type) {
             <select
               className='w-full h-1/2 bg-transparent border-b border-gray-900'
               value={nature}
-              onChange={(e) => setNature(e.target.value)}
+              onChange={(e) => setNature((Number(e.target.value)))}
             >
-              <option value="">Todos</option>
+              <option value="-1">Todos</option>
               {natures.data?.map((entry, index) => (
                 <option key={index} value={entry.id}>{entry.name}</option>
               ))}
@@ -113,13 +117,20 @@ export function ServiceOrders({ week, year }: type) {
             className='w-12 h-full flex flex-col p-1.5 justify-center items-end'
           >
             <InputButton
-              Icon={AiOutlineClear}
-              className="text-red-500 w-full text-xl hover:text-red-400"
+              Icon={
+                filtered ? RiFilterOffFill : RiFilterFill
+              }
+              className={`
+                w-full text-xl 
+                ${filtered ?
+                  'hover:text-red-400 text-red-500' :
+                  'text-gray-300'
+                }
+              `}
               onClick={() => {
-                console.log(status, machine, nature)
-                setNature('todos')
-                setMachine('todos')
-                setStatus('todos')
+                setNature(-1)
+                setMachine(-1)
+                setStatus('all')
               }}
             />
           </div>

@@ -1,39 +1,36 @@
 import * as trpcExpress from '@trpc/server/adapters/express'
 import express from 'express'
 import cors from 'cors'
-import {expressHandler} from 'trpc-playground/handlers/express'
+import { expressHandler } from 'trpc-playground/handlers/express'
 import path from 'path'
-import {appRouter} from './routers';
+import { appRouter } from './routers';
 
-import {serviceOrdersSchema} from './preventiveOsTools'
-import {z} from 'zod'
+import { serviceOrdersSchema } from './preventiveOsTools'
+import { z } from 'zod'
 
 const isDev = process.env.IS_DEV
 
-export class Server{
+export class Server {
 
-    constructor (){}
+    constructor() { }
 
     apiEndpoint = '/trpc'
     playgroundEndpoint = '/playground'
 
-    viewDirectory = isDev?
-    path.join(__dirname, '../../public/views'):
-    path.join(__dirname, '../../../app.asar.unpacked/public/views')
+    viewDirectory = isDev ?
+        path.join(__dirname, '../../public/views') :
+        path.join(__dirname, '../../../app.asar.unpacked/public/views')
 
     app = express();
 
     useCreateServiceOrder() {
 
-        console.log(this.viewDirectory)
-
         this.app.set('views', this.viewDirectory)
         this.app.set('view engine', 'ejs')
 
-        this.app.get('/createServiceorder/', (req, res)=>{
+        this.app.get('/createServiceorder/', (req, res) => {
             try {
                 const data = JSON.parse(String(req.query.data))
-                console.log(data)
                 const serviceOrder = serviceOrdersSchema.parse(data)
                 // const serviceOrder: z.infer<typeof serviceOrdersSchema> = {}
                 res.render('serviceOrder.ejs', serviceOrder)
@@ -44,12 +41,12 @@ export class Server{
         })
     };
 
-    async start(){
+    async start() {
 
         this.app.use(express.json())
 
         this.app.use(cors())
-        
+
         this.useCreateServiceOrder()
 
         this.app.use(

@@ -97,8 +97,8 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
           
         "
       >
-         <div className='w-full flex flex-row justify-between items-center'>
-          {data.concluded &&<div>
+        <div className='w-full flex flex-row justify-between items-center'>
+          {data.concluded && <div>
             <span className='mr-1 font-medium w-full text-end'>Responsável:</span>
             {responsable.data?.name}
           </div>}

@@ -69,8 +69,8 @@ export const assembleServiceOrdersParamsSchema = z.object({
     week: z.number(),
     year: z.number(),
     status: z.string(),
-    nature: z.string(),
-    machine: z.string(),
+    nature: z.number(),
+    machine: z.number(),
 })
 
 export type AssembleServiceOrdersParamsType = z.infer<typeof assembleServiceOrdersParamsSchema>
@@ -86,60 +86,65 @@ export async function assembleServiceOrders({ machine, nature, status, week, yea
         const concluded = status == 'true' ? true : false
 
         for await (let mac of machines) {
-            for await (let nat of natures) {
-                const actions = await prisma.preventiveAction.findMany({
-                    where: {
-                        nextExecution: weekCode,
-                        machineId: mac.id,
-                        natureId: nat.id,
-                        ignore: false,
-                    },
-                    include: {
-                        machine: true, nature: true, actionsTaken: true
-                    }
-                })
-
-
-                const actionsUniqueKey = generateActionsUniqueKey(actions)
-
-                if (actions.length > 0) {
-                    const os = {
-                        weekCode,
-                        machineId: mac.id,
-                        natureId: nat.id,
-                        actions,
-                        actionsUniqueKey,
-                    }
-                    !concluded && OSs.push(await registerServiceOrders(os))
-                }
-
-                if (concluded) {
-
-                    const os = await prisma.preventiveOS.findMany({
-                        where: {
-                            weekCode,
-                            machineId: mac.id,
-                            natureId: nat.id,
-                            concluded: true,
-                        },
-                        include: {
-                            nature: true,
-                            machine: true,
-                            actionsTaken: {
-                                include: {
-                                    action: {
-                                        include: {
-                                            nature: true, machine: true
-                                        }
-                                    },
-                                }
+            if (mac.id == machine || machine == -1) {
+                for await (let nat of natures) {
+                    if (
+                        nat.id == nature || nature == -1
+                    ) {
+                        const actions = await prisma.preventiveAction.findMany({
+                            where: {
+                                nextExecution: weekCode,
+                                machineId: mac.id,
+                                natureId: nat.id,
+                                ignore: false,
+                            },
+                            include: {
+                                machine: true, nature: true, actionsTaken: true
                             }
+                        })
+
+
+                        const actionsUniqueKey = generateActionsUniqueKey(actions)
+
+                        if (actions.length > 0) {
+                            const os = {
+                                weekCode,
+                                machineId: mac.id,
+                                natureId: nat.id,
+                                actions,
+                                actionsUniqueKey,
+                            }
+                            !concluded && OSs.push(await registerServiceOrders(os))
                         }
-                    })
 
-                    OSs.push(...os)
+                        if (concluded || status == 'all') {
+
+                            const os = await prisma.preventiveOS.findMany({
+                                where: {
+                                    weekCode,
+                                    machineId: mac.id,
+                                    natureId: nat.id,
+                                    concluded: true,
+                                },
+                                include: {
+                                    nature: true,
+                                    machine: true,
+                                    actionsTaken: {
+                                        include: {
+                                            action: {
+                                                include: {
+                                                    nature: true, machine: true
+                                                }
+                                            },
+                                        }
+                                    }
+                                }
+                            })
+
+                            OSs.push(...os)
+                        }
+                    }
                 }
-
             }
         }
 

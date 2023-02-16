@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Ordem De serviço Preventiva</title>
     <style>
 
         body{
@@ -34,6 +34,11 @@
     </style>
 </head>
 <body>
+
+    <input id="pdfName" type="hidden" 
+        value="<%-id%>_<%-weekCode.replace('W', 'S')%>_<%-machine.tag%>-<%-nature.name%>"
+    >
+
     <div id="buttons">
         <button onclick="printPage()" >Imprimir</button>
         <button onclick="printPageToPDF()" >Salvar Como PDF</button>
@@ -51,7 +56,7 @@
             window.ipc.send('runPrint')
         }
         function printPageToPDF(){
-            window.ipc.send('runPrintToPdf')
+            window.ipc.send('runPrintToPdf', document.querySelector('#pdfName').value)
         }
     </script>
 </body>

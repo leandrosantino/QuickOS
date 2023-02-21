@@ -85,4 +85,9 @@ export const workerSchema = z.object({
 
 export type WorkerInfoType = z.infer<typeof workerSchema>
 
+export const executePreventiveServiceOrderSchema = z.object({
+    data: z.string({ invalid_type_error: 'Data inválida !!' }).datetime(),
+    duração: z.string()
+})
+
 export { }

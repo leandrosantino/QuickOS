@@ -148,8 +148,7 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
                       className="text-gray-100 bg-yellow-500 mr-2"
                       Icon={VscSaveAs}
                       onClick={() => {
-                        console.log(data)
-                        goToPage('Preventive.Plan.Calendar.ServiceOrders.Execute', { data })
+                        goToPage('Preventive.Plan.Calendar.ServiceOrders.Execute', { id: data.id })
                       }}
                     />
                     <InputButton

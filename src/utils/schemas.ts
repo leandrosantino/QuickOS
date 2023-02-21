@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import {weekYearRegex} from './weekTools'
+import { weekYearRegex } from './weekTools'
 
 export const machineInfoSchema = z.object({
     id: z.number(),
@@ -35,13 +35,13 @@ export const actionInfoSchema = z.object({
 
     description: z.string()
         .min(10, 'O campo Descrição precisa ter no mínimo 10 caracteres !!'),
-   
+
 })
 
 
 const actionsInfoSchemaWithActonsTaken = z.object({
     ...actionInfoSchema.shape,
-     _count: z.object({ actionsTaken: z.number() }),
+    _count: z.object({ actionsTaken: z.number() }),
 })
 
 export type ActionsInfoTypeWithActonsTaken = z.output<typeof actionsInfoSchemaWithActonsTaken>
@@ -75,5 +75,14 @@ export const serviceOrdersSchema = z.object({
 })
 
 export type ServiceOrderType = z.infer<typeof serviceOrdersSchema>
+
+export const workerSchema = z.object({
+    id: z.number(),
+    registration: z.number(),
+    name: z.string(),
+    class: z.string(),
+})
+
+export type WorkerInfoType = z.infer<typeof workerSchema>
 
 export { }

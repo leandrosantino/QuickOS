@@ -30,5 +30,5 @@ export const translatedPageNames = {
     'RegisterPreventive': 'Lançamento',
     'Corrective': 'Corretiva',
     'Settings': 'Configurações',
-    'Execute': 'Execultar'
+    'Execute': 'Executar'
 }

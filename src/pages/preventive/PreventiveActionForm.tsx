@@ -348,7 +348,7 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
               onClick={handleSubmit}
               title='Salvar'
               Icon={BiSave}
-              className="bg-green-500 text-gray-100"
+              className="bg-green-500 text-gray-100 w-40"
             />
           </div>
         </div>

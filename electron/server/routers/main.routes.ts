@@ -7,6 +7,14 @@ const t = initTRPC.create()
 import { natureSchema, machineSchema } from '../preventiveOsTools'
 import { internalServerError } from '../responseMessages'
 
+
+const workerSchema = z.object({
+    id: z.number(),
+    registration: z.number(),
+    name: z.string(),
+    class: z.string(),
+})
+
 export const main = t.router({
     getMachines: t.procedure
         .output(z.array(machineSchema))
@@ -31,23 +39,47 @@ export const main = t.router({
         })
     ,
 
+    getWorkers: t.procedure
+        .output(z.array(workerSchema))
+        .query(async () => {
+            try {
+                const workers = await prisma.worker.findMany()
+                return workers
+            } catch (error) {
+                throw internalServerError(error)
+            }
+        })
+    ,
+
+    getWorkersByRegistration: t.procedure
+        .input(z.number())
+        .output(workerSchema.nullable())
+        .query(async ({ input }) => {
+            try {
+                const worker = await prisma.worker.findUnique({
+                    where: {
+                        registration: input
+                    }
+                })
+                return worker
+            } catch (error) {
+                throw internalServerError(error)
+            }
+        })
+    ,
+
     getWorker: t.procedure
         .input(z.number())
-        .output(z.object({
-            id: z.number(),
-            registration: z.number(),
-            name: z.string(),
-            class:z.string(),
-        }).nullable())
-        .query(async ({input}) => {
-    try {
-        const worker = await prisma.worker.findUnique({
-            where:{id: input}
+        .output(workerSchema.nullable())
+        .query(async ({ input }) => {
+            try {
+                const worker = await prisma.worker.findUnique({
+                    where: { id: input }
+                })
+                return worker
+            } catch (error) {
+                throw internalServerError(error)
+            }
         })
-        return worker
-    } catch (error) {
-        throw internalServerError(error)
-    }
-})
 
 })

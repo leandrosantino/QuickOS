@@ -24,7 +24,7 @@ module.exports = {
 
       top: {'navBar': '30px'},
 
-      colors: {
+      colors: { 
 
         white:{
           500: '#E1E1E6'

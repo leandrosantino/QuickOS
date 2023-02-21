@@ -32,6 +32,39 @@ export const preventive = t.router({
         })
     ,
 
+    getServiceOrderById: t.procedure
+        .input(z.object({ id: z.number() }))
+        .output(z.object({ ...serviceOrdersSchema.shape }).nullable())
+        .query(async ({ input }) => {
+            try {
+                const serviceOrder = await prisma.preventiveOS.findUnique({
+                    where: { id: input.id },
+                    include: {
+                        nature: true,
+                        machine: true,
+                        actions: {
+                            include: {
+                                nature: true, machine: true
+                            }
+                        },
+                        actionsTaken: {
+                            include: {
+                                action: {
+                                    include: {
+                                        nature: true, machine: true
+                                    }
+                                },
+                            }
+                        }
+                    }
+                })
+                return serviceOrder
+            } catch (error) {
+                throw internalServerError(error)
+            }
+        })
+    ,
+
     updateServiceOrder: t.procedure
         .input(z.object({
             id: z.number(),

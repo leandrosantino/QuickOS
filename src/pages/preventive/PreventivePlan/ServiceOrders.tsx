@@ -43,6 +43,7 @@ export function ServiceOrders({ _week, _year }: type) {
   const machines = api.main.getMachines.useQuery()
   const natures = api.main.getNatures.useQuery()
 
+
   const { goToPage } = usePages()
 
   return (

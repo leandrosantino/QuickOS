@@ -67,6 +67,7 @@ export async function assembleServiceOrders({ machine, nature, status, week, yea
                                     concluded: true,
                                 },
                                 include: {
+                                    responsible: true,
                                     nature: true,
                                     machine: true,
                                     actionsTaken: {

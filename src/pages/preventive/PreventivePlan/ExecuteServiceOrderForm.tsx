@@ -7,12 +7,9 @@ import { InputCaseForm } from '../../../components/forms/InputCaseForm'
 import { PageHeader } from '../../../components/PageHeader'
 import { usePages } from '../../../hooks/usePages'
 import { api } from '../../../utils/trpc'
+import { splitWorkerName } from '../../../utils/stringTools'
 
-interface ExecuteServiceProps {
-  id: number
-}
-
-export function ExecuteServiceOrderForm({ id }: ExecuteServiceProps) {
+export function ExecuteServiceOrderForm({ id }: { id: number }) {
 
   const [registration, setRegistration] = useState<number>(0)
   const { data } = api.preventive.getServiceOrderById.useQuery({ id })
@@ -40,7 +37,6 @@ export function ExecuteServiceOrderForm({ id }: ExecuteServiceProps) {
             {data?.machine?.tag} - {data?.nature?.name} / Nº {data?.id}
           </div>
         </PageHeader>
-
 
         <div className="flex flex-col justify-center items-center" >
 
@@ -115,12 +111,3 @@ export function ExecuteServiceOrderForm({ id }: ExecuteServiceProps) {
   )
 }
 
-function splitWorkerName(name: string | null | undefined) {
-  const allName = name?.split(' ')
-  if (allName) {
-    const fistName = allName[0]
-    const secondName = allName[1].length <= 3 ? allName[2] : allName[1]
-    return `${fistName} ${secondName}`
-  }
-  return 'Não encontrado!'
-}

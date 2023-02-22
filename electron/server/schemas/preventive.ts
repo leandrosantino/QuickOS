@@ -55,7 +55,7 @@ export const serviceOrdersSchema = z.object({
     machineId: z.number(),
     weekCode: z.string().regex(weekYearRegex),
     natureId: z.number(),
-    worker: z.array(workerSchema).optional(),
+    responsible: z.array(workerSchema).optional(),
     actions: z.array(actionsSchema).optional(),
     actionsUniqueKey: z.string(),
     machine: machineSchema.optional(),

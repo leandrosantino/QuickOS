@@ -58,13 +58,24 @@ export const actionsTakenSchema = z.object({
     action: actionInfoSchema
 })
 
+
+export const workerSchema = z.object({
+    id: z.number(),
+    registration: z.number(),
+    name: z.string(),
+    class: z.string(),
+})
+
+export type WorkerInfoType = z.infer<typeof workerSchema>
+
+
 export const serviceOrdersSchema = z.object({
     id: z.number().optional(),
     concluded: z.boolean().nullable().optional(),
-    responsibleId: z.number().nullable().optional(),
     date: z.string().nullable().optional(),
     machineId: z.number(),
     weekCode: z.string().regex(weekYearRegex),
+    responsible: z.array(workerSchema).optional(),
     natureId: z.number(),
     actions: z.array(actionInfoSchema).optional(),
     actionsUniqueKey: z.string(),
@@ -75,15 +86,6 @@ export const serviceOrdersSchema = z.object({
 })
 
 export type ServiceOrderType = z.infer<typeof serviceOrdersSchema>
-
-export const workerSchema = z.object({
-    id: z.number(),
-    registration: z.number(),
-    name: z.string(),
-    class: z.string(),
-})
-
-export type WorkerInfoType = z.infer<typeof workerSchema>
 
 export const executePreventiveServiceOrderSchema = z.object({
     data: z.string({ invalid_type_error: 'Data inválida !!' }).datetime(),

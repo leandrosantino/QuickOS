@@ -7,6 +7,7 @@ import { ServiceOrderType } from '../../utils/schemas'
 import { api } from '../../utils/trpc'
 import { ipc } from '../../utils/ipc'
 import { usePages } from '../../hooks/usePages'
+import { splitWorkerName } from '../../utils/stringTools'
 
 interface PreventiveCardProps {
   data: ServiceOrderType
@@ -16,7 +17,7 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
 
   const { goToPage } = usePages()
 
-  const responsable = api.main.getWorker.useQuery(data?.responsibleId ? data?.responsibleId : 0)
+  // const responsable = api.main.getWorker.useQuery(data?.responsibleId ? data?.responsibleId : 0)
 
   const actions = !data.concluded ? data.actions : data?.actionsTaken?.map(entry => entry.action)
 
@@ -101,11 +102,14 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
         "
       >
         <div className='w-full flex flex-row justify-between items-center'>
-          {data.concluded && <div>
-            <span className='mr-1 font-medium w-full text-end'>Responsável:</span>
-            {responsable.data?.name}
-          </div>}
-          <div className='mr-1 font-medium w-full text-end'>
+          {data.concluded &&
+            <div className='w-2/3'>
+              <span className='mr-1 font-medium w-full text-end'>Responsáveis:</span><br />
+              {data?.responsible?.map(entry => (<div key={entry.id}>
+                - {splitWorkerName(entry.name)} <br />
+              </div>))}
+            </div>}
+          <div className='w-1/3 mr-1 font-medium text-end'>
             {data.nature?.name}
           </div>
         </div>

@@ -5,7 +5,7 @@ import { expressHandler } from 'trpc-playground/handlers/express'
 import path from 'path'
 import { appRouter } from './routers';
 
-import { serviceOrdersSchema } from './preventiveOsTools'
+import { serviceOrdersSchema } from './schemas/preventive'
 import { z } from 'zod'
 
 const isDev = process.env.IS_DEV

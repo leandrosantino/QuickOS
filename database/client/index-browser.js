@@ -125,12 +125,13 @@ exports.Prisma.PreventiveOSScalarFieldEnum = makeEnum({
   id: 'id',
   machineId: 'machineId',
   weekCode: 'weekCode',
-  responsibleId: 'responsibleId',
   date: 'date',
   natureId: 'natureId',
   actionsUniqueKey: 'actionsUniqueKey',
   duration: 'duration',
-  concluded: 'concluded'
+  concluded: 'concluded',
+  startTime: 'startTime',
+  finishTime: 'finishTime'
 });
 
 exports.Prisma.SortOrder = makeEnum({

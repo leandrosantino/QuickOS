@@ -4,16 +4,9 @@ import { z } from 'zod'
 
 const t = initTRPC.create()
 
-import { natureSchema, machineSchema } from '../preventiveOsTools'
+import { natureSchema, machineSchema, workerSchema } from '../schemas/preventive'
 import { internalServerError } from '../responseMessages'
 
-
-const workerSchema = z.object({
-    id: z.number(),
-    registration: z.number(),
-    name: z.string(),
-    class: z.string(),
-})
 
 export const main = t.router({
     getMachines: t.procedure

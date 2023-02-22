@@ -39,7 +39,7 @@ model Worker {
   name         String
   class        String
 
-  PreventiveOS PreventiveOS[]
+  PreventiveOs PreventiveOS[]
 }
 
 model PreventiveActionTaken {
@@ -74,17 +74,19 @@ model PreventiveOS {
   id               Int                @id @default(autoincrement())
   machineId        Int
   weekCode         String
-  responsibleId    Int?
   date             DateTime?
   natureId         Int
   actions          PreventiveAction[]
   actionsUniqueKey String
   duration         Int?
   concluded        Boolean?           @default(false)
+  startTime        DateTime?
+  finishTime       DateTime?
 
-  nature       Nature                  @relation(fields: [natureId], references: [id])
-  machine      Machine                 @relation(fields: [machineId], references: [id])
-  responsible  Worker?                 @relation(fields: [responsibleId], references: [id])
+  nature      Nature   @relation(fields: [natureId], references: [id])
+  machine     Machine  @relation(fields: [machineId], references: [id])
+  responsible Worker[]
+
   actionsTaken PreventiveActionTaken[]
 
   @@unique([machineId, natureId, weekCode, actionsUniqueKey])

@@ -1,79 +1,19 @@
-import { z } from "zod";
+import { differenceInMinutes } from 'date-fns'
 import prisma from "../services/prisma"
 import {
     incrementWeekYear,
     weekYearStringToNumber,
     weekYearToString,
-    weekYearRegex
 } from "../utils/weekTools"
 
-export const machineSchema = z.object({
-    id: z.number(),
-    tag: z.string(),
-    technology: z.string(),
-    ute: z.string()
-})
+import {
+    AssembleServiceOrdersParamsType,
+    ServiceOrdersType,
+    ExecuteServiceOrdersType,
+    GenerateActionsUniqueKeyParms,
+} from './schemas/preventive'
 
-export const natureSchema = z.object({
-    id: z.number(),
-    name: z.string()
-})
 
-export const actionCreateSchema = z.object({
-    description: z.string(),
-    machineId: z.number(),
-    excution: z.string(),
-    frequency: z.number(),
-    natureId: z.number(),
-    nextExecution: z.string().regex(weekYearRegex),
-    preventiveOSId: z.number().nullable().optional(),
-    ignore: z.boolean()
-})
-
-export const actionsSchema = z.object({
-    id: z.number(),
-    machine: machineSchema.optional(),
-    nature: natureSchema.optional(),
-    _count: z.object({ actionsTaken: z.number() }).optional(),
-    ...actionCreateSchema.shape
-})
-
-export const actionsTakenSchema = z.object({
-    id: z.number(),
-    date: z.date().or(z.string()),
-    osId: z.number(),
-    actionId: z.number(),
-    weekCode: z.string().regex(weekYearRegex),
-    action: actionsSchema
-})
-
-export const serviceOrdersSchema = z.object({
-    id: z.number().optional(),
-    concluded: z.boolean().nullable().optional(),
-    responsibleId: z.number().nullable().optional(),
-    date: z.date().nullable().optional().or(z.string()),
-    machineId: z.number(),
-    weekCode: z.string().regex(weekYearRegex),
-    natureId: z.number(),
-    actions: z.array(actionsSchema).optional(),
-    actionsUniqueKey: z.string(),
-    machine: machineSchema.optional(),
-    nature: natureSchema.optional(),
-    duration: z.number().optional().nullable(),
-    actionsTaken: z.array(actionsTakenSchema).optional(),
-})
-
-export type ServiceOrdersType = z.infer<typeof serviceOrdersSchema>
-
-export const assembleServiceOrdersParamsSchema = z.object({
-    week: z.number(),
-    year: z.number(),
-    status: z.string(),
-    nature: z.number(),
-    machine: z.number(),
-})
-
-export type AssembleServiceOrdersParamsType = z.infer<typeof assembleServiceOrdersParamsSchema>
 
 export async function assembleServiceOrders({ machine, nature, status, week, year }: AssembleServiceOrdersParamsType) {
     try {
@@ -211,18 +151,12 @@ export async function registerServiceOrders({ machineId, weekCode, actions, natu
 }
 
 
-export const executeServiceOrdersParamsSchema = z.object({
-    id: z.number(),
-    date: z.string(),
-    workerId: z.number(),
-    duration: z.number(),
-    IdsOfActionsTaken: z.array(z.object({ id: z.number() })).optional(),
-})
-
-export type ExecuteServiceOrdersType = z.input<typeof executeServiceOrdersParamsSchema>
-
-export async function executeServiceOrders({ date, id, workerId, duration }: ExecuteServiceOrdersType) {
+export async function executeServiceOrders({ date, id, workers, finishTime, startTime }: ExecuteServiceOrdersType) {
     try {
+
+        const duration = differenceInMinutes(new Date(startTime), new Date(finishTime))
+
+        console.log(duration)
 
         const os = await prisma.preventiveOS.update({
             where: {
@@ -230,8 +164,12 @@ export async function executeServiceOrders({ date, id, workerId, duration }: Exe
             },
             data: {
                 date: new Date(date),
-                responsibleId: workerId,
+                responsible: {
+                    connect: workers.map(({ id }) => ({ id }))
+                },
                 duration,
+                startTime: new Date(startTime),
+                finishTime: new Date(finishTime),
                 concluded: true
             },
             include: {
@@ -273,13 +211,6 @@ export async function executeServiceOrders({ date, id, workerId, duration }: Exe
     }
 }
 
-
-const generateActionsUniqueKeyParmsSchema = z.object({
-    id: z.number().optional(),
-    machineId: z.number(),
-    natureId: z.number(),
-})
-type GenerateActionsUniqueKeyParms = z.infer<typeof generateActionsUniqueKeyParmsSchema>[]
 export function generateActionsUniqueKey(actions: GenerateActionsUniqueKeyParms) {
     let key = ''
     actions.forEach(({ id, machineId, natureId }) => key += `A-I${id}/M${machineId}/N${natureId}_`)

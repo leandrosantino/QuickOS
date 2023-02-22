@@ -6,12 +6,14 @@ import { internalServerError, successResponse, SuccessResponseSchema } from '../
 import {
     assembleServiceOrders,
     executeServiceOrders,
+} from '../preventiveOsTools'
+import {
     serviceOrdersSchema,
+    assembleServiceOrdersParamsSchema,
     executeServiceOrdersParamsSchema,
     actionsSchema,
     actionCreateSchema,
-    assembleServiceOrdersParamsSchema
-} from '../preventiveOsTools'
+} from '../schemas/preventive'
 
 import { weekYearToString } from '../../utils/weekTools'
 

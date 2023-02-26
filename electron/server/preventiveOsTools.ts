@@ -155,9 +155,7 @@ export async function registerServiceOrders({ machineId, weekCode, actions, natu
 export async function executeServiceOrders({ date, id, workers, finishTime, startTime }: ExecuteServiceOrdersType) {
     try {
 
-        const duration = differenceInMinutes(new Date(startTime), new Date(finishTime))
-
-        console.log(duration)
+        const duration = differenceInMinutes(new Date(finishTime), new Date(startTime))
 
         const os = await prisma.preventiveOS.update({
             where: {

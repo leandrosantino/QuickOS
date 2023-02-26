@@ -47,6 +47,7 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
   const { backPage } = usePages()
   const { dialogQuestion } = useDialog()
   const { data } = api.preventive.getServiceOrderById.useQuery({ id })
+  const executeServiceOrder = api.preventive.executeServiceOrders.useMutation()
 
   const [rep1, setResp1] = useState<ResponsableType>({ id: -1 })
   const [rep2, setResp2] = useState<ResponsableType>({ id: -1 })
@@ -61,7 +62,7 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
 
   useEffect(() => {
 
-    if (startTime != '' && finishTime != '') {
+    if (startTime !== '' && finishTime !== '') {
       setDuration(differenceInMinutes(
         timeInStringToDate(finishTime) as Date,
         timeInStringToDate(startTime) as Date
@@ -85,12 +86,16 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
       const executeServiceOrderInfo = executePreventiveServiceOrderSchema
         .parse(executeServiceOrderData)
 
-
       dialogQuestion('Atenção!', 'Realmente deseja execultar es Ordem de Serviço',
-
         () => {
           toast.promise(new Promise((resolve, reject) => {
-            resolve('')
+            executeServiceOrder.mutateAsync(executeServiceOrderInfo)
+              .then(resp => {
+                resolve(resp)
+              })
+              .catch(error => {
+                reject(error)
+              })
           }), {
             pending: 'Processando as informações...',
             error: {
@@ -103,11 +108,7 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
             //backPage()
           })
         },
-
-        () => {
-
-        }
-
+        () => { }
       )
 
     } catch (error) {
@@ -252,7 +253,7 @@ const WorkerInput = ({ onChange, labelName }: {
 
   const [registration, setRegistration] = useState<string>('')
   const worker = api.main.getWorkersByRegistration
-    .useQuery(Number(registration == '' ? -1 : registration))
+    .useQuery(Number(registration === '' ? -1 : registration))
 
   return (
     <InputCaseForm

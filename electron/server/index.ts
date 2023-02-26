@@ -4,6 +4,7 @@ import cors from 'cors'
 import { expressHandler } from 'trpc-playground/handlers/express'
 import path from 'path'
 import { appRouter } from './routers';
+import chalk from 'chalk'
 
 import { serviceOrdersSchema } from './schemas/preventive'
 import { z } from 'zod'
@@ -13,6 +14,8 @@ const isDev = process.env.IS_DEV
 export class Server {
 
     constructor() { }
+
+    serverPort = 9999
 
     apiEndpoint = '/trpc'
     playgroundEndpoint = '/playground'
@@ -41,6 +44,18 @@ export class Server {
         })
     };
 
+    startMessage = `${chalk.green('Start Server successfully !')}
+
+you can now use the playground in the browser.
+
+    local: ${chalk.yellow(`http://localhost:${this.serverPort}/playground`)}
+
+to clear the terminal, use ${chalk.blueBright('clear')}
+to restart the server, use ${chalk.blueBright('reload')}
+
+${chalk.greenBright('- Trpc Server online -')}
+    `
+
     async start() {
 
         this.app.use(express.json())
@@ -65,7 +80,7 @@ export class Server {
             })
         )
 
-        this.app.listen(9999, () => console.log('Server is online ! - http://localhost:9999/playground'))
+        this.app.listen(this.serverPort, () => console.log(this.startMessage))
     }
 }
 

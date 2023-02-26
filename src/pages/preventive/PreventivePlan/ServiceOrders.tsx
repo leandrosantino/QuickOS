@@ -33,7 +33,7 @@ export function ServiceOrders({ _week, _year }: type) {
     setFiltered(nature !== -1 || machine !== -1 || status !== 'all')
   }, [nature, machine, status])
 
-  const { data } = api.preventive.getServiceOrders.useQuery({
+  const { data, refetch } = api.preventive.getServiceOrders.useQuery({
     week,
     year,
     machine,
@@ -42,6 +42,10 @@ export function ServiceOrders({ _week, _year }: type) {
   })
   const machines = api.main.getMachines.useQuery()
   const natures = api.main.getNatures.useQuery()
+
+  useEffect(() => {
+    refetch()
+  })
 
 
   const { goToPage } = usePages()
@@ -129,7 +133,7 @@ export function ServiceOrders({ _week, _year }: type) {
                   filtered ? RiFilterOffFill : RiFilterFill
                 }
                 className={`
-                w-full text-xl 
+                w-full text-xl
                 ${filtered ?
                     'hover:text-red-400 text-red-500' :
                     'text-gray-300'
@@ -153,7 +157,7 @@ export function ServiceOrders({ _week, _year }: type) {
               data?.length === 0 ?
                 <div
                   className="
-                  w-full h-full 
+                  w-full h-full
                   flex justify-center items-center
                   font-medium
                 "
@@ -162,7 +166,7 @@ export function ServiceOrders({ _week, _year }: type) {
                 </div>
                 : <div
                   className="
-                  grid grid-cols-2 xl:grid-cols-3 gap-4 p-4 
+                  grid grid-cols-2 xl:grid-cols-3 gap-4 p-4
                 "
                 >
                   {

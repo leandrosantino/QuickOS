@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { weekYearRegex } from './weekTools'
+import { differenceInMinutes } from 'date-fns'
 
 export const machineInfoSchema = z.object({
     id: z.number(),
@@ -88,8 +89,22 @@ export const serviceOrdersSchema = z.object({
 export type ServiceOrderType = z.infer<typeof serviceOrdersSchema>
 
 export const executePreventiveServiceOrderSchema = z.object({
-    data: z.string({ invalid_type_error: 'Data inválida !!' }).datetime(),
-    duração: z.string()
+    id: z.number(),
+    date: z.date({ invalid_type_error: 'A data informada é inválida !!' })
+        .transform(value => String(value)),
+
+    startTime: z.date({ invalid_type_error: 'Informe a Hora de Início!!' })
+        .transform(value => String(value)),
+
+    finishTime: z.date({ invalid_type_error: 'Informe a Hora Final!!' })
+        .transform(value => String(value)),
+
+    workers: z.array(z.object({ id: z.number() }))
+        .refine(workers => workers.length >= 1, 'Informe no mínimo 1 Manutencista!')
 })
+    .refine(data => differenceInMinutes(new Date(data.finishTime), new Date(data.startTime)) >= 1,
+        { message: 'A hora de final precisa ser maior que a hora de início!' })
+
+export type ExecutePreventiveServiceOrderType = z.infer<typeof executePreventiveServiceOrderSchema>
 
 export { }

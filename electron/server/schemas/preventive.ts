@@ -84,8 +84,6 @@ export const executeServiceOrdersParamsSchema = z.object({
     workers: z.array(z.object({ id: z.number() })),
     startTime: z.string(),
     finishTime: z.string(),
-    duration: z.number(),
-    IdsOfActionsTaken: z.array(z.object({ id: z.number() })).optional(),
 })
 
 export type ExecuteServiceOrdersType = z.input<typeof executeServiceOrdersParamsSchema>

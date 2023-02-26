@@ -5,44 +5,119 @@ import { ScrollContainer } from '../../../components/containers/ScrollContainer'
 import { InputButton } from '../../../components/forms/InputButton'
 import { InputCaseForm } from '../../../components/forms/InputCaseForm'
 import { PageHeader } from '../../../components/PageHeader'
+import { useDialog } from '../../../hooks/useDialog'
 import { usePages } from '../../../hooks/usePages'
 import { api } from '../../../utils/trpc'
 import { splitWorkerName } from '../../../utils/stringTools'
+import {
+  ExecutePreventiveServiceOrderType,
+  executePreventiveServiceOrderSchema,
+} from '../../../utils/schemas'
+import { toast } from 'react-toastify'
+import { ZodError } from 'zod'
+import { differenceInMinutes } from 'date-fns'
 
-function timeInStringToDate(hour: string) {
-  const [hours, minute] = hour.split(":").map(value => Number(value));
-  return new Date(0, 0, 0, hours, minute);
+
+function timeInStringToDate(hour: string | undefined) {
+  if (hour) {
+    const [hours, minute] = hour.split(":").map(value => Number(value));
+    return new Date(0, 0, 0, hours, minute)
+  } return ''
 }
 
-function dateInStringToDate(date: string) {
-  const [day, month, year] = date.split("-").map(value => Number(value));
-  return new Date(year, month - 1, day);
+function dateInStringToDate(date: string | undefined) {
+  if (date) {
+    const [day, month, year] = date.split("-").map(value => Number(value));
+    return new Date(year, month - 1, day)
+  } return ''
 }
+
+function refineResponsableList(responsableList: ResponsableType[]) {
+  const validResponsable: ResponsableType[] = []
+  responsableList.forEach(responsable => {
+    if (responsable.id >= 1) validResponsable.push(responsable)
+  })
+  return validResponsable
+}
+
 
 type ResponsableType = { id: number }
 
 export function ExecuteServiceOrderForm({ id }: { id: number }) {
-
+  const { backPage } = usePages()
+  const { dialogQuestion } = useDialog()
   const { data } = api.preventive.getServiceOrderById.useQuery({ id })
-  const [rep1, setResp1] = useState<ResponsableType>()
-  const [rep2, setResp2] = useState<ResponsableType>()
-  const [rep3, setResp3] = useState<ResponsableType>()
-  const [rep4, setResp4] = useState<ResponsableType>()
+
+  const [rep1, setResp1] = useState<ResponsableType>({ id: -1 })
+  const [rep2, setResp2] = useState<ResponsableType>({ id: -1 })
+  const [rep3, setResp3] = useState<ResponsableType>({ id: -1 })
+  const [rep4, setResp4] = useState<ResponsableType>({ id: -1 })
 
   const [date, setDate] = useState<string>()
-  const [startTime, setStartTime] = useState<string>()
-  const [finishTime, setFinishTime] = useState<string>()
+  const [startTime, setStartTime] = useState<string>('')
+  const [finishTime, setFinishTime] = useState<string>('')
 
+  const [duration, setDuration] = useState(0)
 
   useEffect(() => {
-    console.log(date)
-    console.log(startTime)
-    console.log(finishTime)
-  }, [date, startTime, finishTime])
+
+    if (startTime != '' && finishTime != '') {
+      setDuration(differenceInMinutes(
+        timeInStringToDate(finishTime) as Date,
+        timeInStringToDate(startTime) as Date
+      ))
+    }
+
+  }, [startTime, finishTime])
+
+  function handleSubmit() {
+    const executeServiceOrderData = {
+      id: data?.id,
+      date: dateInStringToDate(date),
+      finishTime: timeInStringToDate(finishTime),
+      startTime: timeInStringToDate(startTime),
+      workers: refineResponsableList([rep1, rep2, rep3, rep4])
+    } as ExecutePreventiveServiceOrderType
+
+    // console.log(executeServiceOrderData)
+
+    try {
+      const executeServiceOrderInfo = executePreventiveServiceOrderSchema
+        .parse(executeServiceOrderData)
 
 
+      dialogQuestion('Atenção!', 'Realmente deseja execultar es Ordem de Serviço',
 
-  const { backPage } = usePages()
+        () => {
+          toast.promise(new Promise((resolve, reject) => {
+            resolve('')
+          }), {
+            pending: 'Processando as informações...',
+            error: {
+              render({ data }) {
+                return `Error ${data}`
+              }
+            },
+            success: 'Alteração realizada com sucesso!!'
+          }).then(() => {
+            //backPage()
+          })
+        },
+
+        () => {
+
+        }
+
+      )
+
+    } catch (error) {
+      const err = error as ZodError
+      const msgError = err.errors.map((entry) => entry.message)[0]
+      toast.error(msgError, { toastId: msgError })
+      return
+    }
+
+  }
 
   return (
     <PageModalContainer
@@ -109,19 +184,19 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
           <div className="w-full grid grid-cols-4 gap-10 p-5 mt-[-30px]">
             <WorkerInput
               labelName='Manutencista 1'
-              onChange={(id) => { if (id) setResp1({ id }) }}
+              onChange={(id) => setResp1(id ? { id } : { id: -1 })}
             />
             <WorkerInput
               labelName='Manutencista 2'
-              onChange={(id) => { if (id) setResp2({ id }) }}
+              onChange={(id) => setResp2(id ? { id } : { id: -1 })}
             />
             <WorkerInput
               labelName='Manutencista 3'
-              onChange={(id) => { if (id) setResp3({ id }) }}
+              onChange={(id) => setResp3(id ? { id } : { id: -1 })}
             />
             <WorkerInput
               labelName='Manutencista 4'
-              onChange={(id) => { if (id) setResp4({ id }) }}
+              onChange={(id) => setResp4(id ? { id } : { id: -1 })}
             />
           </div>
 
@@ -147,9 +222,14 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
             </div>
           </div>
 
-          <div className="w-full p-5 flex flex-row justify-end items-center" >
+          <div className="w-full p-5 flex flex-row justify-between items-center" >
+
+            <div className='text-lg'>
+              <span className='font-medium' >Duração:</span> {duration}min
+            </div>
+
             <InputButton
-              onClick={() => { }}
+              onClick={handleSubmit}
               title='Salvar'
               Icon={BiSave}
               className="bg-green-500 text-gray-100 w-40"
@@ -170,8 +250,9 @@ const WorkerInput = ({ onChange, labelName }: {
   labelName: string,
 }) => {
 
-  const [registration, setRegistration] = useState<number>(0)
-  const worker = api.main.getWorkersByRegistration.useQuery(registration)
+  const [registration, setRegistration] = useState<string>('')
+  const worker = api.main.getWorkersByRegistration
+    .useQuery(Number(registration == '' ? -1 : registration))
 
   return (
     <InputCaseForm
@@ -181,12 +262,13 @@ const WorkerInput = ({ onChange, labelName }: {
         className='w-1/4 bg-transparent'
         type="text"
         onChange={(e) => {
-          setRegistration(Number(e.target.value))
+          setRegistration(e.target.value)
           worker.refetch()
             .then(worker => {
               onChange(worker?.data?.id)
             })
         }}
+        value={registration}
       />
       <span
         className='w-3/4 text-end text-sm'

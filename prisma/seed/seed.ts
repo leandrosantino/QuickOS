@@ -3,6 +3,8 @@ import fs from 'fs';
 import CsvReadableStream from 'csv-reader';
 import AutoDetectDecoderStream from 'autodetect-decoder-stream';
 import chalk from 'chalk'
+import { on } from 'events';
+import { Console } from 'console';
 
 const prisma = new PrismaClient()
 
@@ -27,34 +29,56 @@ type Worker = {
     class: string;
 }
 
-function registerMachines() {
-    fs.createReadStream('prisma/seed/src/machines.csv')
-        .on('open', () => console.log(chalk.blueBright('\nStart register Machines\n')))
-        .pipe(autodetect)
-        .pipe(CSV)
-        .on('data', (data: Machine) => {
-            prisma.machine.create({ data })
-                .then(() => console.log(`${chalk.greenBright('Successfully saved line!')} => ${data.tag}`))
-                .catch(() => console.log(`${chalk.redBright('Fail!')} => Erro in ${data.tag} `))
-        })
+function readCsv<T>(file: string, identifier: string) {
+    return new Promise<T[]>((resolve, reject) => {
+        const dataList: T[] = []
+        console.log(chalk.blueBright(`\nStart register ${identifier}\n`))
+
+        const strean = fs.createReadStream('prisma/seed/src/' + file).pipe(autodetect)
+        strean.pipe(CSV)
+            .on('data', (data: T) => { dataList.push(data) })
+            .on('error', (err: Error) => { reject(err) })
+            .on('ready', () => console.log('ok'))
+            .on('end', () => { resolve(dataList) })
+
+    })
 }
 
-function registerWorkers() {
-    fs.createReadStream('prisma/seed/src/workers.csv')
-        .on('open', () => console.log(chalk.blueBright('\nStart register Workers\n')))
-        .pipe(autodetect)
-        .pipe(CSV)
-        .on('data', async (data: Worker) => {
-            prisma.worker.create({ data })
-                .then(() => console.log(`${chalk.greenBright('Successfully saved line!')} => ${data.name}`))
-                .catch(() => console.log(`${chalk.redBright('Fail!')} => Erro in ${data.name} `))
-        })
+async function registerMachines() {
+    try {
+        const machines = await readCsv<Machine>('machines.csv', 'Machines')
+
+        for await (let machine of machines) {
+            console.log(machine)
+        }
+
+        return 'ok'
+    } catch (error) {
+        console.log(error)
+    }
+
+}
+
+async function registerWorkers() {
+    try {
+        const workers = await readCsv<Worker>('workers.csv', 'Workers')
+
+        for await (let worker of workers) {
+            console.log(worker)
+        }
+
+        return 'ok'
+
+    } catch (error) {
+        console.log(error)
+    }
+
 
 }
 
 async function main() {
-    // registerMachines()
-    // registerWorkers()
+    registerMachines()
+    await registerWorkers()
 }
 
 main()

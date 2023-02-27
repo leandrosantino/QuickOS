@@ -54,7 +54,7 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
           className='w-full flex flex-row justify-between p-1'
         >
           <div> <><span className='mr-1 font-medium' >Data:</span> {toDate(data.date)}</> </div>
-          <div> <span className='mr-1 font-medium' >Duração:</span> {10} min</div>
+          <div> <span className='mr-1 font-medium' >Duração:</span> {data.duration} min</div>
         </div>
       }
 

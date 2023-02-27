@@ -11,6 +11,18 @@ export function useDialog(window: BrowserWindow) {
         return resp
     }
 
-    return { openFile }
+    function success(title: string, message: string) {
+        dialog.showMessageBoxSync(window, {
+            message,
+            title,
+            type: 'info'
+        })
+    }
+
+    function error(message: string) {
+        dialog.showErrorBox('Erro!', message)
+    }
+
+    return { openFile, success, error }
 
 }

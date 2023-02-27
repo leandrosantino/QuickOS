@@ -4,10 +4,7 @@ import cors from 'cors'
 import { expressHandler } from 'trpc-playground/handlers/express'
 import path from 'path'
 import { appRouter } from './routers';
-import chalk from 'chalk'
-
 import { serviceOrdersSchema } from './schemas/preventive'
-import { z } from 'zod'
 
 const isDev = process.env.IS_DEV
 
@@ -36,7 +33,7 @@ export class Server {
                 const data = JSON.parse(String(req.query.data))
                 const serviceOrder = serviceOrdersSchema.parse(data)
                 // const serviceOrder: z.infer<typeof serviceOrdersSchema> = {}
-                res.render('serviceOrder.ejs', serviceOrder)
+                res.render('serviceOrder.ejs', { data: serviceOrder })
             } catch (error) {
                 res.statusCode = 500
                 res.send(error)
@@ -44,17 +41,12 @@ export class Server {
         })
     };
 
-    startMessage = `${chalk.green('Start Server successfully !')}
-
-you can now use the playground in the browser.
-
-    local: ${chalk.yellow(`http://localhost:${this.serverPort}/playground`)}
-
-to clear the terminal, use ${chalk.blueBright('clear')}
-to restart the server, use ${chalk.blueBright('reload')}
-
-${chalk.greenBright('- Trpc Server online -')}
-    `
+    onStart = async () => {
+        if (isDev) {
+            const chalk = new (await import('chalk')).Chalk
+            console.log(`${chalk.green('Start Server successfully !')}\n\nyou can now use the playground in the browser.\n\n    local: ${chalk.yellow(`http://localhost:${this.serverPort}/playground`)}\n\n    to clear the terminal, use ${chalk.blueBright('clear')}\n    to restart the server, use ${chalk.blueBright('reload')}\n\n${chalk.greenBright('- Trpc Server online -')}`)
+        }
+    }
 
     async start() {
 
@@ -80,7 +72,7 @@ ${chalk.greenBright('- Trpc Server online -')}
             })
         )
 
-        this.app.listen(this.serverPort, () => console.log(this.startMessage))
+        this.app.listen(this.serverPort, this.onStart)
     }
 }
 

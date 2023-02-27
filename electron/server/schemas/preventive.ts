@@ -62,8 +62,8 @@ export const serviceOrdersSchema = z.object({
     nature: natureSchema.optional(),
     duration: z.number().optional().nullable(),
     actionsTaken: z.array(actionsTakenSchema).optional(),
-    startTime: z.date().optional().nullable(),
-    finishTime: z.date().optional().nullable(),
+    startTime: z.date().nullable().optional().or(z.string()),
+    finishTime: z.date().nullable().optional().or(z.string()),
 })
 
 export type ServiceOrdersType = z.infer<typeof serviceOrdersSchema>

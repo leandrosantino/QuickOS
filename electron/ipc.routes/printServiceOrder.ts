@@ -42,18 +42,6 @@ export function printServiceOrder({ ipcMain, window }: UseRoutesProps) {
 
             serviceOrderWindow.removeMenu()
 
-            ipcMain.on('runPrint', (event, args) => {
-                serviceOrderWindow?.webContents.print({
-                    pageSize: 'A4',
-                    margins: {
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        top: 0,
-                    }
-                })
-            })
-
             event.returnValue = true
 
             serviceOrderWindow.on('close', () => {
@@ -63,19 +51,34 @@ export function printServiceOrder({ ipcMain, window }: UseRoutesProps) {
         }
     })
 
+    ipcMain.on('runPrint', (event, args) => {
+        BrowserWindow.fromWebContents(event.sender)?.webContents.print({
+            pageSize: 'A4',
+            margins: {
+                bottom: 10,
+                left: 10,
+                right: 10,
+                top: 10,
+            }
+        }, (success) => {
+            success && dialog.success('Sucesso!!', 'A Ordem de Serviço foi Impressa!!')
+        })
+    })
+
     ipcMain.on('runPrintToPdf', async (event, args) => {
         const pdfpath = dialog.openFile('Escolha a pasta para salvar o PDF', 'Salvar Ordem de Serviço Preventiva')
         if (pdfpath) {
-            const pdf = await BrowserWindow.fromWebContents(event.sender)?.webContents.printToPDF({
-                pageSize: 'A4',
-                margins: {
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    top: 0,
+            try {
+                const pdf = await BrowserWindow.fromWebContents(event.sender)?.webContents.printToPDF({
+                    pageSize: 'A4',
+                })
+                if (pdf) {
+                    fs.writeFileSync(path.join(pdfpath[0], `${args}.pdf`), pdf, 'binary')
+                    dialog.success('Sucesso!!', 'A Ordem de Serviço foi Salva!!')
                 }
-            })
-            pdf && fs.writeFileSync(path.join(pdfpath[0], `${args}.pdf`), pdf, 'binary')
+            } catch (error) {
+                dialog.error(String(error))
+            }
         }
     })
 

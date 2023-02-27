@@ -1,148 +1,60 @@
 import { PrismaClient } from '../../database/client'
+import fs from 'fs';
+import CsvReadableStream from 'csv-reader';
+import AutoDetectDecoderStream from 'autodetect-decoder-stream';
+import chalk from 'chalk'
 
-export const prisma = new PrismaClient()
+const prisma = new PrismaClient()
 
-async function main(){
+const CSV = new CsvReadableStream({
+    parseNumbers: true,
+    parseBooleans: true,
+    trim: true,
+    asObject: true,
+    delimiter: ';'
+})
+const autodetect = new AutoDetectDecoderStream({ defaultEncoding: '1255' })
 
-    // await prisma.machine.create({
-    //     data: {
-    //         tag: "M05",
-    //         technology: "WaterJet",
-    //         ute: "UTE-5",
-    //     }
-    // })
-    // await prisma.machine.create({
-    //     data: {
-    //         tag: "M43",
-    //         technology: "WaterJet",
-    //         ute: "UTE-5",
-    //     }
-    // })
-    // await prisma.machine.create({
-    //     data: {
-    //         tag: "M09",
-    //         technology: "LWF",
-    //         ute: "UTE-1",
-    //     }
-    // })
+type Machine = {
+    tag: string;
+    ute: string;
+    technology: string;
+}
 
-    // const m42 = await prisma.machine.create({
-    //     data: {
-    //         tag: "M50",
-    //         technology: "WaterJet",
-    //         ute: "UTE-5",
-    //     }
-    // })
+type Worker = {
+    registration: number;
+    name: string;
+    class: string;
+}
 
-    // const worker = await prisma.worker.create({
-    //     data: {
-    //         name: "Rodigo",
-    //         registration: 16,
-    //         class: "Mecânico"
-    //     }
-    // })
+function registerMachines() {
+    fs.createReadStream('prisma/seed/src/machines.csv')
+        .on('open', () => console.log(chalk.blueBright('\nStart register Machines\n')))
+        .pipe(autodetect)
+        .pipe(CSV)
+        .on('data', (data: Machine) => {
+            prisma.machine.create({ data })
+                .then(() => console.log(`${chalk.greenBright('Successfully saved line!')} => ${data.tag}`))
+                .catch(() => console.log(`${chalk.redBright('Fail!')} => Erro in ${data.tag} `))
+        })
+}
 
-    // const mecanica = await prisma.nature.create({
-    //     data: {
-    //         name: "Mecânica"
-    //     }
-    // })
-    // const eletrica = await prisma.nature.create({
-    //     data: {
-    //         name: "Elétrica"
-    //     }
-    // })
+function registerWorkers() {
+    fs.createReadStream('prisma/seed/src/workers.csv')
+        .on('open', () => console.log(chalk.blueBright('\nStart register Workers\n')))
+        .pipe(autodetect)
+        .pipe(CSV)
+        .on('data', async (data: Worker) => {
+            prisma.worker.create({ data })
+                .then(() => console.log(`${chalk.greenBright('Successfully saved line!')} => ${data.name}`))
+                .catch(() => console.log(`${chalk.redBright('Fail!')} => Erro in ${data.name} `))
+        })
 
-    // await prisma.preventiveAction.create({
-    //     data:{
-    //         natureId: 2,
-    //         machineId: 2,
-    //         description: "Vedação o eixo da bomba de poliol",
-    //         excution: "Inpesão e troca",
-    //         frequency: 1,
-    //         nextExecution: "2023-W32",
-    //     },
-    // }) 
-    // await prisma.preventiveAction.create({
-    //     data:{
-    //         natureId: 2,
-    //         machineId: 2,
-    //         description: "Vedação o eixo da bomba de poliol",
-    //         excution: "Inpesão e troca",
-    //         frequency: 1,
-    //         nextExecution: '2023-W32',
-    //     },
-    // }) 
-    // await prisma.preventiveAction.create({
-    //     data:{
-    //         natureId: 1,
-    //         machineId: 3,
-    //         description: "Vedação o eixo da bomba de poliol",
-    //         excution: "Inpesão e troca",
-    //         frequency: 1,
-    //         nextExecution: "2023-W32",
-    //     },
-    // }) 
+}
 
-    const actions = [
-        await prisma.preventiveAction.create({
-            data:{
-                natureId: 2,
-                machineId: 4,
-                description: "Painel elétrico de controle da mesa",
-                excution: "Limpeza e ajuste",
-                frequency: 4,
-                nextExecution: '2023-W32',
-            },
-        }),
-        await prisma.preventiveAction.create({
-            data:{
-                natureId: 1,
-                machineId:3,
-                description: "Rolamento da esteira",
-                excution: "Inspesão e troca",
-                frequency: 8,
-                nextExecution: '2023-W32',
-            },
-        }),
-        await prisma.preventiveAction.create({
-            data:{
-                natureId: 2,
-                machineId: 2,
-                description: "Vedação o eixo da bomba de poliol",
-                excution: "Inpesão e troca",
-                frequency: 1,
-                nextExecution: '2023-W32',
-            },
-        })   
-    ]
-    
-    // await prisma.preventiveOS.create({
-    //     data: {
-    //         machineId: 1,
-    //         responsibleId: 1,
-    //         week: 5,
-    //         year: 2023,
-    //         natureId: mecanica.id,
-    //         date: new Date(),
-    //         concluded: false,
-    //         actions: {
-    //             connect: [
-    //                 {id: 1},   
-    //                 {id: 2},   
-    //                 {id: 3},   
-    //             ]
-    //         }
-            
-    //     }
-    // })
-
-}   
+async function main() {
+    // registerMachines()
+    // registerWorkers()
+}
 
 main()
-
-/*
-
- 
-
-*/

@@ -20,7 +20,7 @@
     "eject": "react-scripts eject",
     "server": "tsx watch ./electron/server/index.ts",
     "dbstudio": "npx prisma studio",
-    "seed": "cls && tsx prisma/seed/seed.ts",
+    "seed": "tsx prisma/seed/seed.ts",
     "dbmigrate": "npx prisma migrate dev"
   },
   "prisma": {
@@ -85,8 +85,7 @@
   "devDependencies": {
     "@mermaid-js/mermaid-cli": "^9.3.0",
     "@types/cors": "^2.8.13",
-    "autodetect-decoder-stream": "^2.0.2",
-    "csv-reader": "^1.0.11",
+    "csv-parse": "^5.3.5",
     "electron": "^22.0.0",
     "electron-builder": "^23.6.0",
     "prisma": "^4.9.0",

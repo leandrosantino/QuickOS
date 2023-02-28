@@ -14,6 +14,24 @@ import {
 } from './schemas/preventive'
 
 
+async function proofreaderDataBase(weekCode: string) {
+    const os = await prisma.preventiveOS.findMany({
+        where: {
+            weekCode
+        },
+        include: {
+            _count: { select: { actions: true, actionsTaken: true } }
+        }
+    })
+    os.forEach(async (entry) => {
+        if (entry._count.actions == 0 && entry._count.actionsTaken == 0) {
+            await prisma.preventiveOS.delete({
+                where: { id: entry.id }
+            })
+        }
+    })
+}
+
 
 export async function assembleServiceOrders({ machine, nature, status, week, year }: AssembleServiceOrdersParamsType) {
     try {
@@ -89,21 +107,7 @@ export async function assembleServiceOrders({ machine, nature, status, week, yea
             }
         }
 
-        {
-            const os = await prisma.preventiveOS.findMany({
-                include: {
-                    _count: { select: { actions: true, actionsTaken: true } }
-                }
-            })
-            os.forEach(async (entry) => {
-                if (entry._count.actions == 0 && entry._count.actionsTaken == 0) {
-                    await prisma.preventiveOS.delete({
-                        where: { id: entry.id }
-                    })
-                }
-            })
-        }
-
+        proofreaderDataBase(weekCode)
 
         return OSs
 
@@ -176,7 +180,11 @@ export async function executeServiceOrders({ date, id, workers, finishTime, star
             }
         })
 
-        os.actions.forEach(async ({ id }, index) => {
+        for await (let [index, { id }] of os.actions.entries()) {
+
+            // }
+
+            // os.actions.forEach(async ({ id }, index) => {
 
             const weekYearNumber = weekYearStringToNumber(os.actions[index].nextExecution)
             const nextWeek = incrementWeekYear(
@@ -184,12 +192,12 @@ export async function executeServiceOrders({ date, id, workers, finishTime, star
                 weekYearNumber.year,
                 os.actions[index].frequency
             )
-            const nexeWeekString = weekYearToString(nextWeek.week, nextWeek.year)
+            const nextWeekString = weekYearToString(nextWeek.week, nextWeek.year)
 
             await prisma.preventiveAction.update({
                 where: { id },
                 data: {
-                    nextExecution: nexeWeekString
+                    nextExecution: nextWeekString
                 }
             })
 
@@ -202,7 +210,7 @@ export async function executeServiceOrders({ date, id, workers, finishTime, star
                 },
             })
 
-        })
+        }
 
         return os
     } catch (error) {

@@ -105,7 +105,7 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
             },
             success: 'Alteração realizada com sucesso!!'
           }).then(() => {
-            //backPage()
+            backPage()
           })
         },
         () => { }
@@ -136,7 +136,7 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
       >
 
         <PageHeader title='Executar Preventiva' >
-          <div className="text-lg font-medium" >
+          <div className="text-lg font-medium w-full" >
             {data?.machine?.tag} - {data?.nature?.name} / Nº {data?.id}
           </div>
         </PageHeader>

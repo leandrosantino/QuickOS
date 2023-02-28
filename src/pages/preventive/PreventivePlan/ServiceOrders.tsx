@@ -45,7 +45,7 @@ export function ServiceOrders({ _week, _year }: type) {
 
   useEffect(() => {
     refetch()
-  })
+  }, [data, refetch])
 
 
   const { goToPage } = usePages()

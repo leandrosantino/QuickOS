@@ -135,7 +135,7 @@ export function PreventiveActions() {
                 filtered ? RiFilterOffFill : RiFilterFill
               }
               className={`
-                w-full text-xl 
+                w-full text-xl
                 ${filtered ?
                   'hover:text-red-400 text-red-500' :
                   'text-gray-300'
@@ -175,20 +175,26 @@ export function PreventiveActions() {
         <div className="w-full h-[calc(100vh-230px)]">
           <ScrollContainer className="h-full" >
             {
-              actions?.map((entry, index) => (
-                <TableRow
-                  onClick={
-                    () => {
-                      goToPage(
-                        'Preventive.Actions.EditActions',
-                        { data: entry, id: entry.id }
-                      )
+              getActions.isLoading ? <div className="
+                w-full h-full
+                flex justify-center items-center
+                font-medium
+              " >Carregando....</div> :
+
+                actions?.map((entry, index) => (
+                  <TableRow
+                    onClick={
+                      () => {
+                        goToPage(
+                          'Preventive.Actions.EditActions',
+                          { data: entry, id: entry.id }
+                        )
+                      }
                     }
-                  }
-                  key={index}
-                  data={entry}
-                />
-              ))
+                    key={index}
+                    data={entry}
+                  />
+                ))
             }
           </ScrollContainer>
         </div>
@@ -231,26 +237,26 @@ function TableRow({ data, className, istitle, onClick }: TableRowProps) {
     <div
       className={`
         ${istitle ? `
-          bg-gray-700 text-gray-100 font-medium 
+          bg-gray-700 text-gray-100 font-medium
           rounded-tr-lg rounded-tl-lg text-sm
         `: `bg-gray-300`}
         w-full
-        flex flex-row 
+        flex flex-row
         justify-center items-center
-        border-b border-gray-900 
+        border-b border-gray-900
       ` + className}
     >
 
       <div
         className={`
           w-[100%]
-          flex flex-row 
+          flex flex-row
           ${data.ignore ? 'text-gray-500' : ''}
-          justify-center items-center 
+          justify-center items-center
           ${istitle ? `` : `
             bg-gray-300
             hover:bg-gray-400 hover:cursor-pointer
-          `} 
+          `}
         `}
         onClick={() => onClick ? onClick() : {}}
       >

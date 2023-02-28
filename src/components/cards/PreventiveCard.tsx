@@ -21,6 +21,12 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
 
   const actions = !data.concluded ? data.actions : data?.actionsTaken?.map(entry => entry.action)
 
+  const actionsParse = ((info: typeof data.actions) => {
+    const actions = [...info ? info : []]
+    actions?.length > 4 && actions?.splice(4, actions.length - 4)
+    return actions
+  })(actions)
+
   function toDate(entry: string) {
     let date = entry.split('T')
     date = date[0].split('-')
@@ -64,7 +70,7 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
         "
       >
         {
-          actions?.map((entry, index) => (
+          actionsParse?.map((entry, index) => (
             <li
               key={index}
               className="
@@ -74,23 +80,20 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
               "
             >
               {
-                index <= 3 ?
-                  <>
-                    {
-                      data.concluded ?
-                        <span className='text-green-500'><VscDebugBreakpointLog /></span> :
-                        <span><VscDebugBreakpointLogUnverified /></span>
-                    }
-                    <div
-                      className="
-                  p-1 text-lg
-                "
-                    >{entry.description}</div>
-                  </> :
-                  <div className="italic font-medium" >mais...</div>
+                data.concluded ?
+                  <span className='text-green-500'><VscDebugBreakpointLog /></span> :
+                  <span><VscDebugBreakpointLogUnverified /></span>
               }
+              <div
+                className="p-1 text-lg"
+              >
+                {entry.description}
+              </div>
             </li>
           ))
+        }
+        {actions && actions?.length > 4 &&
+          <div className="pl-2 italic font-medium" >mais...</div>
         }
       </ul>
 

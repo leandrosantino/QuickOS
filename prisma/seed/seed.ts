@@ -2,6 +2,9 @@ import { PrismaClient } from '../../database/client'
 import fs from 'fs';
 import chalk from 'chalk'
 import csv from 'csv-parse/sync'
+import CsvReadableStream from 'csv-reader';
+import AutoDetectDecoderStream from 'autodetect-decoder-stream';
+
 import { z } from 'zod'
 
 const prisma = new PrismaClient()
@@ -37,9 +40,9 @@ const actionsSchema = z.object({
             }
             return Number(codes[value])
         }),
-    nextExecution: z.string()
+    nextExecution: z.number()
         .transform((value) => {
-            const week = value.length == 1 ? `0${value}` : value
+            const week = String(value).length == 1 ? `0${value}` : value
             return `2023-W${week}`
         }),
 })
@@ -53,7 +56,7 @@ type ActionType = z.infer<typeof reciveAction>
 
 
 
-function csvRead<T>(file: string) {
+function csvReadt<T>(file: string) {
     return csv.parse(fs.readFileSync(source + file), {
         columns: true,
         delimiter: ';',
@@ -63,6 +66,38 @@ function csvRead<T>(file: string) {
 
     }) as T[]
 }
+
+function csvRead<T>(file: string) {
+    return new Promise<T[]>((resolve, reject) => {
+        const data: T[] = []
+        fs.createReadStream(source + file)
+            .pipe(new AutoDetectDecoderStream({ defaultEncoding: '1255' }))
+            .pipe(new CsvReadableStream({
+                parseNumbers: true,
+                parseBooleans: true,
+                trim: true,
+                asObject: true,
+                delimiter: ';'
+            }))
+            .on('data', function (row: T) {
+                data.push(row)
+            }).on('end', function () {
+                resolve(data)
+            });
+    })
+}
+
+const a = async () => {
+    const data = await csvRead<ActionType>('actions.csv')
+    console.log(actionsSchema.parse({
+        ...data[11],
+        natureId: 1,
+        machineId: 1,
+    }))
+
+}
+
+// a()
 
 async function main() {
 
@@ -82,7 +117,7 @@ async function main() {
     }
 
     console.log(chalk.blue('\n<Start Machine Registration >\n'))
-    const machines = csvRead<Machine>('machines.csv')
+    const machines = await csvRead<Machine>('machines.csv')
     for await (let machine of machines) {
         try {
             await prisma.machine.create({
@@ -95,7 +130,7 @@ async function main() {
     }
 
     console.log(chalk.blue('\n<Start Worker Registration >\n'))
-    const workers = csvRead<Worker>('workers.csv')
+    const workers = await csvRead<Worker>('workers.csv')
     for await (let worker of workers) {
         worker.registration = Number(worker.registration)
         try {
@@ -109,7 +144,7 @@ async function main() {
     }
 
     console.log(chalk.blue('\n<Start Actions Registration >\n'))
-    const actions = csvRead<ActionType>('actions.csv')
+    const actions = await csvRead<ActionType>('actions.csv')
     for await (let action of actions) {
         const identifier = `${action.machine}, ${action.description}`
         try {
@@ -127,6 +162,7 @@ async function main() {
             })
             console.log(`${chalk.green('    Successfully saved line')} => ${identifier}`)
         } catch (error) {
+            // throw error
             console.log(`${chalk.red('  Fail! Error saving line')} => ${identifier} `)
         }
     }

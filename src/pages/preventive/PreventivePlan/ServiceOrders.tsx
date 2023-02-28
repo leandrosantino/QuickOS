@@ -33,7 +33,7 @@ export function ServiceOrders({ _week, _year }: type) {
     setFiltered(nature !== -1 || machine !== -1 || status !== 'all')
   }, [nature, machine, status])
 
-  const { data, refetch } = api.preventive.getServiceOrders.useQuery({
+  const { data, refetch, isLoading } = api.preventive.getServiceOrders.useQuery({
     week,
     year,
     machine,
@@ -154,27 +154,34 @@ export function ServiceOrders({ _week, _year }: type) {
         <div className="w-full h-[calc(100vh-170px)]">
           <ScrollContainer className="mt-5 h-full  rounded-md" >
             {
-              data?.length === 0 ?
-                <div
-                  className="
+              isLoading ?
+                <div className="
+                w-full h-full
+                flex justify-center items-center
+                font-medium
+              ">Carregando ....</div>
+                :
+                data?.length === 0 ?
+                  <div
+                    className="
                   w-full h-full
                   flex justify-center items-center
                   font-medium
                 "
-                >
-                  Nenhuma ação preventiva para esta semana!
-                </div>
-                : <div
-                  className="
+                  >
+                    Nenhuma ação preventiva para esta semana!
+                  </div>
+                  : <div
+                    className="
                   grid grid-cols-2 xl:grid-cols-3 gap-4 p-4
                 "
-                >
-                  {
-                    data?.map((entry, index) => (
-                      <PreventiveCard key={index} data={entry} />
-                    ))
-                  }
-                </div>
+                  >
+                    {
+                      data?.map((entry, index) => (
+                        <PreventiveCard key={index} data={entry} />
+                      ))
+                    }
+                  </div>
 
             }
           </ScrollContainer>

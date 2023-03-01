@@ -4,8 +4,6 @@ import { InputButton } from '../../../components/forms/InputButton';
 import { PageHeader } from '../../../components/PageHeader';
 import { usePages } from '../../../hooks/usePages'
 import { api } from '../../../utils/trpc';
-
-
 import { IoIosArrowBack } from 'react-icons/io'
 import { RiFilterOffFill, RiFilterFill } from 'react-icons/ri'
 import { useEffect, useState } from 'react';
@@ -159,7 +157,7 @@ export function ServiceOrders({ _week, _year }: type) {
                 w-full h-full
                 flex justify-center items-center
                 font-medium
-              ">Carregando ....</div>
+              ">Carregando... </div>
                 :
                 data?.length === 0 ?
                   <div

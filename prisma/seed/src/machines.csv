@@ -1,45 +1,45 @@
-tag;ute;technology
-M01;UTE-01;LWF Block foaming
-M02;UTE-01;LWF Block foaming
+tag;ute;tecnologia
+M01;UTE-01;LWF Bloco de espuma
+M02;UTE-01;LWF Bloco de espuma
 M03;UTE-01;outros
 M04;UTE-01;outros
-M06;UTE-02;PUR Foaming molding
-M07;UTE-02;Carpet molding
-M08;UTE-02;Hot pressing
-M09;UTE-02;Hot pressing
-M10;UTE-02;PUR Foaming molding
-M11;UTE-02;PUR Foaming molding
-M12;UTE-02;PUR Foaming molding
-M13;UTE-02;PUR Foaming molding
-M14;UTE-03;Hot pressing
-M15;UTE-03;Hot pressing
-M16;UTE-03;Hot pressing
+M06;UTE-02;PUR Moldagem de espuma
+M07;UTE-02;Moldagem de carpete
+M08;UTE-02;Prensagem a quente
+M09;UTE-02;Prensagem a quente
+M10;UTE-02;Moldagem de espuma PUR
+M11;UTE-02;Moldagem de espuma PUR
+M12;UTE-02;Moldagem de espuma PUR
+M13;UTE-02;Moldagem de espuma PUR
+M14;UTE-03;Prensagem a quente
+M15;UTE-03;Prensagem a quente
+M16;UTE-03;Prensagem a quente
 M17;UTE-03;outros
 M18;UTE-03;outros
-M19;UTE-03;Hot pressing
-M20;UTE-03;Hot pressing
-M21;UTE-03;Hot pressing
-M22;UTE-03;Waterjet
-M23;UTE-03;Hot pressing
-M24;UTE-04;Hot pressing
-M25;UTE-02;Hot pressing
-M26;UTE-04;Hot pressing
+M19;UTE-03;Prensagem a quente
+M20;UTE-03;Prensagem a quente
+M21;UTE-03;Prensagem a quente
+M22;UTE-03;Jato d'água
+M23;UTE-03;Prensagem a quente
+M24;UTE-04;Prensagem a quente
+M25;UTE-02;Prensagem a quente
+M26;UTE-04;Prensagem a quente
 M27;UTE-04;outros
-M28;UTE-04;Hot pressing
-M29;UTE-04;Hot pressing
-M30;UTE-02;Hot pressing
+M28;UTE-04;Prensagem a quente
+M29;UTE-04;Prensagem a quente
+M30;UTE-02;Prensagem a quente
 M31;UTE-04;outros
-M32;UTE-04;Hot pressing
-M33;UTE-04;Hot pressing
-M34;UTE-04;Hot pressing
-M35;UTE-05;Carpet molding
+M32;UTE-04;Prensagem a quente
+M33;UTE-04;Prensagem a quente
+M34;UTE-04;Prensagem a quente
+M35;UTE-05;Moldagem de carpete
 M36;UTE-05;outros
-M37;UTE-05;PUR Foaming molding
-M38;UTE-05;PUR Foaming molding
-M39;UTE-05;PUR Foaming molding
-M40;UTE-05;PUR Foaming molding
-M41;UTE-05;Waterjet
-M42;UTE-05;Waterjet
+M37;UTE-05;Moldagem de espuma PUR
+M38;UTE-05;Moldagem de espuma PUR
+M39;UTE-05;PUR Moldagem de espuma
+M40;UTE-05;PUR Moldagem de espuma
+M41;UTE-05;Jato d'água
+M42;UTE-05;Jato d'água
 M41 INTENSIFICADOR;UTE-05;outros
-M41 WATER JET;UTE-05;outros
-M42 WATER JET;UTE-05;outros
+M41 JATO DE ÁGUA;UTE-05;outros
+M42 JATO DE ÁGUA;UTE-05;outros

@@ -24,7 +24,7 @@ export function PreventiveActions() {
   const [nature, setNature] = useState(-1)
   const [machine, setMachine] = useState(-1)
   const [weekCode, setWeekCode] = useState<string>('')
-  const [showIgnore, setShowIgnore] = useState(true)
+  const [showIgnore, setShowIgnore] = useState(false)
   const [inputSearchText, setInputSearchText] = useState<string>('')
   const [filtered, setFiltered] = useState<boolean>(false)
   useEffect(() => {
@@ -43,6 +43,24 @@ export function PreventiveActions() {
       if (lastAction) cursor.current = lastAction
     }
   }, [actions])
+
+
+  function onUpdate() {
+    setActions([])
+    cursor.current = 1
+    fetch.preventive.getActions.query({
+      searchText: inputSearchText,
+      machineId: machine,
+      natureId: nature,
+      weekCode,
+      showIgnore,
+      limit: 30,
+      cursor: cursor.current
+    })
+      .then(data => {
+        setActions(state => [...state ? state : [], ...data])
+      })
+  }
 
   useEffect(() => {
     setActions([])
@@ -233,7 +251,7 @@ export function PreventiveActions() {
 
       </div>
 
-      <PreventiveActionsFormRoutes onBack={() => { }} />
+      <PreventiveActionsFormRoutes onBack={() => { onUpdate() }} />
 
     </>
   )

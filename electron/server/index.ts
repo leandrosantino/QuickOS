@@ -86,7 +86,7 @@ export class Server {
             })
         )
 
-        this.app.use(
+        isDev && this.app.use(
             this.playgroundEndpoint,
             await expressHandler({
                 trpcApiEndpoint: this.apiEndpoint,

@@ -125,6 +125,7 @@ async function main() {
             })
             console.log(`${chalk.green('    Successfully saved line')} => ${machine.tag}`)
         } catch (error) {
+            // throw error
             console.log(`${chalk.red('  Fail! Error saving line')} => ${machine.tag} `)
         }
     }
@@ -139,6 +140,7 @@ async function main() {
             })
             console.log(`${chalk.green('    Successfully saved line')} => ${worker.name}`)
         } catch (error) {
+            // throw error
             console.log(`${chalk.red('  Fail! Error saving line')} => ${worker.name} `)
         }
     }
@@ -149,7 +151,7 @@ async function main() {
         const identifier = `${action.machine}, ${action.description}`
         try {
             const nature = await prisma.nature.findUnique({
-                where: { id: action.nature === 'ELֹTRICO' ? 1 : 2 }
+                where: { id: action.nature === 'ELÉTRICO' ? 1 : 2 }
             })
             const machine = await prisma.machine.findUnique({ where: { tag: action.machine } })
             const actionParse = actionsSchema.parse({

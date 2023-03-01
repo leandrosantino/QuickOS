@@ -44,17 +44,26 @@ export function PreventiveOsModalRoutes() {
   );
 }
 
-export function PreventiveActionsFormRoutes() {
+export function PreventiveActionsFormRoutes({ onBack }) {
   return (
     <PagesContainer>
-      <Screen name="Preventive.Actions" component={() => <></>} />
+      <Screen
+        name="Preventive.Actions"
+        component={() => {
+          <></>;
+        }}
+      />
       <Screen
         name="Preventive.Actions.NewActions"
-        component={PreventiveActionForm}
+        component={(props) => (
+          <PreventiveActionForm {...props} onBack={onBack} />
+        )}
       />
       <Screen
         name="Preventive.Actions.EditActions"
-        component={PreventiveActionForm}
+        component={(props) => (
+          <PreventiveActionForm {...props} onBack={onBack} />
+        )}
       />
     </PagesContainer>
   );

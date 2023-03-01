@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState, memo } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 import { MdLibraryAdd } from 'react-icons/md'
 import { RiFilterFill, RiFilterOffFill } from 'react-icons/ri'
 import { ScrollContainer } from '../../components/containers/ScrollContainer'
@@ -8,8 +8,7 @@ import { InputSearch } from '../../components/forms/InputSearch'
 import { PageHeader } from '../../components/PageHeader'
 import { usePages } from '../../hooks/usePages'
 import { PreventiveActionsFormRoutes } from '../../routes/preventive.routes'
-import { api } from '../../utils/trpc'
-// import { actionsIterator } from '../../utils/actionsIterator'
+import { api, fetch } from '../../utils/trpc'
 import { ActionsInfoType } from '../../utils/schemas'
 
 
@@ -25,7 +24,7 @@ export function PreventiveActions() {
   const [nature, setNature] = useState(-1)
   const [machine, setMachine] = useState(-1)
   const [weekCode, setWeekCode] = useState<string>('')
-  const [showIgnore, setShowIgnore] = useState(false)
+  const [showIgnore, setShowIgnore] = useState(true)
   const [inputSearchText, setInputSearchText] = useState<string>('')
   const [filtered, setFiltered] = useState<boolean>(false)
   useEffect(() => {
@@ -36,41 +35,49 @@ export function PreventiveActions() {
 
   const [actions, setActions] = useState<ActionsInfoType[]>()
 
-  const getActions = api.preventive.getActions.useQuery({
-    searchText: inputSearchText,
-    machineId: machine,
-    natureId: nature,
-    weekCode,
-    showIgnore,
-  })
-
+  const cursor = useRef<number>(1)
 
   useEffect(() => {
-    getActions.refetch()
-    setActions(getActions?.data)
-  }, [getActions])
+    if (actions) {
+      const lastAction = actions[actions?.length - 1]?.id
+      if (lastAction) cursor.current = lastAction
+    }
+  }, [actions])
 
-  // useEffect(() => {
-  //   (async () => {
-  //     setActions([])
-  //     for await (const rows of actionsIterator({
-  //       searchText: inputSearchText,
-  //       machineId: machine,
-  //       natureId: nature,
-  //       weekCode,
-  //       showIgnore,
-  //     })) {
-  //       setActions(lasted => [...lasted ? lasted : [], ...rows])
-  //       // console.log(rows.length ,[...actions ? actions : [], ...rows])
-  //     }
-  //   })()
-  // }, [
-  //   nature,
-  //   machine,
-  //   weekCode,
-  //   showIgnore,
-  //   inputSearchText,
-  // ])
+  function startObserver() {
+    setActions([])
+    cursor.current = 1
+    const intersectionObserver = new IntersectionObserver((entries) => {
+      if (entries.some(entry => entry.isIntersecting)) {
+        fetch.preventive.getActions.query({
+          searchText: inputSearchText,
+          machineId: machine,
+          natureId: nature,
+          weekCode,
+          showIgnore,
+          limit: 30,
+          cursor: cursor.current
+        })
+          .then(data => {
+            setActions(state => [...state ? state : [], ...data])
+          })
+      }
+    })
+    const sentinel = document.querySelector('#sentinel')
+    sentinel && intersectionObserver.observe(sentinel)
+    return () => intersectionObserver.disconnect()
+  }
+
+  useEffect(() => {
+    startObserver()
+  }, [
+    nature,
+    machine,
+    weekCode,
+    showIgnore,
+    inputSearchText,
+  ])
+
 
   return (
     <>
@@ -81,12 +88,15 @@ export function PreventiveActions() {
         "
       >
         <PageHeader title='Ações Preventivas'>
-          <InputButton
-            Icon={MdLibraryAdd}
-            onClick={() => { goToPage('Preventive.Actions.NewActions', {}) }}
-            title='Criar'
-            className="bg-green-500 text-gray-100 mr-2"
-          />
+          <>
+            {/* {cursor} */}
+            <InputButton
+              Icon={MdLibraryAdd}
+              onClick={() => { goToPage('Preventive.Actions.NewActions', {}) }}
+              title='Criar'
+              className="bg-green-500 text-gray-100 mr-2"
+            />
+          </>
         </PageHeader>
 
         <div
@@ -165,7 +175,6 @@ export function PreventiveActions() {
                 }
               `}
               onClick={() => {
-                console.log(weekCode, nature, machine)
                 setNature(-1)
                 setMachine(-1)
                 setWeekCode('')
@@ -198,7 +207,7 @@ export function PreventiveActions() {
         <div className="w-full h-[calc(100vh-230px)]">
           <ScrollContainer className="h-full" >
             {
-              getActions.isLoading ? <div className="
+              /*getActions.isLoading*/ false ? <div className="
                 w-full h-full
                 flex justify-center items-center
                 font-medium
@@ -219,12 +228,18 @@ export function PreventiveActions() {
                   />
                 ))
             }
+            <div
+              id='sentinel'
+              className='w-full h-[1px] bg-transparent'
+            ></div>
           </ScrollContainer>
         </div>
 
       </div>
 
-      <PreventiveActionsFormRoutes />
+      <PreventiveActionsFormRoutes onBack={() => {
+        startObserver()
+      }} />
 
     </>
   )
@@ -254,7 +269,7 @@ interface TableRowProps {
   onClick?: () => void
 }
 
-const TableRow = memo(({ data, className, istitle, onClick }: TableRowProps) => {
+const TableRow = ({ data, className, istitle, onClick }: TableRowProps) => {
 
   return (
     <div
@@ -299,4 +314,4 @@ const TableRow = memo(({ data, className, istitle, onClick }: TableRowProps) => 
 
     </div>
   )
-})
+}

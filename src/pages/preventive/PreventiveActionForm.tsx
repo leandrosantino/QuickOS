@@ -29,9 +29,10 @@ import { CheckBox } from '../../components/forms/CheckBox';
 interface PreventiveActionFormProps {
   id?: number;
   data?: ActionsInfoTypeWithActonsTaken;
+  onBack(): void
 }
 
-export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
+export function PreventiveActionForm({ id, data, onBack }: PreventiveActionFormProps) {
 
   const [machines, setMachines] = useState<MachineInfoType[]>([{} as MachineInfoType])
   const [natures, setNatures] = useState<NatureInfoType[]>([{} as NatureInfoType])
@@ -106,6 +107,7 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
               .then(resp => {
                 resolve(resp)
                 backPage()
+                onBack()
               })
               .catch(err => {
                 reject(err)
@@ -152,7 +154,7 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
             },
             success: 'Alteração realizada com sucesso!!'
           }).then(() => {
-            data && backPage()
+            data && backPage(); onBack()
           })
 
         },
@@ -172,7 +174,9 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
 
   return (
     <PageModalContainer
-      onClick={() => backPage()}
+      onClick={() => {
+        backPage()
+      }}
       width="60%"
       height="60%"
     >
@@ -309,14 +313,14 @@ export function PreventiveActionForm({ id, data }: PreventiveActionFormProps) {
 
         <div
           className={`
-            h-[40px]   
+            h-[40px]
             flex flex-row items-end mt-7 justify-between
           `}
         >
 
           <div
             className='
-              w-1/2 h-full 
+              w-1/2 h-full
               flex flex-row justify-start items-center
             '
           >

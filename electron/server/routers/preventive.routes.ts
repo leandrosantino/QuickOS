@@ -135,10 +135,10 @@ export const preventive = t.router({
                 const { machineId, natureId, searchText, weekCode, showIgnore } = input
                 const nextExecution = weekCode
                 const actions = await prisma.preventiveAction.findMany({
-                    // skip: input.cursor === 1 ? 0 : 1,
-                    // take: input.limit,
-                    // cursor: { id: input?.cursor },
-                    // orderBy: { id: 'asc' },
+                    skip: input.cursor === 1 ? 0 : 1,
+                    take: input.limit,
+                    cursor: { id: input?.cursor },
+                    orderBy: { id: 'asc' },
                     where: {
                         OR: {
                             description: { contains: searchText },

@@ -15,7 +15,7 @@
     "electron:build": "tsc -p ./electron.tsconfig.json",
     "electron:watch": "tsc -w -p ./electron.tsconfig.json",
     "app": "cls && npm run electron:build && cls && electron . && cls",
-    "dist": "npm run react:build && npm run electron:build && electron-builder -w -c.extraMetadata.main=build/main.js",
+    "dist": "npm run dbmigrate && npm run react:build && npm run electron:build && electron-builder -w -c.extraMetadata.main=build/main.js",
     "test": "",
     "eject": "react-scripts eject",
     "server": "tsx watch ./electron/server/index.ts",

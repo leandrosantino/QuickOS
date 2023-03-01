@@ -127,12 +127,18 @@ export const preventive = t.router({
             machineId: z.number(),
             natureId: z.number(),
             showIgnore: z.boolean(),
+            limit: z.number().optional(),
+            cursor: z.number().optional(),
         }))
         .query(async ({ input }) => {
             try {
                 const { machineId, natureId, searchText, weekCode, showIgnore } = input
                 const nextExecution = weekCode
                 const actions = await prisma.preventiveAction.findMany({
+                    // skip: input.cursor === 1 ? 0 : 1,
+                    // take: input.limit,
+                    // cursor: { id: input?.cursor },
+                    // orderBy: { id: 'asc' },
                     where: {
                         OR: {
                             description: { contains: searchText },
@@ -146,6 +152,7 @@ export const preventive = t.router({
                         nature: true, machine: true, _count: { select: { actionsTaken: true } }
                     }
                 })
+                // console.log(actions.length)
                 return actions
             } catch (error) {
                 throw internalServerError(error)

@@ -1,29 +1,41 @@
-
-import { ReactNode, useEffect, useState } from 'react'
-
+import { ReactNode, useEffect, useState, memo } from 'react'
 import { MdLibraryAdd } from 'react-icons/md'
 import { RiFilterFill, RiFilterOffFill } from 'react-icons/ri'
-
 import { ScrollContainer } from '../../components/containers/ScrollContainer'
 import { CheckBox } from '../../components/forms/CheckBox'
-
 import { InputButton } from '../../components/forms/InputButton'
 import { InputSearch } from '../../components/forms/InputSearch'
 import { PageHeader } from '../../components/PageHeader'
 import { usePages } from '../../hooks/usePages'
 import { PreventiveActionsFormRoutes } from '../../routes/preventive.routes'
 import { api } from '../../utils/trpc'
+// import { actionsIterator } from '../../utils/actionsIterator'
+import { ActionsInfoType } from '../../utils/schemas'
 
 
 export function PreventiveActions() {
+
+  const { goToPage } = usePages()
+
+  // Filters
+
+  const machines = api.main.getMachines.useQuery()
+  const natures = api.main.getNatures.useQuery()
 
   const [nature, setNature] = useState(-1)
   const [machine, setMachine] = useState(-1)
   const [weekCode, setWeekCode] = useState<string>('')
   const [showIgnore, setShowIgnore] = useState(false)
-
-  const { goToPage } = usePages()
   const [inputSearchText, setInputSearchText] = useState<string>('')
+  const [filtered, setFiltered] = useState<boolean>(false)
+  useEffect(() => {
+    setFiltered(nature !== -1 || machine !== -1 || weekCode !== '')
+  }, [nature, machine, weekCode])
+
+  // Data
+
+  const [actions, setActions] = useState<ActionsInfoType[]>()
+
   const getActions = api.preventive.getActions.useQuery({
     searchText: inputSearchText,
     machineId: machine,
@@ -32,22 +44,33 @@ export function PreventiveActions() {
     showIgnore,
   })
 
-  const machines = api.main.getMachines.useQuery()
-  const natures = api.main.getNatures.useQuery()
-
-  const [actions, setActions] = useState<typeof getActions.data>()
-
-  const [filtered, setFiltered] = useState<boolean>(false)
-
-  useEffect(() => {
-    setFiltered(nature !== -1 || machine !== -1 || weekCode !== '')
-  }, [nature, machine, weekCode])
 
   useEffect(() => {
     getActions.refetch()
     setActions(getActions?.data)
   }, [getActions])
 
+  // useEffect(() => {
+  //   (async () => {
+  //     setActions([])
+  //     for await (const rows of actionsIterator({
+  //       searchText: inputSearchText,
+  //       machineId: machine,
+  //       natureId: nature,
+  //       weekCode,
+  //       showIgnore,
+  //     })) {
+  //       setActions(lasted => [...lasted ? lasted : [], ...rows])
+  //       // console.log(rows.length ,[...actions ? actions : [], ...rows])
+  //     }
+  //   })()
+  // }, [
+  //   nature,
+  //   machine,
+  //   weekCode,
+  //   showIgnore,
+  //   inputSearchText,
+  // ])
 
   return (
     <>
@@ -231,7 +254,7 @@ interface TableRowProps {
   onClick?: () => void
 }
 
-function TableRow({ data, className, istitle, onClick }: TableRowProps) {
+const TableRow = memo(({ data, className, istitle, onClick }: TableRowProps) => {
 
   return (
     <div
@@ -257,7 +280,7 @@ function TableRow({ data, className, istitle, onClick }: TableRowProps) {
             bg-gray-300
             hover:bg-gray-400 hover:cursor-pointer
           `}
-        `}
+          `}
         onClick={() => onClick ? onClick() : {}}
       >
         <TableCell className='w-[12%]' >{data?.machine?.tag ?? data.tag} </TableCell>
@@ -276,4 +299,4 @@ function TableRow({ data, className, istitle, onClick }: TableRowProps) {
 
     </div>
   )
-}
+})

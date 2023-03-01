@@ -93,7 +93,7 @@ const a = async () => {
         ...data[11],
         natureId: 1,
         machineId: 1,
-    }))
+    }), data[11].nature == 'ELֹTRICO')
 
 }
 
@@ -149,7 +149,7 @@ async function main() {
         const identifier = `${action.machine}, ${action.description}`
         try {
             const nature = await prisma.nature.findUnique({
-                where: { id: action.nature === 'ELÉTRICO' ? 1 : 2 }
+                where: { id: action.nature === 'ELֹTRICO' ? 1 : 2 }
             })
             const machine = await prisma.machine.findUnique({ where: { tag: action.machine } })
             const actionParse = actionsSchema.parse({

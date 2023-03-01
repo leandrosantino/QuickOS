@@ -19,6 +19,7 @@ export const natureInfoSchema = z.object({
 export type NatureInfoType = z.infer<typeof natureInfoSchema>
 
 export const actionInfoSchema = z.object({
+    id: z.number().optional(),
     machineId: z.number(),
     natureId: z.number(),
     machine: machineInfoSchema.optional(),

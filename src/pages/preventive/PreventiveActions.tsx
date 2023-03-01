@@ -44,7 +44,7 @@ export function PreventiveActions() {
     }
   }, [actions])
 
-  function startObserver() {
+  useEffect(() => {
     setActions([])
     cursor.current = 1
     const intersectionObserver = new IntersectionObserver((entries) => {
@@ -66,10 +66,6 @@ export function PreventiveActions() {
     const sentinel = document.querySelector('#sentinel')
     sentinel && intersectionObserver.observe(sentinel)
     return () => intersectionObserver.disconnect()
-  }
-
-  useEffect(() => {
-    startObserver()
   }, [
     nature,
     machine,
@@ -237,9 +233,7 @@ export function PreventiveActions() {
 
       </div>
 
-      <PreventiveActionsFormRoutes onBack={() => {
-        startObserver()
-      }} />
+      <PreventiveActionsFormRoutes onBack={() => { }} />
 
     </>
   )

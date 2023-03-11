@@ -1,17 +1,17 @@
 import { differenceInMinutes } from 'date-fns'
-import prisma from "../services/prisma"
+import prisma from "./utils/prisma"
 import {
     incrementWeekYear,
     weekYearStringToNumber,
     weekYearToString,
-} from "../utils/weekTools"
+} from "./utils/weekTools"
 
 import {
     AssembleServiceOrdersParamsType,
     ServiceOrdersType,
     ExecuteServiceOrdersType,
     GenerateActionsUniqueKeyParms,
-} from './schemas/preventive'
+} from '../schemas/preventive'
 
 
 async function proofreaderDataBase(weekCode: string) {

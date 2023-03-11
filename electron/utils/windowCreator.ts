@@ -37,7 +37,7 @@ export function windowCreator({
         webPreferences: {
             nodeIntegration: true,
             devTools,
-            preload: path.join(__dirname, '../preload.js')
+            preload: path.join(__dirname, './preload.js')
         }
     }
 

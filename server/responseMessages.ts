@@ -8,7 +8,6 @@ export function internalServerError(error:any){
     })
 }
 
-
 export const SuccessResponseSchema = z.object({
     message: z.string(),
     code: z.number(),

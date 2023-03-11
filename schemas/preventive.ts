@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { weekYearRegex } from '../../utils/weekTools'
+import { weekYearRegex } from '../server/utils/weekTools'
 
 export const workerSchema = z.object({
     id: z.number(),

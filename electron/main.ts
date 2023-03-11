@@ -1,5 +1,5 @@
-import { app, globalShortcut, ipcMain } from "electron";
 import isDev from "electron-is-dev";
+import { app, globalShortcut, ipcMain } from "electron";
 import path from "path";
 
 import { windowCreator } from './utils/windowCreator'
@@ -8,7 +8,7 @@ import { useRoutes } from "./utils/useIpcRoutes";
 import { navBarRoutes } from "./ipc.routes/navbar";
 import { printServiceOrder } from "./ipc.routes/printServiceOrder";
 
-!isDev && import('./server')
+!isDev && import('../server')
 
 async function main() {
 
@@ -45,4 +45,4 @@ app.on("ready", main);
 app.on('window-all-closed', () => {
     app.exit();
     app.quit();
-}); 
+});

@@ -1,10 +1,10 @@
-import prisma from '../../services/prisma'
+import prisma from '../utils/prisma'
 import { initTRPC, TRPCError } from '@trpc/server'
 import { z } from 'zod'
 
 const t = initTRPC.create()
 
-import { natureSchema, machineSchema, workerSchema } from '../schemas/preventive'
+import { natureSchema, machineSchema, workerSchema } from '../../schemas/preventive'
 import { internalServerError } from '../responseMessages'
 
 

@@ -4,7 +4,7 @@ import fs from 'fs'
 import path from 'path'
 
 import { windowCreator } from '../utils/windowCreator'
-import { ServiceOrdersType } from '../server/schemas/preventive'
+import { ServiceOrdersType } from '../../schemas/preventive'
 
 import { useDialog } from '../utils/useDialog'
 import { BrowserWindow } from "electron";

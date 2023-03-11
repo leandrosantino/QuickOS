@@ -179,7 +179,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "E:\\quick_os\\database\\client",
+      "value": "D:\\Dev\\quickOs\\database\\client",
       "fromEnvVar": null
     },
     "config": {

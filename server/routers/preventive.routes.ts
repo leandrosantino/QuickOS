@@ -1,6 +1,6 @@
 import { initTRPC } from '@trpc/server'
 import { z } from 'zod'
-import prisma from '../../services/prisma'
+import prisma from '../utils/prisma'
 import { internalServerError, successResponse, SuccessResponseSchema } from '../responseMessages'
 
 import {
@@ -13,9 +13,9 @@ import {
     executeServiceOrdersParamsSchema,
     actionsSchema,
     actionCreateSchema,
-} from '../schemas/preventive'
+} from '../../schemas/preventive'
 
-import { weekYearToString } from '../../utils/weekTools'
+import { weekYearToString } from '../utils/weekTools'
 
 const t = initTRPC.create()
 

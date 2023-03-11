@@ -4,12 +4,12 @@ import cors from 'cors'
 import { expressHandler } from 'trpc-playground/handlers/express'
 import path from 'path'
 import { appRouter } from './routers';
-import { serviceOrdersSchema } from './schemas/preventive'
-import prisma from "../services/prisma"
+import { serviceOrdersSchema } from '../schemas/preventive'
+import prisma from "./utils/prisma"
 
 const isDev = process.env.IS_DEV
 
-export class Server {
+export default class Server {
 
     constructor() { }
 
@@ -19,7 +19,7 @@ export class Server {
     playgroundEndpoint = '/playground'
 
     viewDirectory = isDev ?
-        path.join(__dirname, '../../public/views') :
+        path.join(__dirname, '../public/views') :
         path.join(__dirname, '../../../app.asar.unpacked/public/views')
 
     app = express();
@@ -99,7 +99,8 @@ export class Server {
     }
 }
 
-
 const server = new Server()
 server.start()
+
+
 

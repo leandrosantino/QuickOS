@@ -12,13 +12,12 @@
   "scripts": {
     "react": "react-scripts start",
     "react:build": "react-scripts build",
-    "electron:build": "tsc -p ./electron.tsconfig.json",
-    "electron:watch": "tsc -w -p ./electron.tsconfig.json",
-    "app": "cls && npm run electron:build && cls && electron . && cls",
-    "dist": "npm run dbmigrate && npm run react:build && npm run electron:build && electron-builder -w -c.extraMetadata.main=build/main.js",
+    "electron:build": "set NODE_ENV=production && webpack --progress",
+    "electron:build:dev": "set NODE_ENV=development && webpack --progress",
+    "app": "cls && npm run electron:build:dev && cls && electron . && cls",
+    "dist": "npm run react:build && npm run electron:build && electron-builder -w -c.extraMetadata.main=build/main.js",
     "test": "",
-    "eject": "react-scripts eject",
-    "server": "tsx watch ./electron/server/index.ts",
+    "server": "tsx watch ./server/index.ts",
     "dbstudio": "npx prisma studio",
     "seed": "tsx prisma/seed/seed.ts",
     "dbmigrate": "npx prisma migrate dev"
@@ -94,7 +93,11 @@
     "prisma": "^4.9.0",
     "prisma-erd-generator": "^1.2.5",
     "tailwind-scrollbar": "^2.0.1",
-    "tsx": "^3.12.2"
+    "ts-loader": "^9.4.2",
+    "tsx": "^3.12.2",
+    "webpack": "^5.76.1",
+    "webpack-cli": "^5.0.1",
+    "webpack-node-externals": "^3.0.0"
   },
   "eslintConfig": {
     "extends": [

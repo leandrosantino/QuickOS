@@ -1,0 +1,11 @@
+{
+  "compilerOptions":{
+    "paths": {
+      "*": ["node_modules/*" ],
+      "@/*": ["./src/*" ],
+      "@schemas/*": ["./schemas/*"],
+      "@server/*":["./server/*"],
+      "@electron/*":["./electron/*"]
+    }
+  }
+}

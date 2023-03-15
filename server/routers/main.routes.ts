@@ -4,8 +4,8 @@ import { z } from 'zod'
 
 const t = initTRPC.create()
 
-import { natureSchema, machineSchema, workerSchema } from '../../schemas/preventive'
-import { internalServerError } from '../responseMessages'
+import { natureSchema, machineSchema, workerSchema } from '@schemas/main'
+import { internalServerError } from '../utils/responseMessages'
 
 
 export const main = t.router({

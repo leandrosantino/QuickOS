@@ -7,19 +7,19 @@ import { Historic } from '../pages/corrective/Historic';
 export default function AppRoutes() {
   return (
     <PagesContainer className='w-[100%] h-[100%] flex items-center justify-center' >
-        <Screen 
+        <Screen
             name='Dashboard'
             component={Home}
         />
-        <Screen 
+        <Screen
             name='Preventive'
             component={Preventive}
         />
-        <Screen 
+        <Screen
             name='Corrective'
             component={Historic}
         />
-        <Screen 
+        <Screen
             name='Settings'
             component={Historic}
         />

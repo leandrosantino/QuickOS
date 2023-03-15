@@ -1,6 +1,7 @@
 const path = require('path');
 const nopdeExternals = require('webpack-node-externals')
 const mode = /production/.test(String(process.env.NODE_ENV))?'production':'development'
+const tsconfigPaths = require('tsconfig-paths-webpack-plugin')
 
 module.exports = {
   mode,
@@ -38,9 +39,12 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.js'],
+    plugins: [
+      new tsconfigPaths({baseUrl: './'})
+    ]
   },
   output: {
     filename: '[name].js',
-    path: path.resolve(__dirname, 'build'),
+    path: path.resolve(__dirname, './build'),
   },
 };

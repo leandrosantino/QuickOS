@@ -3,7 +3,7 @@ import path from 'path'
 
 const isDev = process.env.IS_DEV
 
-export default new PrismaClient({
+const prisma = new PrismaClient({
     log: [],
     datasources: {
         db: {
@@ -14,3 +14,7 @@ export default new PrismaClient({
         }
     }
 })
+
+export default prisma
+
+export type PrismaCLientType = typeof prisma

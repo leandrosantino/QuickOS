@@ -7,6 +7,8 @@ import { appRouter } from './routers';
 import { serviceOrdersSchema } from '../schemas/preventive'
 import prisma from "./utils/prisma"
 
+import('./services/preventive/AssembleServiceOrders')
+
 const isDev = process.env.IS_DEV
 
 export default class Server {

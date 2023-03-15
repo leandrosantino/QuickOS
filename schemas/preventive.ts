@@ -1,24 +1,6 @@
 import { z } from "zod";
 import { weekYearRegex } from '../server/utils/weekTools'
-
-export const workerSchema = z.object({
-    id: z.number(),
-    registration: z.number(),
-    name: z.string(),
-    class: z.string(),
-})
-
-export const machineSchema = z.object({
-    id: z.number(),
-    tag: z.string(),
-    technology: z.string(),
-    ute: z.string()
-})
-
-export const natureSchema = z.object({
-    id: z.number(),
-    name: z.string()
-})
+import {machineSchema, natureSchema, workerSchema} from './main'
 
 export const actionCreateSchema = z.object({
     description: z.string(),

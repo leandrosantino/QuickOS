@@ -1,7 +1,7 @@
 import { initTRPC } from '@trpc/server'
 import { z } from 'zod'
 import prisma from '../utils/prisma'
-import { internalServerError, successResponse, SuccessResponseSchema } from '../responseMessages'
+import { internalServerError, successResponse, SuccessResponseSchema } from '../utils/responseMessages'
 
 import {
     assembleServiceOrders,

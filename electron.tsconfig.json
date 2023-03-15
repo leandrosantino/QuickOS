@@ -1,6 +1,7 @@
 {
+  "extends": "./paths.json",
   "compilerOptions": {
-    "target": "es5",  
+    "target": "es5",
     "module": "commonjs",
     "noImplicitAny": true,
     "sourceMap": true,
@@ -9,13 +10,9 @@
     "strict": true,
     "skipLibCheck": true,
     "esModuleInterop":true,
-    "paths": {
-      "*": ["node_modules/*" ]
-    },
-    "typeRoots": ["/@types"]
+    "typeRoots": ["@types"]
   },
   "include": [
-    "electron/**/*",
-    "electron/.env"
+    "./electron/**/*"
   ]
 }

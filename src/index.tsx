@@ -8,11 +8,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { httpBatchLink } from '@trpc/client';
 import { api } from './utils/trpc';
 
-
+//sdhth
 function App({ children }: { children: ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
   const [apiClient] = useState(() =>
-    api.createClient({
+    api.createClient({ //sss
       links: [
         httpBatchLink({
           url: 'http://localhost:9999/trpc',

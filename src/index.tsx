@@ -1,25 +1,24 @@
-import React, { ReactNode, useState } from 'react';
-import ReactDOM from 'react-dom/client';
-import './styles/global.css';
+import React, { type ReactNode, useState } from 'react'
+import ReactDOM from 'react-dom/client'
+import './styles/global.css'
 
-import { Routes } from './routes';
+import { Routes } from './routes'
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { httpBatchLink } from '@trpc/client';
-import { api } from './utils/trpc';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { httpBatchLink } from '@trpc/client'
+import { api } from './utils/trpc'
 
-//sdhth
-function App({ children }: { children: ReactNode }) {
-  const [queryClient] = useState(() => new QueryClient());
+function App ({ children }: { children: ReactNode }): JSX.Element {
+  const [queryClient] = useState(() => new QueryClient())
   const [apiClient] = useState(() =>
-    api.createClient({ //sss
+    api.createClient({
       links: [
         httpBatchLink({
-          url: 'http://localhost:9999/trpc',
-        }),
-      ],
-    }),
-  );
+          url: 'http://localhost:9999/trpc'
+        })
+      ]
+    })
+  )
   return (
     <api.Provider client={apiClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
@@ -29,10 +28,9 @@ function App({ children }: { children: ReactNode }) {
   )
 }
 
-
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+  document.getElementById('root')
+)
 root.render(
   <React.StrictMode >
     <App>
@@ -41,5 +39,4 @@ root.render(
       </div>
     </App>
   </React.StrictMode>
-);
-
+)

@@ -1,13 +1,9 @@
-import { PageHeader } from "@/components/PageHeader"
+import { PageHeader } from '@/components/PageHeader'
 
 // import {api} from '@src/utils/trpc'
 
-
-
-export function Historic() {
-
+export function Historic (){
   const teste = new Array<string>(52).fill('teste')
-
 
   return (
     <div
@@ -15,7 +11,6 @@ export function Historic() {
        w-full h-full p-5
       "
     >
-
 
       <PageHeader title="Plano de Preventivas 2022" />
 
@@ -26,7 +21,7 @@ export function Historic() {
         "
       >
         {
-          teste.map((entry, index)=>(
+          teste.map((entry, index) => (
             <div
               className="
                 w-full h-full
@@ -35,7 +30,7 @@ export function Historic() {
                 font-medium text-xl
               "
             >
-              {index+1}
+              {index + 1}
             </div>
           ))
         }

@@ -1,10 +1,18 @@
 {
-  "compilerOptions":{
+  "compilerOptions": {
     "paths": {
-      "@/*": ["src/*" ],
-      "@schemas/*": ["./schemas/*"],
-      "@server/*":["./server/*"],
-      "@electron/*":["./electron/*"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@schemas/*": [
+        "./schemas/*"
+      ],
+      "@server/*": [
+        "./server/*"
+      ],
+      "@electron/*": [
+        "./electron/*"
+      ]
     }
   }
 }

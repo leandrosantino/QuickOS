@@ -7,12 +7,9 @@ import { appRouter } from './routers'
 import { serviceOrdersSchema } from '../schemas/preventive'
 import prisma from './utils/prisma'
 
-import('./services/preventive/AssembleServiceOrders')
-
 const isDev = process.env.IS_DEV
 
 export default class Server {
-
   serverPort = 9999
 
   apiEndpoint = '/trpc'
@@ -98,4 +95,4 @@ export default class Server {
 }
 
 const server = new Server()
-server.start()
+void server.start()

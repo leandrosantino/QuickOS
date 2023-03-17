@@ -8,7 +8,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { httpBatchLink } from '@trpc/client'
 import { api } from './utils/trpc'
 
-function App ({ children }: { children: ReactNode }): JSX.Element {
+function App({ children }: { children: ReactNode }): JSX.Element {
   const [queryClient] = useState(() => new QueryClient())
   const [apiClient] = useState(() =>
     api.createClient({
@@ -29,7 +29,7 @@ function App ({ children }: { children: ReactNode }): JSX.Element {
 }
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root')
+  document.getElementById('root') as HTMLElement
 )
 root.render(
   <React.StrictMode >

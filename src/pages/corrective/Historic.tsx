@@ -1,8 +1,12 @@
-import { PageHeader } from '@/components/PageHeader'
+import { PageHeader } from '../../components/PageHeader'
 
-// import {api} from '@src/utils/trpc'
+import { Card } from '@/components/cards/Card'
+import { pageNames } from '@/utils/pageNames'
 
-export function Historic (){
+export function Historic() {
+
+  console.log(pageNames)
+
   const teste = new Array<string>(52).fill('teste')
 
   return (
@@ -11,7 +15,7 @@ export function Historic (){
        w-full h-full p-5
       "
     >
-
+      <Card title='' />
       <PageHeader title="Plano de Preventivas 2022" />
 
       <div

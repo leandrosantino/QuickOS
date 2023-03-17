@@ -8,12 +8,12 @@
             "esnext"
         ],
         "baseUrl": ".",
-        "rootDir": ".",
+        "rootDir": "./",
         "allowJs": true,
         "skipLibCheck": true,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
-        "strict": false,
+        "strict": true,
         "forceConsistentCasingInFileNames": true,
         "noFallthroughCasesInSwitch": true,
         "module": "esnext",
@@ -23,13 +23,12 @@
         "noEmit": true,
         "jsx": "react-jsx",
         "typeRoots": [
-            "node_modules/@types",
             "src/@types",
         ],
     },
     "include": [
-        "src",
-        "@types",
+        "src/**/*",
+        "@types/**/*",
         "schemas/**/*",
         "server/**/*",
         "electron/**/*"

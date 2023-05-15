@@ -17,13 +17,13 @@
     "app": "cls && npm run electron:build:dev && cls && electron . && cls",
     "dist": "craco build && npm run electron:build && electron-builder -w -c.extraMetadata.main=build/main.js",
     "server": "tsx watch ./server/index.ts",
-    "dbstudio": "npx prisma studio",
-    "seed": "tsx prisma/seed/seed.ts",
-    "dbmigrate": "npx prisma migrate dev",
+    "db.studio": "npx prisma studio",
+    "db.seed": "tsx prisma/seed/seed.ts",
+    "db.migrate": "npx prisma migrate dev",
     "test": "jest"
   },
   "prisma": {
-    "seed": "npm run seed"
+    "seed": "npm run db.seed"
   },
   "build": {
     "asar": true,

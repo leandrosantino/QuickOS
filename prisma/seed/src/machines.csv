@@ -40,6 +40,9 @@ M39;UTE-05;PUR Moldagem de espuma
 M40;UTE-05;PUR Moldagem de espuma
 M41;UTE-05;Jato d'água
 M42;UTE-05;Jato d'água
-M41 INTENSIFICADOR;UTE-05;outros
-M41 WATER JET;UTE-05;outros
-M42 WATER JET;UTE-05;outros
+M41;UTE-05;outros
+M42;UTE-05;outros
+M43;UTE-05;outros
+M44;UTE-05;outros
+M45;UTE-04;outros
+M29;UTE-04;outros

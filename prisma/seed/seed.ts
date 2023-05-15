@@ -42,7 +42,7 @@ const actionsSchema = z.object({
         }),
     nextExecution: z.number()
         .transform((value) => {
-            const week = String(value).length == 1 ? `0${value}` : value
+            const week = String(value).length === 1 ? `0${value}` : value
             return `2023-W${week}`
         }),
 })
@@ -87,19 +87,43 @@ function csvRead<T>(file: string) {
     })
 }
 
-const a = async () => {
-    const data = await csvRead<ActionType>('actions.csv')
-    console.log(actionsSchema.parse({
-        ...data[11],
-        natureId: 1,
-        machineId: 1,
-    }), data[11].nature == 'ELֹTRICO')
+// const a = async () => {
+//     const data = await csvRead<ActionType>('actions.csv')
+//     console.log(actionsSchema.parse({
+//         ...data[11],
+//         natureId: 1,
+//         machineId: 1,
+//     }), data[11].nature === 'ELֹTRICO')
 
-}
+// }
 
 // a()
 
+const errorLogContructor = () => {
+
+    const errors: string[] = []
+
+    function register(error: string) {
+        errors.push(error)
+        return error
+    }
+
+    function print() {
+        console.log(chalk.blue('\n____ Errors Resume ____ \n'))
+        errors.forEach(entry => {
+            console.log(entry)
+        })
+    }
+
+    return {
+        register,
+        print
+    }
+}
+
 async function main() {
+
+    const errorLog = errorLogContructor()
 
     console.log('------ Database seed started! -----')
 
@@ -112,7 +136,7 @@ async function main() {
             })
             console.log(`${chalk.green('    Successfully saved line')} => ${nature}`)
         } catch (error) {
-            console.log(`${chalk.red('  Fail! Error saving line')} => ${nature} `)
+            console.log(errorLog.register(`${chalk.red('  Fail! Error saving line')} => ${nature} `))
         }
     }
 
@@ -126,7 +150,7 @@ async function main() {
             console.log(`${chalk.green('    Successfully saved line')} => ${machine.tag}`)
         } catch (error) {
             // throw error
-            console.log(`${chalk.red('  Fail! Error saving line')} => ${machine.tag} `)
+            console.log(errorLog.register(`${chalk.red('  Fail! Error saving line')} => ${machine.tag} `))
         }
     }
 
@@ -141,7 +165,7 @@ async function main() {
             console.log(`${chalk.green('    Successfully saved line')} => ${worker.name}`)
         } catch (error) {
             // throw error
-            console.log(`${chalk.red('  Fail! Error saving line')} => ${worker.name} `)
+            console.log(errorLog.register(`${chalk.red('  Fail! Error saving line')} => ${worker.name} `))
         }
     }
 
@@ -166,7 +190,7 @@ async function main() {
             console.log(`${chalk.green('    Successfully saved line')} => ${identifier}`)
 
             if (machine?.tag === 'M30') {
-                const repeat = ['M32', 'M33', 'M37', 'M38', 'M39', 'M43']
+                const repeat = ['M32', 'M33', 'M44']
                 for await (let tag of repeat) {
                     try {
                         const machine = await prisma.machine.findUnique({ where: { tag } })
@@ -176,23 +200,25 @@ async function main() {
                         })
                         console.log(`${chalk.green('    Successfully saved line')} => ${identifier} | repeat ${tag}`)
                     } catch (error) {
-                        console.log(`${chalk.red('  Fail! Error saving line')} => ${identifier} | repeat ${tag}`)
+                        console.log(errorLog.register(`${chalk.red('  Fail! Error saving line')} => ${identifier} | repeat ${tag}`))
                     }
                 }
             }
 
             if (machine?.tag === 'M25') {
 
-                const tag = 'M34'
-                try {
-                    const machine = await prisma.machine.findUnique({ where: { tag } })
-                    actionParsed.machineId = z.number().parse(machine?.id)
-                    await prisma.preventiveAction.create({
-                        data: actionParsed,
-                    })
-                    console.log(`${chalk.green('    Successfully saved line')} => ${identifier} | repeat ${tag}`)
-                } catch (error) {
-                    console.log(`${chalk.red('  Fail! Error saving line')} => ${identifier} | repeat ${tag}`)
+                const repeat = ['M37', 'M38', 'M39', 'M34']
+                for await (let tag of repeat) {
+                    try {
+                        const machine = await prisma.machine.findUnique({ where: { tag } })
+                        actionParsed.machineId = z.number().parse(machine?.id)
+                        await prisma.preventiveAction.create({
+                            data: actionParsed,
+                        })
+                        console.log(`${chalk.green('    Successfully saved line')} => ${identifier} | repeat ${tag}`)
+                    } catch (error) {
+                        console.log(errorLog.register(`${chalk.red('  Fail! Error saving line')} => ${identifier} | repeat ${tag}`))
+                    }
                 }
 
             }
@@ -200,9 +226,11 @@ async function main() {
 
         } catch (error) {
             // throw error
-            console.log(`${chalk.red('  Fail! Error saving line')} => ${identifier} `)
+            console.log(errorLog.register(`${chalk.red('  Fail! Error saving line')} => ${identifier} `))
         }
     }
+
+    errorLog.print()
 
     console.log(chalk.blue('\n---- Finished seed ----\n'))
 }

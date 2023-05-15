@@ -1,7 +1,7 @@
 import { PrismaClient } from '../../database/client'
 import fs from 'fs';
 import chalk from 'chalk'
-import csv from 'csv-parse/sync'
+// import csv from 'csv-parse/sync'
 import CsvReadableStream from 'csv-reader';
 import AutoDetectDecoderStream from 'autodetect-decoder-stream';
 
@@ -56,16 +56,16 @@ type ActionType = z.infer<typeof reciveAction>
 
 
 
-function csvReadt<T>(file: string) {
-    return csv.parse(fs.readFileSync(source + file), {
-        columns: true,
-        delimiter: ';',
-        trim: true,
-        skip_empty_lines: true,
-        autoParseDate: true,
+// function csvReadt<T>(file: string) {
+//     return csv.parse(fs.readFileSync(source + file), {
+//         columns: true,
+//         delimiter: ';',
+//         trim: true,
+//         skip_empty_lines: true,
+//         autoParseDate: true,
 
-    }) as T[]
-}
+//     }) as T[]
+// }
 
 function csvRead<T>(file: string) {
     return new Promise<T[]>((resolve, reject) => {
@@ -154,15 +154,50 @@ async function main() {
                 where: { id: action.nature === 'ELÉTRICO' ? 1 : 2 }
             })
             const machine = await prisma.machine.findUnique({ where: { tag: action.machine } })
-            const actionParse = actionsSchema.parse({
+            const actionParsed = actionsSchema.parse({
                 ...action,
                 natureId: nature?.id,
                 machineId: machine?.id,
             })
             await prisma.preventiveAction.create({
-                data: actionParse,
+                data: actionParsed,
             })
+
             console.log(`${chalk.green('    Successfully saved line')} => ${identifier}`)
+
+            if (machine?.tag === 'M30') {
+                const repeat = ['M32', 'M33', 'M37', 'M38', 'M39', 'M43']
+                for await (let tag of repeat) {
+                    try {
+                        const machine = await prisma.machine.findUnique({ where: { tag } })
+                        actionParsed.machineId = z.number().parse(machine?.id)
+                        await prisma.preventiveAction.create({
+                            data: actionParsed,
+                        })
+                        console.log(`${chalk.green('    Successfully saved line')} => ${identifier} | repeat ${tag}`)
+                    } catch (error) {
+                        console.log(`${chalk.red('  Fail! Error saving line')} => ${identifier} | repeat ${tag}`)
+                    }
+                }
+            }
+
+            if (machine?.tag === 'M25') {
+
+                const tag = 'M34'
+                try {
+                    const machine = await prisma.machine.findUnique({ where: { tag } })
+                    actionParsed.machineId = z.number().parse(machine?.id)
+                    await prisma.preventiveAction.create({
+                        data: actionParsed,
+                    })
+                    console.log(`${chalk.green('    Successfully saved line')} => ${identifier} | repeat ${tag}`)
+                } catch (error) {
+                    console.log(`${chalk.red('  Fail! Error saving line')} => ${identifier} | repeat ${tag}`)
+                }
+
+            }
+
+
         } catch (error) {
             // throw error
             console.log(`${chalk.red('  Fail! Error saving line')} => ${identifier} `)

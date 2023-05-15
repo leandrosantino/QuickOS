@@ -1,6 +1,6 @@
 const path = require('path');
 const nopdeExternals = require('webpack-node-externals')
-const mode = /production/.test(String(process.env.NODE_ENV))?'production':'development'
+const mode = /production/.test(String(process.env.NODE_ENV)) ? 'production' : 'development'
 const tsconfigPaths = require('tsconfig-paths-webpack-plugin')
 
 module.exports = {
@@ -8,7 +8,7 @@ module.exports = {
   entry: {
     main: {
       import: './electron/main.ts',
-      .../production/.test(mode)?{dependOn: 'server'}:{}
+      .../production/.test(mode) ? { dependOn: 'server' } : {}
     },
     preload: './electron/preload.ts',
     server: {
@@ -26,21 +26,21 @@ module.exports = {
     },
     nopdeExternals()
   ],
-  externalsPresets:{
+  externalsPresets: {
     node: true
   },
   module: {
     rules: [
       {
         test: /\.ts?$/,
-        use: {loader:'ts-loader', options:{configFile: 'electron.tsconfig.json'}},
+        use: { loader: 'ts-loader', options: { configFile: 'electron.tsconfig.json' } },
       },
     ],
   },
   resolve: {
     extensions: ['.ts', '.js'],
     plugins: [
-      new tsconfigPaths({baseUrl: './'})
+      new tsconfigPaths({ baseUrl: './' })
     ]
   },
   output: {

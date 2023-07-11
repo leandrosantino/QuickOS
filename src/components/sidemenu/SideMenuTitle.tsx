@@ -4,12 +4,12 @@ interface SideMenuTitleProps {
   reduced?: boolean;
 }
 
-export default function SideMenuTitle({reduced}:SideMenuTitleProps) {
+export default function SideMenuTitle({ reduced }: SideMenuTitleProps) {
   return (
     <div
       className={`
         transition-all
-        w-full h-16 
+        w-full h-16
         flex justify-center items-center
         text-xl text-gray-100 font-bold
 
@@ -17,7 +17,7 @@ export default function SideMenuTitle({reduced}:SideMenuTitleProps) {
       `}
     >
 
-      {reduced&&
+      {reduced &&
         <div
           className={`
             absolute
@@ -27,10 +27,10 @@ export default function SideMenuTitle({reduced}:SideMenuTitleProps) {
         </div>
       }
       <div
-        className={`transition-all ${reduced?' invisible text-[1px]':'text-xl'}`}>
-          Adler Pelzer Group
+        className={`transition-all ${reduced ? ' invisible text-[1px]' : 'text-xl'}`}>
+        Quick OS
       </div>
-      
+
     </div>
   )
 }

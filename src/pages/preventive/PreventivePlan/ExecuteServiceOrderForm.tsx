@@ -27,7 +27,7 @@ function timeInStringToDate(hour: string | undefined) {
 
 function dateInStringToDate(date: string | undefined) {
   if (date) {
-    const [day, month, year] = date.split("-").map(value => Number(value));
+    const [year, month, day] = date.split("-").map(value => Number(value));
     return new Date(year, month - 1, day)
   } return ''
 }
@@ -151,7 +151,10 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
                 className='w-full bg-transparent'
                 type="date"
                 value={date}
-                onChange={e => setDate(e.target.value)}
+                onChange={e => {
+                  setDate(e.target.value)
+                  console.log(dateInStringToDate(e.target.value))
+                }}
               />
             </InputCaseForm>
 

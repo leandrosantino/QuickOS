@@ -4,7 +4,10 @@ O _**"QuickOS"**_ e um sistema de gestão de ordens de serviço preventivas, que
 engloba tanto a parte de planejamento das manutenções preventivas quanto a
 impressão das ordens e o registro de execução das mesmas. Ele foi construído
 como um programa nativo para o Windows, utilizando o _**"ElectronJS"**_ como
-Frameworx.
+Framework.
+
+![image1](https://raw.githubusercontent.com/leandrosantino/QuickOS/main/docs/image1.png)
+![image2](https://raw.githubusercontent.com/leandrosantino/QuickOS/main/docs/image2.png)
 
 O objetivo do desenvolvimento deste programa é facilitar a gestão das ordens de
 serviço, através de uma interface amigável, permitindo ao usuário controlar as
@@ -13,9 +16,6 @@ atividades com mais eficiência.
 Graças a feature de impressão da ordens, o sistema possibilita uma gestão
 cruzada em entre os registros físicos e digitais. O que pode ser essencial para
 empresas onde o procedimento exige documentação física.
-
-![image1](https://raw.githubusercontent.com/leandrosantino/QuickOS/main/docs/image1.png)
-![image2](https://raw.githubusercontent.com/leandrosantino/QuickOS/main/docs/image2.png)
 
 ## Funcionalidades
 

@@ -14,7 +14,8 @@ Graças a feature de impressão da ordens, o sistema possibilita uma gestão
 cruzada em entre os registros físicos e digitais. O que pode ser essencial para
 empresas onde o procedimento exige documentação física.
 
-![image1](./docs\image1.png) ![image2](./docs\image2.png)
+![image1](https://raw.githubusercontent.com/leandrosantino/QuickOS/main/docs/image1.png)
+![image2](https://raw.githubusercontent.com/leandrosantino/QuickOS/main/docs/image2.png)
 
 ## Funcionalidades
 
@@ -60,7 +61,7 @@ carregar por toda a minha carreira.
 
 ## Veja o QuickOS funcionando
 
-[![](docs\tamb.png)](https://youtu.be/04RF9WVgicU)
+[![](https://raw.githubusercontent.com/leandrosantino/QuickOS/main/docs/tamb.png)](https://youtu.be/04RF9WVgicU)
 
 #### Link para o Repostório
 

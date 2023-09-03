@@ -21,7 +21,7 @@ export default class Server {
 
   app = express()
 
-  useCreateServiceOrder () {
+  useCreateServiceOrder() {
     this.app.set('views', this.viewDirectory)
     this.app.set('view engine', 'ejs')
 
@@ -67,12 +67,26 @@ export default class Server {
     }
   }
 
-  async start () {
+  async start() {
     this.app.use(express.json())
 
     this.app.use(cors())
 
     this.useCreateServiceOrder()
+
+    this.app.get('/getActions', async (request, response) => {
+      const actions = await prisma.preventiveAction.findMany({
+        include: {
+          machine: true,
+          nature: true
+        }
+      })
+      return response.send(actions)
+    })
+    this.app.get('/getMachines', async (request, response) => {
+      const machines = await prisma.machine.findMany()
+      return response.send(machines)
+    })
 
     this.app.use(
       this.apiEndpoint,

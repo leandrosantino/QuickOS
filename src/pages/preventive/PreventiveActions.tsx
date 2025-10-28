@@ -108,7 +108,7 @@ export function PreventiveActions() {
               Icon={MdLibraryAdd}
               onClick={() => { goToPage('Preventive.Actions.NewActions', {}) }}
               title='Criar'
-              className="bg-green-500 text-gray-100 mr-2"
+              className="bg-green-500 text-gray-100 mr-2 !p-2 w-20"
             />
           </>
         </PageHeader>
@@ -287,7 +287,7 @@ const TableRow = ({ data, className, istitle, onClick }: TableRowProps) => {
     <div
       className={`
         ${istitle ? `
-          bg-gray-700 text-gray-100 font-medium
+          bg-zinc-700 text-zinc-50 font-medium
           rounded-tr-lg rounded-tl-lg text-sm
         `: `bg-gray-300`}
         w-full
@@ -304,8 +304,8 @@ const TableRow = ({ data, className, istitle, onClick }: TableRowProps) => {
           ${data.ignore ? 'text-gray-500' : ''}
           justify-center items-center
           ${istitle ? `` : `
-            bg-gray-300
-            hover:bg-gray-400 hover:cursor-pointer
+            bg-zinc-200
+            hover:bg-zinc-300 hover:cursor-pointer
           `}
           `}
         onClick={() => onClick ? onClick() : {}}

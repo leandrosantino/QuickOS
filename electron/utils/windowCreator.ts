@@ -32,6 +32,7 @@ export function windowCreator({
         maximizable,
         minimizable,
         resizable,
+        hasShadow: true,
         parent,
         modal: parent ? true : false,
         webPreferences: {

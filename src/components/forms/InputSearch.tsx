@@ -14,17 +14,17 @@ export function InputSearch({ returnSearchText }: InputSearchProps) {
   return (
     <div
       className="
-        w-full h-7 
-        flex flex-row justify-center items-center 
-        border border-gray-900 rounded-lg
+        w-full h-7
+        flex flex-row justify-center items-center
+        border border-zinc-900 rounded-lg
       "
     >
 
       <label
         className="
-          h-full w-[10%] text-lg bg-gray-100 
+          h-full w-[10%] text-lg bg-zinc-100
           rounded-bl-lg rounded-tl-lg
-          flex flex-row justify-center items-center 
+          flex flex-row justify-center items-center
         "
         htmlFor="search"
       >
@@ -34,8 +34,8 @@ export function InputSearch({ returnSearchText }: InputSearchProps) {
 
       <input
         className="
-          w-[80%] h-full indent-1 bg-gray-100 
-          flex flex-row justify-center items-center 
+          w-[80%] h-full indent-1 bg-zinc-100
+          flex flex-row justify-center items-center
         "
         value={searchText}
         onChange={(e) => {
@@ -48,8 +48,8 @@ export function InputSearch({ returnSearchText }: InputSearchProps) {
 
       <button
         className="
-          w-[10%] h-full text-lg bg-gray-100 
-          flex flex-row justify-center items-center 
+          w-[10%] h-full text-lg bg-gray-100
+          flex flex-row justify-center items-center
           rounded-br-lg rounded-tr-lg
           hover:bg-gray-200 active:opacity-80
         "

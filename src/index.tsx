@@ -36,7 +36,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode >
     <App>
-      <div className="w-screen h-screen bg-gray-200" >
+      <div className="w-screen h-screen" >
         <Routes />
       </div>
     </App>

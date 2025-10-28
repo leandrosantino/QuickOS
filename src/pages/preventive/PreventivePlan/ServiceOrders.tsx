@@ -58,7 +58,7 @@ export function ServiceOrders({ _week, _year }: type) {
       >
         <InputButton
           title=''
-          className="text-gray-100 bg-gray-500 ml-[-12px] mt-2"
+          className="text-gray-100 bg-zinc-500 ml-[-12px] mt-2"
           Icon={IoIosArrowBack}
           onClick={() => { goToPage('Preventive.Plan.Calendar', {}) }}
         />

@@ -130,7 +130,7 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
       <div
         className="
           w-full h-full p-5 pb-5
-          bg-gray-200 z-50
+          bg-[#fff] z-50
           rounded-3xl
         "
       >
@@ -205,7 +205,7 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
             <header
               className="w-full py-1 pl-1.5 font-medium text-xl"
             >Ações:</header>
-            <div className="w-full h-[calc(100vh-540px)] border-b border-gray-900">
+            <div className="w-full h-[calc(100vh-580px)] border-b border-gray-900">
               <ScrollContainer className="h-full px-2 py-2" >
                 <div
                   className="flex flex-col w-full p-0.5 "

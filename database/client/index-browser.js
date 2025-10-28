@@ -4,7 +4,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const {
   Decimal,
   objectEnumValues,
-  makeStrictEnum
+  makeStrictEnum,
+  Public,
 } = require('./runtime/index-browser')
 
 
@@ -13,12 +14,12 @@ const Prisma = {}
 exports.Prisma = Prisma
 
 /**
- * Prisma Client JS version: 4.9.0
- * Query Engine version: ceb5c99003b99c9ee2c1d2e618e359c14aef2ea5
+ * Prisma Client JS version: 4.16.2
+ * Query Engine version: 4bc8b6e1b66cb932731fb1bdbbc550d1e010de81
  */
 Prisma.prismaVersion = {
-  client: "4.9.0",
-  engine: "ceb5c99003b99c9ee2c1d2e618e359c14aef2ea5"
+  client: "4.16.2",
+  engine: "4bc8b6e1b66cb932731fb1bdbbc550d1e010de81"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -66,8 +67,19 @@ Prisma.raw = () => {
   throw new Error(`raw is unable to be run in the browser.
 In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues`,
 )}
-Prisma.validator = () => (val) => val
+Prisma.validator = Public.validator
 
+/**
+* Extensions
+*/
+Prisma.getExtensionContext = () => {
+  throw new Error(`Extensions.getExtensionContext is unable to be run in the browser.
+In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues`,
+)}
+Prisma.defineExtension = () => {
+  throw new Error(`Extensions.defineExtension is unable to be run in the browser.
+In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues`,
+)}
 
 /**
  * Shorthand utilities for JSON filtering
@@ -85,23 +97,39 @@ Prisma.NullTypes = {
 /**
  * Enums
  */
-// Based on
-// https://github.com/microsoft/TypeScript/issues/3192#issuecomment-261720275
-function makeEnum(x) { return x; }
 
-exports.Prisma.MachineScalarFieldEnum = makeEnum({
+exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
+  Serializable: 'Serializable'
+});
+
+exports.Prisma.NatureScalarFieldEnum = {
+  id: 'id',
+  name: 'name'
+};
+
+exports.Prisma.MachineScalarFieldEnum = {
   id: 'id',
   tag: 'tag',
   ute: 'ute',
   technology: 'technology'
-});
+};
 
-exports.Prisma.NatureScalarFieldEnum = makeEnum({
+exports.Prisma.WorkerScalarFieldEnum = {
   id: 'id',
-  name: 'name'
-});
+  registration: 'registration',
+  name: 'name',
+  class: 'class'
+};
 
-exports.Prisma.PreventiveActionScalarFieldEnum = makeEnum({
+exports.Prisma.PreventiveActionTakenScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  osId: 'osId',
+  actionId: 'actionId',
+  weekCode: 'weekCode'
+};
+
+exports.Prisma.PreventiveActionScalarFieldEnum = {
   id: 'id',
   description: 'description',
   machineId: 'machineId',
@@ -111,54 +139,40 @@ exports.Prisma.PreventiveActionScalarFieldEnum = makeEnum({
   preventiveOSId: 'preventiveOSId',
   natureId: 'natureId',
   ignore: 'ignore'
-});
+};
 
-exports.Prisma.PreventiveActionTakenScalarFieldEnum = makeEnum({
+exports.Prisma.PreventiveOSScalarFieldEnum = {
   id: 'id',
-  date: 'date',
-  osId: 'osId',
-  actionId: 'actionId',
-  weekCode: 'weekCode'
-});
-
-exports.Prisma.PreventiveOSScalarFieldEnum = makeEnum({
-  id: 'id',
-  machineId: 'machineId',
   weekCode: 'weekCode',
   date: 'date',
   natureId: 'natureId',
-  actionsUniqueKey: 'actionsUniqueKey',
   duration: 'duration',
   concluded: 'concluded',
   startTime: 'startTime',
-  finishTime: 'finishTime'
-});
+  finishTime: 'finishTime',
+  machineId: 'machineId',
+  actionsUniqueKey: 'actionsUniqueKey'
+};
 
-exports.Prisma.SortOrder = makeEnum({
+exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
-});
+};
 
-exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
-  Serializable: 'Serializable'
-});
-
-exports.Prisma.WorkerScalarFieldEnum = makeEnum({
-  id: 'id',
-  registration: 'registration',
-  name: 'name',
-  class: 'class'
-});
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
 
 
-exports.Prisma.ModelName = makeEnum({
+exports.Prisma.ModelName = {
   Nature: 'Nature',
   Machine: 'Machine',
   Worker: 'Worker',
   PreventiveActionTaken: 'PreventiveActionTaken',
   PreventiveAction: 'PreventiveAction',
   PreventiveOS: 'PreventiveOS'
-});
+};
 
 /**
  * Create the Client

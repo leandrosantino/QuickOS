@@ -15,8 +15,9 @@ export function DialogContainer({ children, width ,height }: PageModalContainerP
     <>
       <div
         className={`
-          h-page w-screen
-          absolute top-[30px] z-40
+          h-full
+          w-screen
+          absolute top-0 left-0 z-40
           flex justify-end items-center
         `}
       >
@@ -24,10 +25,7 @@ export function DialogContainer({ children, width ,height }: PageModalContainerP
           className={`
             flex justify-center items-center
             h-full bg-gray-900 bg-opacity-50
-            ${sideMenuIsReduce ?
-              'w-[calc(100vw-50px)]' :
-              'w-[calc(100vw-208px)] lg1:w-test xl:w-[calc(100vw-216px)]'
-            }
+            w-full
           `}
         >
           <div

@@ -55,7 +55,7 @@ export function DialogContextProvider({ children }: DialogContextProviderProps) 
   const dialogError:DialogErrorType = (title, message) => {
     setTitle(title)
     setMessage(message)
-    
+
     setCallback({func:(condition:boolean)=>{
       setVisible(false)
     }})
@@ -118,18 +118,18 @@ export function Dialogs() {
     <>
       {visible &&
         <DialogContainer
-          width={"320px"}
-          height={"180px"}
+          width={"350px"}
+          height={"220px"}
         >
           <div
             className="
               w-full h-full p-3
-              bg-gray-200 
-              shadow-xl shadow-gray-700 
+              bg-[#fff]
+              shadow-xl shadow-gray-700
               rounded-xl
             "
           >
-            <DialogConponent 
+            <DialogConponent
               message={message}
               title={title}
               callback={callback}

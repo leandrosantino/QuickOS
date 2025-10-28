@@ -87,9 +87,8 @@
 
         .container {
             width: 210mm;
-            min-height: 280mm;
+            min-height: 275mm;
             border: 1px solid black;
-            margin-bottom: 20px;
             padding: 20px;
         }
 
@@ -209,6 +208,16 @@
             border-bottom: 1px solid black;
             font-size: 10pt;
         }
+
+        #version {
+            font-size: 10px;
+            width: 200mm;
+            display: flex;
+            justify-content: end;
+            padding: 4px 8px;
+            margin-bottom: 10px;
+
+        }
     </style>
 </head>
 
@@ -250,15 +259,14 @@
                     <%- data.weekCode.split('-W')[0] %>
                 </div>
             </div>
-            <%if(data.duration){%>
+            <!-- <%if(data.duration){%>
                 <div class="info">
                     <div class="label">Tempo:</div>
                     <div>
                         <%- data.duration %> min
                     </div>
                 </div>
-
-                <%}%>
+                <%}%> -->
         </div>
 
         <div class="formCase">
@@ -285,7 +293,8 @@
                 </div>
                 <div class="formInput">
                     <div class="label">Manutencistas:</div>
-                    <div class="value"></div>
+                    <div class="value">
+                    </div>
                 </div>
                 <div class="formInput">
                     <div class="label">Surpevisor de Manutenção:</div>
@@ -303,7 +312,7 @@
                 <div style="width: 35%;">Observações</div>
             </div>
 
-            <% (data.actions?data.actions:data.actionsTaken).map((value)=>{
+            <% (!data.concluded?data.actions:data.actionsTaken).map((value)=>{
                 const item = value.action?value.action:value
                 %>
                 <div class="tableRow">
@@ -325,6 +334,10 @@
                 <%}) %>
         </div>
 
+
+    </div>
+    <div id="version">
+        ANEXO 03-P-APG-24_rev05
     </div>
 
     <script>

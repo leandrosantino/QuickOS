@@ -16,16 +16,18 @@ export function DialogQuestion({message, title, callback}:DialogProps) {
         "
       >
         {title}
+
       </div>
 
       <div
         className="
         text-gray-900
-          w-full h-[56%] pt-2
+          w-full h-full pt-2
           flex felx-col justify-start items-center
         "
       >
-        {message}
+        {/* {message} */}
+        <span dangerouslySetInnerHTML={{ __html: message }} />
       </div>
 
       <div

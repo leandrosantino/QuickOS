@@ -10,7 +10,7 @@ export function TabContainer({children}:TabContainerProps) {
     <div
         className="
           w-full h-7
-          bg-gray-800
+          bg-zinc-800
         "
     >
       {children}

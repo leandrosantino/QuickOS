@@ -11,7 +11,7 @@ export function Preventive() {
 
   useEffect(() => {
     if (currentPage === 'Preventive') goToPage('Preventive.Plan', {})
-    
+
   }, [currentPage, goToPage])
 
   return (

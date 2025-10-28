@@ -3,91 +3,149 @@
  * Client
 **/
 
-import * as runtime from './runtime/index';
-declare const prisma: unique symbol
-export interface PrismaPromise<A> extends Promise<A> {[prisma]: true}
-type UnwrapPromise<P extends any> = P extends Promise<infer R> ? R : P
-type UnwrapTuple<Tuple extends readonly unknown[]> = {
-  [K in keyof Tuple]: K extends `${number}` ? Tuple[K] extends PrismaPromise<infer X> ? X : UnwrapPromise<Tuple[K]> : UnwrapPromise<Tuple[K]>
-};
+import * as runtime from './runtime/library';
+import $Types = runtime.Types // general types
+import $Public = runtime.Types.Public
+import $Utils = runtime.Types.Utils
+import $Extensions = runtime.Types.Extensions
 
+export type PrismaPromise<T> = $Public.PrismaPromise<T>
+
+
+export type NaturePayload<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  name: "Nature"
+  objects: {
+    PreventiveOS: PreventiveOSPayload<ExtArgs>[]
+    PreventiveAction: PreventiveActionPayload<ExtArgs>[]
+  }
+  scalars: $Extensions.GetResult<{
+    id: number
+    name: string
+  }, ExtArgs["result"]["nature"]>
+  composites: {}
+}
 
 /**
  * Model Nature
  * 
  */
-export type Nature = {
-  id: number
-  name: string
+export type Nature = runtime.Types.DefaultSelection<NaturePayload>
+export type MachinePayload<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  name: "Machine"
+  objects: {
+    PreventiveOS: PreventiveOSPayload<ExtArgs>[]
+    PreventiveAction: PreventiveActionPayload<ExtArgs>[]
+  }
+  scalars: $Extensions.GetResult<{
+    id: number
+    tag: string
+    ute: string
+    technology: string
+  }, ExtArgs["result"]["machine"]>
+  composites: {}
 }
 
 /**
  * Model Machine
  * 
  */
-export type Machine = {
-  id: number
-  tag: string
-  ute: string
-  technology: string
+export type Machine = runtime.Types.DefaultSelection<MachinePayload>
+export type WorkerPayload<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  name: "Worker"
+  objects: {
+    PreventiveOs: PreventiveOSPayload<ExtArgs>[]
+  }
+  scalars: $Extensions.GetResult<{
+    id: number
+    registration: number
+    name: string
+    class: string
+  }, ExtArgs["result"]["worker"]>
+  composites: {}
 }
 
 /**
  * Model Worker
  * 
  */
-export type Worker = {
-  id: number
-  registration: number
-  name: string
-  class: string
+export type Worker = runtime.Types.DefaultSelection<WorkerPayload>
+export type PreventiveActionTakenPayload<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  name: "PreventiveActionTaken"
+  objects: {
+    action: PreventiveActionPayload<ExtArgs>
+    os: PreventiveOSPayload<ExtArgs>
+  }
+  scalars: $Extensions.GetResult<{
+    id: number
+    date: Date
+    osId: number
+    actionId: number
+    weekCode: string
+  }, ExtArgs["result"]["preventiveActionTaken"]>
+  composites: {}
 }
 
 /**
  * Model PreventiveActionTaken
  * 
  */
-export type PreventiveActionTaken = {
-  id: number
-  date: Date
-  osId: number
-  actionId: number
-  weekCode: string
+export type PreventiveActionTaken = runtime.Types.DefaultSelection<PreventiveActionTakenPayload>
+export type PreventiveActionPayload<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  name: "PreventiveAction"
+  objects: {
+    machine: MachinePayload<ExtArgs>
+    PreventiveOS: PreventiveOSPayload<ExtArgs> | null
+    nature: NaturePayload<ExtArgs>
+    actionsTaken: PreventiveActionTakenPayload<ExtArgs>[]
+  }
+  scalars: $Extensions.GetResult<{
+    id: number
+    description: string
+    machineId: number
+    excution: string
+    frequency: number
+    nextExecution: string
+    preventiveOSId: number | null
+    natureId: number
+    ignore: boolean
+  }, ExtArgs["result"]["preventiveAction"]>
+  composites: {}
 }
 
 /**
  * Model PreventiveAction
  * 
  */
-export type PreventiveAction = {
-  id: number
-  description: string
-  machineId: number
-  excution: string
-  frequency: number
-  nextExecution: string
-  preventiveOSId: number | null
-  natureId: number
-  ignore: boolean
+export type PreventiveAction = runtime.Types.DefaultSelection<PreventiveActionPayload>
+export type PreventiveOSPayload<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  name: "PreventiveOS"
+  objects: {
+    nature: NaturePayload<ExtArgs>
+    machine: MachinePayload<ExtArgs>
+    responsible: WorkerPayload<ExtArgs>[]
+    actions: PreventiveActionPayload<ExtArgs>[]
+    actionsTaken: PreventiveActionTakenPayload<ExtArgs>[]
+  }
+  scalars: $Extensions.GetResult<{
+    id: number
+    weekCode: string
+    date: Date | null
+    natureId: number
+    duration: number | null
+    concluded: boolean | null
+    startTime: Date | null
+    finishTime: Date | null
+    machineId: number
+    actionsUniqueKey: string
+  }, ExtArgs["result"]["preventiveOS"]>
+  composites: {}
 }
 
 /**
  * Model PreventiveOS
  * 
  */
-export type PreventiveOS = {
-  id: number
-  machineId: number
-  weekCode: string
-  date: Date | null
-  natureId: number
-  actionsUniqueKey: string
-  duration: number | null
-  concluded: boolean | null
-  startTime: Date | null
-  finishTime: Date | null
-}
-
+export type PreventiveOS = runtime.Types.DefaultSelection<PreventiveOSPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -108,8 +166,11 @@ export class PrismaClient<
   U = 'log' extends keyof T ? T['log'] extends Array<Prisma.LogLevel | Prisma.LogDefinition> ? Prisma.GetEvents<T['log']> : never : never,
   GlobalReject extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined = 'rejectOnNotFound' extends keyof T
     ? T['rejectOnNotFound']
-    : false
-      > {
+    : false,
+  ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs
+> {
+  [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['other'] }
+
     /**
    * ##  Prisma Client ʲˢ
    * 
@@ -140,6 +201,8 @@ export class PrismaClient<
 
   /**
    * Add a middleware
+   * @deprecated since 4.16.0. For new code, prefer client extensions instead.
+   * @see https://pris.ly/d/extensions
    */
   $use(cb: Prisma.Middleware): void
 
@@ -152,7 +215,7 @@ export class PrismaClient<
    * 
    * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
    */
-  $executeRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): PrismaPromise<number>;
+  $executeRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): Prisma.PrismaPromise<number>;
 
   /**
    * Executes a raw query and returns the number of affected rows.
@@ -164,7 +227,7 @@ export class PrismaClient<
    * 
    * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
    */
-  $executeRawUnsafe<T = unknown>(query: string, ...values: any[]): PrismaPromise<number>;
+  $executeRawUnsafe<T = unknown>(query: string, ...values: any[]): Prisma.PrismaPromise<number>;
 
   /**
    * Performs a prepared raw query and returns the `SELECT` data.
@@ -175,7 +238,7 @@ export class PrismaClient<
    * 
    * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
    */
-  $queryRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): PrismaPromise<T>;
+  $queryRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): Prisma.PrismaPromise<T>;
 
   /**
    * Performs a raw query and returns the `SELECT` data.
@@ -187,7 +250,7 @@ export class PrismaClient<
    * 
    * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
    */
-  $queryRawUnsafe<T = unknown>(query: string, ...values: any[]): PrismaPromise<T>;
+  $queryRawUnsafe<T = unknown>(query: string, ...values: any[]): Prisma.PrismaPromise<T>;
 
   /**
    * Allows the running of a sequence of read/write operations that are guaranteed to either succeed or fail as a whole.
@@ -202,9 +265,12 @@ export class PrismaClient<
    * 
    * Read more in our [docs](https://www.prisma.io/docs/concepts/components/prisma-client/transactions).
    */
-  $transaction<P extends PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): Promise<UnwrapTuple<P>>
+  $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): Promise<runtime.Types.Utils.UnwrapTuple<P>>
 
-  $transaction<R>(fn: (prisma: Prisma.TransactionClient) => Promise<R>, options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): Promise<R>
+  $transaction<R>(fn: (prisma: Omit<PrismaClient, runtime.ITXClientDenyList>) => Promise<R>, options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): Promise<R>
+
+
+  $extends: $Extensions.ExtendsHook<'extends', Prisma.TypeMapCb, ExtArgs>
 
       /**
    * `prisma.nature`: Exposes CRUD operations for the **Nature** model.
@@ -214,7 +280,7 @@ export class PrismaClient<
     * const natures = await prisma.nature.findMany()
     * ```
     */
-  get nature(): Prisma.NatureDelegate<GlobalReject>;
+  get nature(): Prisma.NatureDelegate<GlobalReject, ExtArgs>;
 
   /**
    * `prisma.machine`: Exposes CRUD operations for the **Machine** model.
@@ -224,7 +290,7 @@ export class PrismaClient<
     * const machines = await prisma.machine.findMany()
     * ```
     */
-  get machine(): Prisma.MachineDelegate<GlobalReject>;
+  get machine(): Prisma.MachineDelegate<GlobalReject, ExtArgs>;
 
   /**
    * `prisma.worker`: Exposes CRUD operations for the **Worker** model.
@@ -234,7 +300,7 @@ export class PrismaClient<
     * const workers = await prisma.worker.findMany()
     * ```
     */
-  get worker(): Prisma.WorkerDelegate<GlobalReject>;
+  get worker(): Prisma.WorkerDelegate<GlobalReject, ExtArgs>;
 
   /**
    * `prisma.preventiveActionTaken`: Exposes CRUD operations for the **PreventiveActionTaken** model.
@@ -244,7 +310,7 @@ export class PrismaClient<
     * const preventiveActionTakens = await prisma.preventiveActionTaken.findMany()
     * ```
     */
-  get preventiveActionTaken(): Prisma.PreventiveActionTakenDelegate<GlobalReject>;
+  get preventiveActionTaken(): Prisma.PreventiveActionTakenDelegate<GlobalReject, ExtArgs>;
 
   /**
    * `prisma.preventiveAction`: Exposes CRUD operations for the **PreventiveAction** model.
@@ -254,7 +320,7 @@ export class PrismaClient<
     * const preventiveActions = await prisma.preventiveAction.findMany()
     * ```
     */
-  get preventiveAction(): Prisma.PreventiveActionDelegate<GlobalReject>;
+  get preventiveAction(): Prisma.PreventiveActionDelegate<GlobalReject, ExtArgs>;
 
   /**
    * `prisma.preventiveOS`: Exposes CRUD operations for the **PreventiveOS** model.
@@ -264,11 +330,18 @@ export class PrismaClient<
     * const preventiveOS = await prisma.preventiveOS.findMany()
     * ```
     */
-  get preventiveOS(): Prisma.PreventiveOSDelegate<GlobalReject>;
+  get preventiveOS(): Prisma.PreventiveOSDelegate<GlobalReject, ExtArgs>;
 }
 
 export namespace Prisma {
   export import DMMF = runtime.DMMF
+
+  export type PrismaPromise<T> = $Public.PrismaPromise<T>
+
+  /**
+   * Validator
+   */
+  export import validator = runtime.Public.validator
 
   /**
    * Prisma Errors
@@ -304,10 +377,19 @@ export namespace Prisma {
   export type MetricHistogram = runtime.MetricHistogram
   export type MetricHistogramBucket = runtime.MetricHistogramBucket
 
+  /**
+  * Extensions
+  */
+  export type Extension = $Extensions.UserArgs
+  export import getExtensionContext = runtime.Extensions.getExtensionContext
+  export type Args<T, F extends $Public.Operation> = $Public.Args<T, F>
+  export type Payload<T, F extends $Public.Operation> = $Public.Payload<T, F>
+  export type Result<T, A, F extends $Public.Operation> = $Public.Result<T, A, F>
+  export type Exact<T, W> = $Public.Exact<T, W>
 
   /**
-   * Prisma Client JS version: 4.9.0
-   * Query Engine version: ceb5c99003b99c9ee2c1d2e618e359c14aef2ea5
+   * Prisma Client JS version: 4.16.2
+   * Query Engine version: 4bc8b6e1b66cb932731fb1bdbbc550d1e010de81
    */
   export type PrismaVersion = {
     client: string
@@ -675,7 +757,7 @@ export namespace Prisma {
 
   export const type: unique symbol;
 
-  export function validator<V>(): <S>(select: runtime.Types.Utils.LegacyExact<S, V>) => S;
+
 
   /**
    * Used by group by
@@ -730,15 +812,6 @@ export namespace Prisma {
 
   type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRef<Model, FieldType>
 
-  class PrismaClientFetcher {
-    private readonly prisma;
-    private readonly debug;
-    private readonly hooks?;
-    constructor(prisma: PrismaClient<any, any>, debug?: boolean, hooks?: Hooks | undefined);
-    request<T>(document: any, dataPath?: string[], rootField?: string, typeName?: string, isList?: boolean, callsite?: string): Promise<T>;
-    sanitizeMessage(message: string): string;
-    protected unpack(document: any, data: any, path: string[], rootField?: string, isList?: boolean): any;
-  }
 
   export const ModelName: {
     Nature: 'Nature',
@@ -756,6 +829,408 @@ export namespace Prisma {
     db?: Datasource
   }
 
+
+  interface TypeMapCb extends $Utils.Fn<{extArgs: $Extensions.Args}, $Utils.Record<string, any>> {
+    returns: Prisma.TypeMap<this['params']['extArgs']>
+  }
+
+  export type TypeMap<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    meta: {
+      modelProps: 'nature' | 'machine' | 'worker' | 'preventiveActionTaken' | 'preventiveAction' | 'preventiveOS'
+      txIsolationLevel: Prisma.TransactionIsolationLevel
+    },
+    model: {
+      Nature: {
+        payload: NaturePayload<ExtArgs>
+        operations: {
+          findUnique: {
+            args: Prisma.NatureFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<NaturePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.NatureFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<NaturePayload>
+          }
+          findFirst: {
+            args: Prisma.NatureFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<NaturePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.NatureFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<NaturePayload>
+          }
+          findMany: {
+            args: Prisma.NatureFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<NaturePayload>[]
+          }
+          create: {
+            args: Prisma.NatureCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<NaturePayload>
+          }
+          delete: {
+            args: Prisma.NatureDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<NaturePayload>
+          }
+          update: {
+            args: Prisma.NatureUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<NaturePayload>
+          }
+          deleteMany: {
+            args: Prisma.NatureDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.NatureUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.NatureUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<NaturePayload>
+          }
+          aggregate: {
+            args: Prisma.NatureAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateNature>
+          }
+          groupBy: {
+            args: Prisma.NatureGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<NatureGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.NatureCountArgs<ExtArgs>,
+            result: $Utils.Optional<NatureCountAggregateOutputType> | number
+          }
+        }
+      }
+      Machine: {
+        payload: MachinePayload<ExtArgs>
+        operations: {
+          findUnique: {
+            args: Prisma.MachineFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<MachinePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MachineFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<MachinePayload>
+          }
+          findFirst: {
+            args: Prisma.MachineFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<MachinePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MachineFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<MachinePayload>
+          }
+          findMany: {
+            args: Prisma.MachineFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<MachinePayload>[]
+          }
+          create: {
+            args: Prisma.MachineCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<MachinePayload>
+          }
+          delete: {
+            args: Prisma.MachineDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<MachinePayload>
+          }
+          update: {
+            args: Prisma.MachineUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<MachinePayload>
+          }
+          deleteMany: {
+            args: Prisma.MachineDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MachineUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.MachineUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<MachinePayload>
+          }
+          aggregate: {
+            args: Prisma.MachineAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateMachine>
+          }
+          groupBy: {
+            args: Prisma.MachineGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<MachineGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MachineCountArgs<ExtArgs>,
+            result: $Utils.Optional<MachineCountAggregateOutputType> | number
+          }
+        }
+      }
+      Worker: {
+        payload: WorkerPayload<ExtArgs>
+        operations: {
+          findUnique: {
+            args: Prisma.WorkerFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<WorkerPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WorkerFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<WorkerPayload>
+          }
+          findFirst: {
+            args: Prisma.WorkerFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<WorkerPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WorkerFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<WorkerPayload>
+          }
+          findMany: {
+            args: Prisma.WorkerFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<WorkerPayload>[]
+          }
+          create: {
+            args: Prisma.WorkerCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<WorkerPayload>
+          }
+          delete: {
+            args: Prisma.WorkerDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<WorkerPayload>
+          }
+          update: {
+            args: Prisma.WorkerUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<WorkerPayload>
+          }
+          deleteMany: {
+            args: Prisma.WorkerDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WorkerUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.WorkerUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<WorkerPayload>
+          }
+          aggregate: {
+            args: Prisma.WorkerAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateWorker>
+          }
+          groupBy: {
+            args: Prisma.WorkerGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<WorkerGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WorkerCountArgs<ExtArgs>,
+            result: $Utils.Optional<WorkerCountAggregateOutputType> | number
+          }
+        }
+      }
+      PreventiveActionTaken: {
+        payload: PreventiveActionTakenPayload<ExtArgs>
+        operations: {
+          findUnique: {
+            args: Prisma.PreventiveActionTakenFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveActionTakenPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PreventiveActionTakenFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveActionTakenPayload>
+          }
+          findFirst: {
+            args: Prisma.PreventiveActionTakenFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveActionTakenPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PreventiveActionTakenFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveActionTakenPayload>
+          }
+          findMany: {
+            args: Prisma.PreventiveActionTakenFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveActionTakenPayload>[]
+          }
+          create: {
+            args: Prisma.PreventiveActionTakenCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveActionTakenPayload>
+          }
+          delete: {
+            args: Prisma.PreventiveActionTakenDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveActionTakenPayload>
+          }
+          update: {
+            args: Prisma.PreventiveActionTakenUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveActionTakenPayload>
+          }
+          deleteMany: {
+            args: Prisma.PreventiveActionTakenDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PreventiveActionTakenUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.PreventiveActionTakenUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveActionTakenPayload>
+          }
+          aggregate: {
+            args: Prisma.PreventiveActionTakenAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregatePreventiveActionTaken>
+          }
+          groupBy: {
+            args: Prisma.PreventiveActionTakenGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<PreventiveActionTakenGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PreventiveActionTakenCountArgs<ExtArgs>,
+            result: $Utils.Optional<PreventiveActionTakenCountAggregateOutputType> | number
+          }
+        }
+      }
+      PreventiveAction: {
+        payload: PreventiveActionPayload<ExtArgs>
+        operations: {
+          findUnique: {
+            args: Prisma.PreventiveActionFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveActionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PreventiveActionFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveActionPayload>
+          }
+          findFirst: {
+            args: Prisma.PreventiveActionFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveActionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PreventiveActionFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveActionPayload>
+          }
+          findMany: {
+            args: Prisma.PreventiveActionFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveActionPayload>[]
+          }
+          create: {
+            args: Prisma.PreventiveActionCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveActionPayload>
+          }
+          delete: {
+            args: Prisma.PreventiveActionDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveActionPayload>
+          }
+          update: {
+            args: Prisma.PreventiveActionUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveActionPayload>
+          }
+          deleteMany: {
+            args: Prisma.PreventiveActionDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PreventiveActionUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.PreventiveActionUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveActionPayload>
+          }
+          aggregate: {
+            args: Prisma.PreventiveActionAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregatePreventiveAction>
+          }
+          groupBy: {
+            args: Prisma.PreventiveActionGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<PreventiveActionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PreventiveActionCountArgs<ExtArgs>,
+            result: $Utils.Optional<PreventiveActionCountAggregateOutputType> | number
+          }
+        }
+      }
+      PreventiveOS: {
+        payload: PreventiveOSPayload<ExtArgs>
+        operations: {
+          findUnique: {
+            args: Prisma.PreventiveOSFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveOSPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PreventiveOSFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveOSPayload>
+          }
+          findFirst: {
+            args: Prisma.PreventiveOSFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveOSPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PreventiveOSFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveOSPayload>
+          }
+          findMany: {
+            args: Prisma.PreventiveOSFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveOSPayload>[]
+          }
+          create: {
+            args: Prisma.PreventiveOSCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveOSPayload>
+          }
+          delete: {
+            args: Prisma.PreventiveOSDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveOSPayload>
+          }
+          update: {
+            args: Prisma.PreventiveOSUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveOSPayload>
+          }
+          deleteMany: {
+            args: Prisma.PreventiveOSDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PreventiveOSUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.PreventiveOSUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<PreventiveOSPayload>
+          }
+          aggregate: {
+            args: Prisma.PreventiveOSAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregatePreventiveOS>
+          }
+          groupBy: {
+            args: Prisma.PreventiveOSGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<PreventiveOSGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PreventiveOSCountArgs<ExtArgs>,
+            result: $Utils.Optional<PreventiveOSCountAggregateOutputType> | number
+          }
+        }
+      }
+    }
+  } & {
+    other: {
+      payload: any
+      operations: {
+        $executeRawUnsafe: {
+          args: [query: string, ...values: any[]],
+          result: any
+        }
+        $executeRaw: {
+          args: [query: TemplateStringsArray | Prisma.Sql, ...values: any[]],
+          result: any
+        }
+        $queryRawUnsafe: {
+          args: [query: string, ...values: any[]],
+          result: any
+        }
+        $queryRaw: {
+          args: [query: TemplateStringsArray | Prisma.Sql, ...values: any[]],
+          result: any
+        }
+      }
+    }
+  }
+  export const defineExtension: $Extensions.ExtendsHook<'define', Prisma.TypeMapCb, $Extensions.DefaultArgs>
   export type DefaultPrismaClient = PrismaClient
   export type RejectOnNotFound = boolean | ((error: Error) => Error)
   export type RejectPerModel = { [P in ModelName]?: RejectOnNotFound }
@@ -823,10 +1298,6 @@ export namespace Prisma {
      * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/logging#the-log-option).
      */
     log?: Array<LogLevel | LogDefinition>
-  }
-
-  export type Hooks = {
-    beforeRequest?: (options: { query: string, path: string[], rootField?: string, typeName?: string, document: any }) => any
   }
 
   /* Types for Logging */
@@ -900,7 +1371,7 @@ export namespace Prisma {
   /**
    * `PrismaClient` proxy available in interactive transactions.
    */
-  export type TransactionClient = Omit<Prisma.DefaultPrismaClient, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use'>
+  export type TransactionClient = Omit<Prisma.DefaultPrismaClient, runtime.ITXClientDenyList>
 
   export type Datasource = {
     url?: string
@@ -921,37 +1392,37 @@ export namespace Prisma {
     PreventiveAction: number
   }
 
-  export type NatureCountOutputTypeSelect = {
-    PreventiveOS?: boolean
-    PreventiveAction?: boolean
+  export type NatureCountOutputTypeSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    PreventiveOS?: boolean | NatureCountOutputTypeCountPreventiveOSArgs
+    PreventiveAction?: boolean | NatureCountOutputTypeCountPreventiveActionArgs
   }
-
-  export type NatureCountOutputTypeGetPayload<S extends boolean | null | undefined | NatureCountOutputTypeArgs> =
-    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
-    S extends true ? NatureCountOutputType :
-    S extends undefined ? never :
-    S extends { include: any } & (NatureCountOutputTypeArgs)
-    ? NatureCountOutputType 
-    : S extends { select: any } & (NatureCountOutputTypeArgs)
-      ? {
-    [P in TruthyKeys<S['select']>]:
-    P extends keyof NatureCountOutputType ? NatureCountOutputType[P] : never
-  } 
-      : NatureCountOutputType
-
-
-
 
   // Custom InputTypes
 
   /**
    * NatureCountOutputType without action
    */
-  export type NatureCountOutputTypeArgs = {
+  export type NatureCountOutputTypeArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the NatureCountOutputType
      */
-    select?: NatureCountOutputTypeSelect | null
+    select?: NatureCountOutputTypeSelect<ExtArgs> | null
+  }
+
+
+  /**
+   * NatureCountOutputType without action
+   */
+  export type NatureCountOutputTypeCountPreventiveOSArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    where?: PreventiveOSWhereInput
+  }
+
+
+  /**
+   * NatureCountOutputType without action
+   */
+  export type NatureCountOutputTypeCountPreventiveActionArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    where?: PreventiveActionWhereInput
   }
 
 
@@ -966,37 +1437,37 @@ export namespace Prisma {
     PreventiveAction: number
   }
 
-  export type MachineCountOutputTypeSelect = {
-    PreventiveOS?: boolean
-    PreventiveAction?: boolean
+  export type MachineCountOutputTypeSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    PreventiveOS?: boolean | MachineCountOutputTypeCountPreventiveOSArgs
+    PreventiveAction?: boolean | MachineCountOutputTypeCountPreventiveActionArgs
   }
-
-  export type MachineCountOutputTypeGetPayload<S extends boolean | null | undefined | MachineCountOutputTypeArgs> =
-    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
-    S extends true ? MachineCountOutputType :
-    S extends undefined ? never :
-    S extends { include: any } & (MachineCountOutputTypeArgs)
-    ? MachineCountOutputType 
-    : S extends { select: any } & (MachineCountOutputTypeArgs)
-      ? {
-    [P in TruthyKeys<S['select']>]:
-    P extends keyof MachineCountOutputType ? MachineCountOutputType[P] : never
-  } 
-      : MachineCountOutputType
-
-
-
 
   // Custom InputTypes
 
   /**
    * MachineCountOutputType without action
    */
-  export type MachineCountOutputTypeArgs = {
+  export type MachineCountOutputTypeArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the MachineCountOutputType
      */
-    select?: MachineCountOutputTypeSelect | null
+    select?: MachineCountOutputTypeSelect<ExtArgs> | null
+  }
+
+
+  /**
+   * MachineCountOutputType without action
+   */
+  export type MachineCountOutputTypeCountPreventiveOSArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    where?: PreventiveOSWhereInput
+  }
+
+
+  /**
+   * MachineCountOutputType without action
+   */
+  export type MachineCountOutputTypeCountPreventiveActionArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    where?: PreventiveActionWhereInput
   }
 
 
@@ -1010,36 +1481,28 @@ export namespace Prisma {
     PreventiveOs: number
   }
 
-  export type WorkerCountOutputTypeSelect = {
-    PreventiveOs?: boolean
+  export type WorkerCountOutputTypeSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    PreventiveOs?: boolean | WorkerCountOutputTypeCountPreventiveOsArgs
   }
-
-  export type WorkerCountOutputTypeGetPayload<S extends boolean | null | undefined | WorkerCountOutputTypeArgs> =
-    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
-    S extends true ? WorkerCountOutputType :
-    S extends undefined ? never :
-    S extends { include: any } & (WorkerCountOutputTypeArgs)
-    ? WorkerCountOutputType 
-    : S extends { select: any } & (WorkerCountOutputTypeArgs)
-      ? {
-    [P in TruthyKeys<S['select']>]:
-    P extends keyof WorkerCountOutputType ? WorkerCountOutputType[P] : never
-  } 
-      : WorkerCountOutputType
-
-
-
 
   // Custom InputTypes
 
   /**
    * WorkerCountOutputType without action
    */
-  export type WorkerCountOutputTypeArgs = {
+  export type WorkerCountOutputTypeArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the WorkerCountOutputType
      */
-    select?: WorkerCountOutputTypeSelect | null
+    select?: WorkerCountOutputTypeSelect<ExtArgs> | null
+  }
+
+
+  /**
+   * WorkerCountOutputType without action
+   */
+  export type WorkerCountOutputTypeCountPreventiveOsArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    where?: PreventiveOSWhereInput
   }
 
 
@@ -1053,36 +1516,28 @@ export namespace Prisma {
     actionsTaken: number
   }
 
-  export type PreventiveActionCountOutputTypeSelect = {
-    actionsTaken?: boolean
+  export type PreventiveActionCountOutputTypeSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    actionsTaken?: boolean | PreventiveActionCountOutputTypeCountActionsTakenArgs
   }
-
-  export type PreventiveActionCountOutputTypeGetPayload<S extends boolean | null | undefined | PreventiveActionCountOutputTypeArgs> =
-    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
-    S extends true ? PreventiveActionCountOutputType :
-    S extends undefined ? never :
-    S extends { include: any } & (PreventiveActionCountOutputTypeArgs)
-    ? PreventiveActionCountOutputType 
-    : S extends { select: any } & (PreventiveActionCountOutputTypeArgs)
-      ? {
-    [P in TruthyKeys<S['select']>]:
-    P extends keyof PreventiveActionCountOutputType ? PreventiveActionCountOutputType[P] : never
-  } 
-      : PreventiveActionCountOutputType
-
-
-
 
   // Custom InputTypes
 
   /**
    * PreventiveActionCountOutputType without action
    */
-  export type PreventiveActionCountOutputTypeArgs = {
+  export type PreventiveActionCountOutputTypeArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveActionCountOutputType
      */
-    select?: PreventiveActionCountOutputTypeSelect | null
+    select?: PreventiveActionCountOutputTypeSelect<ExtArgs> | null
+  }
+
+
+  /**
+   * PreventiveActionCountOutputType without action
+   */
+  export type PreventiveActionCountOutputTypeCountActionsTakenArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    where?: PreventiveActionTakenWhereInput
   }
 
 
@@ -1093,43 +1548,51 @@ export namespace Prisma {
 
 
   export type PreventiveOSCountOutputType = {
-    actions: number
     responsible: number
+    actions: number
     actionsTaken: number
   }
 
-  export type PreventiveOSCountOutputTypeSelect = {
-    actions?: boolean
-    responsible?: boolean
-    actionsTaken?: boolean
+  export type PreventiveOSCountOutputTypeSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    responsible?: boolean | PreventiveOSCountOutputTypeCountResponsibleArgs
+    actions?: boolean | PreventiveOSCountOutputTypeCountActionsArgs
+    actionsTaken?: boolean | PreventiveOSCountOutputTypeCountActionsTakenArgs
   }
-
-  export type PreventiveOSCountOutputTypeGetPayload<S extends boolean | null | undefined | PreventiveOSCountOutputTypeArgs> =
-    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
-    S extends true ? PreventiveOSCountOutputType :
-    S extends undefined ? never :
-    S extends { include: any } & (PreventiveOSCountOutputTypeArgs)
-    ? PreventiveOSCountOutputType 
-    : S extends { select: any } & (PreventiveOSCountOutputTypeArgs)
-      ? {
-    [P in TruthyKeys<S['select']>]:
-    P extends keyof PreventiveOSCountOutputType ? PreventiveOSCountOutputType[P] : never
-  } 
-      : PreventiveOSCountOutputType
-
-
-
 
   // Custom InputTypes
 
   /**
    * PreventiveOSCountOutputType without action
    */
-  export type PreventiveOSCountOutputTypeArgs = {
+  export type PreventiveOSCountOutputTypeArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveOSCountOutputType
      */
-    select?: PreventiveOSCountOutputTypeSelect | null
+    select?: PreventiveOSCountOutputTypeSelect<ExtArgs> | null
+  }
+
+
+  /**
+   * PreventiveOSCountOutputType without action
+   */
+  export type PreventiveOSCountOutputTypeCountResponsibleArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    where?: WorkerWhereInput
+  }
+
+
+  /**
+   * PreventiveOSCountOutputType without action
+   */
+  export type PreventiveOSCountOutputTypeCountActionsArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    where?: PreventiveActionWhereInput
+  }
+
+
+  /**
+   * PreventiveOSCountOutputType without action
+   */
+  export type PreventiveOSCountOutputTypeCountActionsTakenArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    where?: PreventiveActionTakenWhereInput
   }
 
 
@@ -1200,7 +1663,7 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type NatureAggregateArgs = {
+  export type NatureAggregateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which Nature to aggregate.
      */
@@ -1272,7 +1735,7 @@ export namespace Prisma {
 
 
 
-  export type NatureGroupByArgs = {
+  export type NatureGroupByArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     where?: NatureWhereInput
     orderBy?: Enumerable<NatureOrderByWithAggregationInput>
     by: NatureScalarFieldEnum[]
@@ -1297,7 +1760,7 @@ export namespace Prisma {
     _max: NatureMaxAggregateOutputType | null
   }
 
-  type GetNatureGroupByPayload<T extends NatureGroupByArgs> = PrismaPromise<
+  type GetNatureGroupByPayload<T extends NatureGroupByArgs> = Prisma.PrismaPromise<
     Array<
       PickArray<NatureGroupByOutputType, T['by']> &
         {
@@ -1311,49 +1774,35 @@ export namespace Prisma {
     >
 
 
-  export type NatureSelect = {
+  export type NatureSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    PreventiveOS?: boolean | Nature$PreventiveOSArgs
-    PreventiveAction?: boolean | Nature$PreventiveActionArgs
-    _count?: boolean | NatureCountOutputTypeArgs
+    PreventiveOS?: boolean | Nature$PreventiveOSArgs<ExtArgs>
+    PreventiveAction?: boolean | Nature$PreventiveActionArgs<ExtArgs>
+    _count?: boolean | NatureCountOutputTypeArgs<ExtArgs>
+  }, ExtArgs["result"]["nature"]>
+
+  export type NatureSelectScalar = {
+    id?: boolean
+    name?: boolean
+  }
+
+  export type NatureInclude<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    PreventiveOS?: boolean | Nature$PreventiveOSArgs<ExtArgs>
+    PreventiveAction?: boolean | Nature$PreventiveActionArgs<ExtArgs>
+    _count?: boolean | NatureCountOutputTypeArgs<ExtArgs>
   }
 
 
-  export type NatureInclude = {
-    PreventiveOS?: boolean | Nature$PreventiveOSArgs
-    PreventiveAction?: boolean | Nature$PreventiveActionArgs
-    _count?: boolean | NatureCountOutputTypeArgs
-  }
+  type NatureGetPayload<S extends boolean | null | undefined | NatureArgs> = $Types.GetResult<NaturePayload, S>
 
-  export type NatureGetPayload<S extends boolean | null | undefined | NatureArgs> =
-    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
-    S extends true ? Nature :
-    S extends undefined ? never :
-    S extends { include: any } & (NatureArgs | NatureFindManyArgs)
-    ? Nature  & {
-    [P in TruthyKeys<S['include']>]:
-        P extends 'PreventiveOS' ? Array < PreventiveOSGetPayload<S['include'][P]>>  :
-        P extends 'PreventiveAction' ? Array < PreventiveActionGetPayload<S['include'][P]>>  :
-        P extends '_count' ? NatureCountOutputTypeGetPayload<S['include'][P]> :  never
-  } 
-    : S extends { select: any } & (NatureArgs | NatureFindManyArgs)
-      ? {
-    [P in TruthyKeys<S['select']>]:
-        P extends 'PreventiveOS' ? Array < PreventiveOSGetPayload<S['select'][P]>>  :
-        P extends 'PreventiveAction' ? Array < PreventiveActionGetPayload<S['select'][P]>>  :
-        P extends '_count' ? NatureCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof Nature ? Nature[P] : never
-  } 
-      : Nature
-
-
-  type NatureCountArgs = 
+  type NatureCountArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = 
     Omit<NatureFindManyArgs, 'select' | 'include'> & {
       select?: NatureCountAggregateInputType | true
     }
 
-  export interface NatureDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
-
+  export interface NatureDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Nature'], meta: { name: 'Nature' } }
     /**
      * Find zero or one Nature that matches the filter.
      * @param {NatureFindUniqueArgs} args - Arguments to find a Nature
@@ -1365,9 +1814,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUnique<T extends NatureFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args: SelectSubset<T, NatureFindUniqueArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Nature'> extends True ? Prisma__NatureClient<NatureGetPayload<T>> : Prisma__NatureClient<NatureGetPayload<T> | null, null>
+    findUnique<T extends NatureFindUniqueArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, NatureFindUniqueArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Nature'> extends True ? Prisma__NatureClient<$Types.GetResult<NaturePayload<ExtArgs>, T, 'findUnique', never>, never, ExtArgs> : Prisma__NatureClient<$Types.GetResult<NaturePayload<ExtArgs>, T, 'findUnique', never> | null, null, ExtArgs>
 
     /**
      * Find one Nature that matches the filter or throw an error  with `error.code='P2025'` 
@@ -1381,9 +1830,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUniqueOrThrow<T extends NatureFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, NatureFindUniqueOrThrowArgs>
-    ): Prisma__NatureClient<NatureGetPayload<T>>
+    findUniqueOrThrow<T extends NatureFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, NatureFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__NatureClient<$Types.GetResult<NaturePayload<ExtArgs>, T, 'findUniqueOrThrow', never>, never, ExtArgs>
 
     /**
      * Find the first Nature that matches the filter.
@@ -1398,9 +1847,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirst<T extends NatureFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args?: SelectSubset<T, NatureFindFirstArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Nature'> extends True ? Prisma__NatureClient<NatureGetPayload<T>> : Prisma__NatureClient<NatureGetPayload<T> | null, null>
+    findFirst<T extends NatureFindFirstArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, NatureFindFirstArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Nature'> extends True ? Prisma__NatureClient<$Types.GetResult<NaturePayload<ExtArgs>, T, 'findFirst', never>, never, ExtArgs> : Prisma__NatureClient<$Types.GetResult<NaturePayload<ExtArgs>, T, 'findFirst', never> | null, null, ExtArgs>
 
     /**
      * Find the first Nature that matches the filter or
@@ -1416,9 +1865,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirstOrThrow<T extends NatureFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, NatureFindFirstOrThrowArgs>
-    ): Prisma__NatureClient<NatureGetPayload<T>>
+    findFirstOrThrow<T extends NatureFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, NatureFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__NatureClient<$Types.GetResult<NaturePayload<ExtArgs>, T, 'findFirstOrThrow', never>, never, ExtArgs>
 
     /**
      * Find zero or more Natures that matches the filter.
@@ -1436,9 +1885,9 @@ export namespace Prisma {
      * const natureWithIdOnly = await prisma.nature.findMany({ select: { id: true } })
      * 
     **/
-    findMany<T extends NatureFindManyArgs>(
-      args?: SelectSubset<T, NatureFindManyArgs>
-    ): PrismaPromise<Array<NatureGetPayload<T>>>
+    findMany<T extends NatureFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, NatureFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Types.GetResult<NaturePayload<ExtArgs>, T, 'findMany', never>>
 
     /**
      * Create a Nature.
@@ -1452,9 +1901,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    create<T extends NatureCreateArgs>(
-      args: SelectSubset<T, NatureCreateArgs>
-    ): Prisma__NatureClient<NatureGetPayload<T>>
+    create<T extends NatureCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, NatureCreateArgs<ExtArgs>>
+    ): Prisma__NatureClient<$Types.GetResult<NaturePayload<ExtArgs>, T, 'create', never>, never, ExtArgs>
 
     /**
      * Delete a Nature.
@@ -1468,9 +1917,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    delete<T extends NatureDeleteArgs>(
-      args: SelectSubset<T, NatureDeleteArgs>
-    ): Prisma__NatureClient<NatureGetPayload<T>>
+    delete<T extends NatureDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, NatureDeleteArgs<ExtArgs>>
+    ): Prisma__NatureClient<$Types.GetResult<NaturePayload<ExtArgs>, T, 'delete', never>, never, ExtArgs>
 
     /**
      * Update one Nature.
@@ -1487,9 +1936,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    update<T extends NatureUpdateArgs>(
-      args: SelectSubset<T, NatureUpdateArgs>
-    ): Prisma__NatureClient<NatureGetPayload<T>>
+    update<T extends NatureUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, NatureUpdateArgs<ExtArgs>>
+    ): Prisma__NatureClient<$Types.GetResult<NaturePayload<ExtArgs>, T, 'update', never>, never, ExtArgs>
 
     /**
      * Delete zero or more Natures.
@@ -1503,9 +1952,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    deleteMany<T extends NatureDeleteManyArgs>(
-      args?: SelectSubset<T, NatureDeleteManyArgs>
-    ): PrismaPromise<BatchPayload>
+    deleteMany<T extends NatureDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, NatureDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Update zero or more Natures.
@@ -1524,9 +1973,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    updateMany<T extends NatureUpdateManyArgs>(
-      args: SelectSubset<T, NatureUpdateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    updateMany<T extends NatureUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, NatureUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Create or update one Nature.
@@ -1545,9 +1994,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    upsert<T extends NatureUpsertArgs>(
-      args: SelectSubset<T, NatureUpsertArgs>
-    ): Prisma__NatureClient<NatureGetPayload<T>>
+    upsert<T extends NatureUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, NatureUpsertArgs<ExtArgs>>
+    ): Prisma__NatureClient<$Types.GetResult<NaturePayload<ExtArgs>, T, 'upsert', never>, never, ExtArgs>
 
     /**
      * Count the number of Natures.
@@ -1564,8 +2013,8 @@ export namespace Prisma {
     **/
     count<T extends NatureCountArgs>(
       args?: Subset<T, NatureCountArgs>,
-    ): PrismaPromise<
-      T extends _Record<'select', any>
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
           : GetScalarType<T['select'], NatureCountAggregateOutputType>
@@ -1596,7 +2045,7 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends NatureAggregateArgs>(args: Subset<T, NatureAggregateArgs>): PrismaPromise<GetNatureAggregateType<T>>
+    aggregate<T extends NatureAggregateArgs>(args: Subset<T, NatureAggregateArgs>): Prisma.PrismaPromise<GetNatureAggregateType<T>>
 
     /**
      * Group by Nature.
@@ -1673,7 +2122,7 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, NatureGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetNatureGroupByPayload<T> : PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, NatureGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetNatureGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
 
   }
 
@@ -1683,10 +2132,8 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export class Prisma__NatureClient<T, Null = never> implements PrismaPromise<T> {
-    [prisma]: true;
+  export class Prisma__NatureClient<T, Null = never, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> implements Prisma.PrismaPromise<T> {
     private readonly _dmmf;
-    private readonly _fetcher;
     private readonly _queryType;
     private readonly _rootField;
     private readonly _clientMethod;
@@ -1697,12 +2144,12 @@ export namespace Prisma {
     private _isList;
     private _callsite;
     private _requestPromise?;
-    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+    constructor(_dmmf: runtime.DMMFClass, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
 
-    PreventiveOS<T extends Nature$PreventiveOSArgs= {}>(args?: Subset<T, Nature$PreventiveOSArgs>): PrismaPromise<Array<PreventiveOSGetPayload<T>>| Null>;
+    PreventiveOS<T extends Nature$PreventiveOSArgs<ExtArgs> = {}>(args?: Subset<T, Nature$PreventiveOSArgs<ExtArgs>>): Prisma.PrismaPromise<$Types.GetResult<PreventiveOSPayload<ExtArgs>, T, 'findMany', never>| Null>;
 
-    PreventiveAction<T extends Nature$PreventiveActionArgs= {}>(args?: Subset<T, Nature$PreventiveActionArgs>): PrismaPromise<Array<PreventiveActionGetPayload<T>>| Null>;
+    PreventiveAction<T extends Nature$PreventiveActionArgs<ExtArgs> = {}>(args?: Subset<T, Nature$PreventiveActionArgs<ExtArgs>>): Prisma.PrismaPromise<$Types.GetResult<PreventiveActionPayload<ExtArgs>, T, 'findMany', never>| Null>;
 
     private get _document();
     /**
@@ -1734,15 +2181,15 @@ export namespace Prisma {
   /**
    * Nature base type for findUnique actions
    */
-  export type NatureFindUniqueArgsBase = {
+  export type NatureFindUniqueArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Nature
      */
-    select?: NatureSelect | null
+    select?: NatureSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: NatureInclude | null
+    include?: NatureInclude<ExtArgs> | null
     /**
      * Filter, which Nature to fetch.
      */
@@ -1752,7 +2199,7 @@ export namespace Prisma {
   /**
    * Nature findUnique
    */
-  export interface NatureFindUniqueArgs extends NatureFindUniqueArgsBase {
+  export interface NatureFindUniqueArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends NatureFindUniqueArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
@@ -1764,15 +2211,15 @@ export namespace Prisma {
   /**
    * Nature findUniqueOrThrow
    */
-  export type NatureFindUniqueOrThrowArgs = {
+  export type NatureFindUniqueOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Nature
      */
-    select?: NatureSelect | null
+    select?: NatureSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: NatureInclude | null
+    include?: NatureInclude<ExtArgs> | null
     /**
      * Filter, which Nature to fetch.
      */
@@ -1783,15 +2230,15 @@ export namespace Prisma {
   /**
    * Nature base type for findFirst actions
    */
-  export type NatureFindFirstArgsBase = {
+  export type NatureFindFirstArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Nature
      */
-    select?: NatureSelect | null
+    select?: NatureSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: NatureInclude | null
+    include?: NatureInclude<ExtArgs> | null
     /**
      * Filter, which Nature to fetch.
      */
@@ -1831,7 +2278,7 @@ export namespace Prisma {
   /**
    * Nature findFirst
    */
-  export interface NatureFindFirstArgs extends NatureFindFirstArgsBase {
+  export interface NatureFindFirstArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends NatureFindFirstArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
@@ -1843,15 +2290,15 @@ export namespace Prisma {
   /**
    * Nature findFirstOrThrow
    */
-  export type NatureFindFirstOrThrowArgs = {
+  export type NatureFindFirstOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Nature
      */
-    select?: NatureSelect | null
+    select?: NatureSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: NatureInclude | null
+    include?: NatureInclude<ExtArgs> | null
     /**
      * Filter, which Nature to fetch.
      */
@@ -1892,15 +2339,15 @@ export namespace Prisma {
   /**
    * Nature findMany
    */
-  export type NatureFindManyArgs = {
+  export type NatureFindManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Nature
      */
-    select?: NatureSelect | null
+    select?: NatureSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: NatureInclude | null
+    include?: NatureInclude<ExtArgs> | null
     /**
      * Filter, which Natures to fetch.
      */
@@ -1936,15 +2383,15 @@ export namespace Prisma {
   /**
    * Nature create
    */
-  export type NatureCreateArgs = {
+  export type NatureCreateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Nature
      */
-    select?: NatureSelect | null
+    select?: NatureSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: NatureInclude | null
+    include?: NatureInclude<ExtArgs> | null
     /**
      * The data needed to create a Nature.
      */
@@ -1955,15 +2402,15 @@ export namespace Prisma {
   /**
    * Nature update
    */
-  export type NatureUpdateArgs = {
+  export type NatureUpdateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Nature
      */
-    select?: NatureSelect | null
+    select?: NatureSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: NatureInclude | null
+    include?: NatureInclude<ExtArgs> | null
     /**
      * The data needed to update a Nature.
      */
@@ -1978,7 +2425,7 @@ export namespace Prisma {
   /**
    * Nature updateMany
    */
-  export type NatureUpdateManyArgs = {
+  export type NatureUpdateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to update Natures.
      */
@@ -1993,15 +2440,15 @@ export namespace Prisma {
   /**
    * Nature upsert
    */
-  export type NatureUpsertArgs = {
+  export type NatureUpsertArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Nature
      */
-    select?: NatureSelect | null
+    select?: NatureSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: NatureInclude | null
+    include?: NatureInclude<ExtArgs> | null
     /**
      * The filter to search for the Nature to update in case it exists.
      */
@@ -2020,15 +2467,15 @@ export namespace Prisma {
   /**
    * Nature delete
    */
-  export type NatureDeleteArgs = {
+  export type NatureDeleteArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Nature
      */
-    select?: NatureSelect | null
+    select?: NatureSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: NatureInclude | null
+    include?: NatureInclude<ExtArgs> | null
     /**
      * Filter which Nature to delete.
      */
@@ -2039,7 +2486,7 @@ export namespace Prisma {
   /**
    * Nature deleteMany
    */
-  export type NatureDeleteManyArgs = {
+  export type NatureDeleteManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which Natures to delete
      */
@@ -2050,15 +2497,15 @@ export namespace Prisma {
   /**
    * Nature.PreventiveOS
    */
-  export type Nature$PreventiveOSArgs = {
+  export type Nature$PreventiveOSArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveOS
      */
-    select?: PreventiveOSSelect | null
+    select?: PreventiveOSSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveOSInclude | null
+    include?: PreventiveOSInclude<ExtArgs> | null
     where?: PreventiveOSWhereInput
     orderBy?: Enumerable<PreventiveOSOrderByWithRelationInput>
     cursor?: PreventiveOSWhereUniqueInput
@@ -2071,15 +2518,15 @@ export namespace Prisma {
   /**
    * Nature.PreventiveAction
    */
-  export type Nature$PreventiveActionArgs = {
+  export type Nature$PreventiveActionArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveAction
      */
-    select?: PreventiveActionSelect | null
+    select?: PreventiveActionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionInclude | null
+    include?: PreventiveActionInclude<ExtArgs> | null
     where?: PreventiveActionWhereInput
     orderBy?: Enumerable<PreventiveActionOrderByWithRelationInput>
     cursor?: PreventiveActionWhereUniqueInput
@@ -2092,15 +2539,15 @@ export namespace Prisma {
   /**
    * Nature without action
    */
-  export type NatureArgs = {
+  export type NatureArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Nature
      */
-    select?: NatureSelect | null
+    select?: NatureSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: NatureInclude | null
+    include?: NatureInclude<ExtArgs> | null
   }
 
 
@@ -2179,7 +2626,7 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type MachineAggregateArgs = {
+  export type MachineAggregateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which Machine to aggregate.
      */
@@ -2251,7 +2698,7 @@ export namespace Prisma {
 
 
 
-  export type MachineGroupByArgs = {
+  export type MachineGroupByArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     where?: MachineWhereInput
     orderBy?: Enumerable<MachineOrderByWithAggregationInput>
     by: MachineScalarFieldEnum[]
@@ -2278,7 +2725,7 @@ export namespace Prisma {
     _max: MachineMaxAggregateOutputType | null
   }
 
-  type GetMachineGroupByPayload<T extends MachineGroupByArgs> = PrismaPromise<
+  type GetMachineGroupByPayload<T extends MachineGroupByArgs> = Prisma.PrismaPromise<
     Array<
       PickArray<MachineGroupByOutputType, T['by']> &
         {
@@ -2292,51 +2739,39 @@ export namespace Prisma {
     >
 
 
-  export type MachineSelect = {
+  export type MachineSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     tag?: boolean
     ute?: boolean
     technology?: boolean
-    PreventiveOS?: boolean | Machine$PreventiveOSArgs
-    PreventiveAction?: boolean | Machine$PreventiveActionArgs
-    _count?: boolean | MachineCountOutputTypeArgs
+    PreventiveOS?: boolean | Machine$PreventiveOSArgs<ExtArgs>
+    PreventiveAction?: boolean | Machine$PreventiveActionArgs<ExtArgs>
+    _count?: boolean | MachineCountOutputTypeArgs<ExtArgs>
+  }, ExtArgs["result"]["machine"]>
+
+  export type MachineSelectScalar = {
+    id?: boolean
+    tag?: boolean
+    ute?: boolean
+    technology?: boolean
+  }
+
+  export type MachineInclude<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    PreventiveOS?: boolean | Machine$PreventiveOSArgs<ExtArgs>
+    PreventiveAction?: boolean | Machine$PreventiveActionArgs<ExtArgs>
+    _count?: boolean | MachineCountOutputTypeArgs<ExtArgs>
   }
 
 
-  export type MachineInclude = {
-    PreventiveOS?: boolean | Machine$PreventiveOSArgs
-    PreventiveAction?: boolean | Machine$PreventiveActionArgs
-    _count?: boolean | MachineCountOutputTypeArgs
-  }
+  type MachineGetPayload<S extends boolean | null | undefined | MachineArgs> = $Types.GetResult<MachinePayload, S>
 
-  export type MachineGetPayload<S extends boolean | null | undefined | MachineArgs> =
-    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
-    S extends true ? Machine :
-    S extends undefined ? never :
-    S extends { include: any } & (MachineArgs | MachineFindManyArgs)
-    ? Machine  & {
-    [P in TruthyKeys<S['include']>]:
-        P extends 'PreventiveOS' ? Array < PreventiveOSGetPayload<S['include'][P]>>  :
-        P extends 'PreventiveAction' ? Array < PreventiveActionGetPayload<S['include'][P]>>  :
-        P extends '_count' ? MachineCountOutputTypeGetPayload<S['include'][P]> :  never
-  } 
-    : S extends { select: any } & (MachineArgs | MachineFindManyArgs)
-      ? {
-    [P in TruthyKeys<S['select']>]:
-        P extends 'PreventiveOS' ? Array < PreventiveOSGetPayload<S['select'][P]>>  :
-        P extends 'PreventiveAction' ? Array < PreventiveActionGetPayload<S['select'][P]>>  :
-        P extends '_count' ? MachineCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof Machine ? Machine[P] : never
-  } 
-      : Machine
-
-
-  type MachineCountArgs = 
+  type MachineCountArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = 
     Omit<MachineFindManyArgs, 'select' | 'include'> & {
       select?: MachineCountAggregateInputType | true
     }
 
-  export interface MachineDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
-
+  export interface MachineDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Machine'], meta: { name: 'Machine' } }
     /**
      * Find zero or one Machine that matches the filter.
      * @param {MachineFindUniqueArgs} args - Arguments to find a Machine
@@ -2348,9 +2783,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUnique<T extends MachineFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args: SelectSubset<T, MachineFindUniqueArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Machine'> extends True ? Prisma__MachineClient<MachineGetPayload<T>> : Prisma__MachineClient<MachineGetPayload<T> | null, null>
+    findUnique<T extends MachineFindUniqueArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, MachineFindUniqueArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Machine'> extends True ? Prisma__MachineClient<$Types.GetResult<MachinePayload<ExtArgs>, T, 'findUnique', never>, never, ExtArgs> : Prisma__MachineClient<$Types.GetResult<MachinePayload<ExtArgs>, T, 'findUnique', never> | null, null, ExtArgs>
 
     /**
      * Find one Machine that matches the filter or throw an error  with `error.code='P2025'` 
@@ -2364,9 +2799,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUniqueOrThrow<T extends MachineFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, MachineFindUniqueOrThrowArgs>
-    ): Prisma__MachineClient<MachineGetPayload<T>>
+    findUniqueOrThrow<T extends MachineFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, MachineFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__MachineClient<$Types.GetResult<MachinePayload<ExtArgs>, T, 'findUniqueOrThrow', never>, never, ExtArgs>
 
     /**
      * Find the first Machine that matches the filter.
@@ -2381,9 +2816,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirst<T extends MachineFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args?: SelectSubset<T, MachineFindFirstArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Machine'> extends True ? Prisma__MachineClient<MachineGetPayload<T>> : Prisma__MachineClient<MachineGetPayload<T> | null, null>
+    findFirst<T extends MachineFindFirstArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, MachineFindFirstArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Machine'> extends True ? Prisma__MachineClient<$Types.GetResult<MachinePayload<ExtArgs>, T, 'findFirst', never>, never, ExtArgs> : Prisma__MachineClient<$Types.GetResult<MachinePayload<ExtArgs>, T, 'findFirst', never> | null, null, ExtArgs>
 
     /**
      * Find the first Machine that matches the filter or
@@ -2399,9 +2834,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirstOrThrow<T extends MachineFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, MachineFindFirstOrThrowArgs>
-    ): Prisma__MachineClient<MachineGetPayload<T>>
+    findFirstOrThrow<T extends MachineFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, MachineFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__MachineClient<$Types.GetResult<MachinePayload<ExtArgs>, T, 'findFirstOrThrow', never>, never, ExtArgs>
 
     /**
      * Find zero or more Machines that matches the filter.
@@ -2419,9 +2854,9 @@ export namespace Prisma {
      * const machineWithIdOnly = await prisma.machine.findMany({ select: { id: true } })
      * 
     **/
-    findMany<T extends MachineFindManyArgs>(
-      args?: SelectSubset<T, MachineFindManyArgs>
-    ): PrismaPromise<Array<MachineGetPayload<T>>>
+    findMany<T extends MachineFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, MachineFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Types.GetResult<MachinePayload<ExtArgs>, T, 'findMany', never>>
 
     /**
      * Create a Machine.
@@ -2435,9 +2870,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    create<T extends MachineCreateArgs>(
-      args: SelectSubset<T, MachineCreateArgs>
-    ): Prisma__MachineClient<MachineGetPayload<T>>
+    create<T extends MachineCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, MachineCreateArgs<ExtArgs>>
+    ): Prisma__MachineClient<$Types.GetResult<MachinePayload<ExtArgs>, T, 'create', never>, never, ExtArgs>
 
     /**
      * Delete a Machine.
@@ -2451,9 +2886,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    delete<T extends MachineDeleteArgs>(
-      args: SelectSubset<T, MachineDeleteArgs>
-    ): Prisma__MachineClient<MachineGetPayload<T>>
+    delete<T extends MachineDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, MachineDeleteArgs<ExtArgs>>
+    ): Prisma__MachineClient<$Types.GetResult<MachinePayload<ExtArgs>, T, 'delete', never>, never, ExtArgs>
 
     /**
      * Update one Machine.
@@ -2470,9 +2905,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    update<T extends MachineUpdateArgs>(
-      args: SelectSubset<T, MachineUpdateArgs>
-    ): Prisma__MachineClient<MachineGetPayload<T>>
+    update<T extends MachineUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, MachineUpdateArgs<ExtArgs>>
+    ): Prisma__MachineClient<$Types.GetResult<MachinePayload<ExtArgs>, T, 'update', never>, never, ExtArgs>
 
     /**
      * Delete zero or more Machines.
@@ -2486,9 +2921,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    deleteMany<T extends MachineDeleteManyArgs>(
-      args?: SelectSubset<T, MachineDeleteManyArgs>
-    ): PrismaPromise<BatchPayload>
+    deleteMany<T extends MachineDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, MachineDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Update zero or more Machines.
@@ -2507,9 +2942,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    updateMany<T extends MachineUpdateManyArgs>(
-      args: SelectSubset<T, MachineUpdateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    updateMany<T extends MachineUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, MachineUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Create or update one Machine.
@@ -2528,9 +2963,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    upsert<T extends MachineUpsertArgs>(
-      args: SelectSubset<T, MachineUpsertArgs>
-    ): Prisma__MachineClient<MachineGetPayload<T>>
+    upsert<T extends MachineUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, MachineUpsertArgs<ExtArgs>>
+    ): Prisma__MachineClient<$Types.GetResult<MachinePayload<ExtArgs>, T, 'upsert', never>, never, ExtArgs>
 
     /**
      * Count the number of Machines.
@@ -2547,8 +2982,8 @@ export namespace Prisma {
     **/
     count<T extends MachineCountArgs>(
       args?: Subset<T, MachineCountArgs>,
-    ): PrismaPromise<
-      T extends _Record<'select', any>
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
           : GetScalarType<T['select'], MachineCountAggregateOutputType>
@@ -2579,7 +3014,7 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends MachineAggregateArgs>(args: Subset<T, MachineAggregateArgs>): PrismaPromise<GetMachineAggregateType<T>>
+    aggregate<T extends MachineAggregateArgs>(args: Subset<T, MachineAggregateArgs>): Prisma.PrismaPromise<GetMachineAggregateType<T>>
 
     /**
      * Group by Machine.
@@ -2656,7 +3091,7 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, MachineGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMachineGroupByPayload<T> : PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, MachineGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMachineGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
 
   }
 
@@ -2666,10 +3101,8 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export class Prisma__MachineClient<T, Null = never> implements PrismaPromise<T> {
-    [prisma]: true;
+  export class Prisma__MachineClient<T, Null = never, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> implements Prisma.PrismaPromise<T> {
     private readonly _dmmf;
-    private readonly _fetcher;
     private readonly _queryType;
     private readonly _rootField;
     private readonly _clientMethod;
@@ -2680,12 +3113,12 @@ export namespace Prisma {
     private _isList;
     private _callsite;
     private _requestPromise?;
-    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+    constructor(_dmmf: runtime.DMMFClass, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
 
-    PreventiveOS<T extends Machine$PreventiveOSArgs= {}>(args?: Subset<T, Machine$PreventiveOSArgs>): PrismaPromise<Array<PreventiveOSGetPayload<T>>| Null>;
+    PreventiveOS<T extends Machine$PreventiveOSArgs<ExtArgs> = {}>(args?: Subset<T, Machine$PreventiveOSArgs<ExtArgs>>): Prisma.PrismaPromise<$Types.GetResult<PreventiveOSPayload<ExtArgs>, T, 'findMany', never>| Null>;
 
-    PreventiveAction<T extends Machine$PreventiveActionArgs= {}>(args?: Subset<T, Machine$PreventiveActionArgs>): PrismaPromise<Array<PreventiveActionGetPayload<T>>| Null>;
+    PreventiveAction<T extends Machine$PreventiveActionArgs<ExtArgs> = {}>(args?: Subset<T, Machine$PreventiveActionArgs<ExtArgs>>): Prisma.PrismaPromise<$Types.GetResult<PreventiveActionPayload<ExtArgs>, T, 'findMany', never>| Null>;
 
     private get _document();
     /**
@@ -2717,15 +3150,15 @@ export namespace Prisma {
   /**
    * Machine base type for findUnique actions
    */
-  export type MachineFindUniqueArgsBase = {
+  export type MachineFindUniqueArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Machine
      */
-    select?: MachineSelect | null
+    select?: MachineSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: MachineInclude | null
+    include?: MachineInclude<ExtArgs> | null
     /**
      * Filter, which Machine to fetch.
      */
@@ -2735,7 +3168,7 @@ export namespace Prisma {
   /**
    * Machine findUnique
    */
-  export interface MachineFindUniqueArgs extends MachineFindUniqueArgsBase {
+  export interface MachineFindUniqueArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends MachineFindUniqueArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
@@ -2747,15 +3180,15 @@ export namespace Prisma {
   /**
    * Machine findUniqueOrThrow
    */
-  export type MachineFindUniqueOrThrowArgs = {
+  export type MachineFindUniqueOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Machine
      */
-    select?: MachineSelect | null
+    select?: MachineSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: MachineInclude | null
+    include?: MachineInclude<ExtArgs> | null
     /**
      * Filter, which Machine to fetch.
      */
@@ -2766,15 +3199,15 @@ export namespace Prisma {
   /**
    * Machine base type for findFirst actions
    */
-  export type MachineFindFirstArgsBase = {
+  export type MachineFindFirstArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Machine
      */
-    select?: MachineSelect | null
+    select?: MachineSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: MachineInclude | null
+    include?: MachineInclude<ExtArgs> | null
     /**
      * Filter, which Machine to fetch.
      */
@@ -2814,7 +3247,7 @@ export namespace Prisma {
   /**
    * Machine findFirst
    */
-  export interface MachineFindFirstArgs extends MachineFindFirstArgsBase {
+  export interface MachineFindFirstArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends MachineFindFirstArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
@@ -2826,15 +3259,15 @@ export namespace Prisma {
   /**
    * Machine findFirstOrThrow
    */
-  export type MachineFindFirstOrThrowArgs = {
+  export type MachineFindFirstOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Machine
      */
-    select?: MachineSelect | null
+    select?: MachineSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: MachineInclude | null
+    include?: MachineInclude<ExtArgs> | null
     /**
      * Filter, which Machine to fetch.
      */
@@ -2875,15 +3308,15 @@ export namespace Prisma {
   /**
    * Machine findMany
    */
-  export type MachineFindManyArgs = {
+  export type MachineFindManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Machine
      */
-    select?: MachineSelect | null
+    select?: MachineSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: MachineInclude | null
+    include?: MachineInclude<ExtArgs> | null
     /**
      * Filter, which Machines to fetch.
      */
@@ -2919,15 +3352,15 @@ export namespace Prisma {
   /**
    * Machine create
    */
-  export type MachineCreateArgs = {
+  export type MachineCreateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Machine
      */
-    select?: MachineSelect | null
+    select?: MachineSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: MachineInclude | null
+    include?: MachineInclude<ExtArgs> | null
     /**
      * The data needed to create a Machine.
      */
@@ -2938,15 +3371,15 @@ export namespace Prisma {
   /**
    * Machine update
    */
-  export type MachineUpdateArgs = {
+  export type MachineUpdateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Machine
      */
-    select?: MachineSelect | null
+    select?: MachineSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: MachineInclude | null
+    include?: MachineInclude<ExtArgs> | null
     /**
      * The data needed to update a Machine.
      */
@@ -2961,7 +3394,7 @@ export namespace Prisma {
   /**
    * Machine updateMany
    */
-  export type MachineUpdateManyArgs = {
+  export type MachineUpdateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to update Machines.
      */
@@ -2976,15 +3409,15 @@ export namespace Prisma {
   /**
    * Machine upsert
    */
-  export type MachineUpsertArgs = {
+  export type MachineUpsertArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Machine
      */
-    select?: MachineSelect | null
+    select?: MachineSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: MachineInclude | null
+    include?: MachineInclude<ExtArgs> | null
     /**
      * The filter to search for the Machine to update in case it exists.
      */
@@ -3003,15 +3436,15 @@ export namespace Prisma {
   /**
    * Machine delete
    */
-  export type MachineDeleteArgs = {
+  export type MachineDeleteArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Machine
      */
-    select?: MachineSelect | null
+    select?: MachineSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: MachineInclude | null
+    include?: MachineInclude<ExtArgs> | null
     /**
      * Filter which Machine to delete.
      */
@@ -3022,7 +3455,7 @@ export namespace Prisma {
   /**
    * Machine deleteMany
    */
-  export type MachineDeleteManyArgs = {
+  export type MachineDeleteManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which Machines to delete
      */
@@ -3033,15 +3466,15 @@ export namespace Prisma {
   /**
    * Machine.PreventiveOS
    */
-  export type Machine$PreventiveOSArgs = {
+  export type Machine$PreventiveOSArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveOS
      */
-    select?: PreventiveOSSelect | null
+    select?: PreventiveOSSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveOSInclude | null
+    include?: PreventiveOSInclude<ExtArgs> | null
     where?: PreventiveOSWhereInput
     orderBy?: Enumerable<PreventiveOSOrderByWithRelationInput>
     cursor?: PreventiveOSWhereUniqueInput
@@ -3054,15 +3487,15 @@ export namespace Prisma {
   /**
    * Machine.PreventiveAction
    */
-  export type Machine$PreventiveActionArgs = {
+  export type Machine$PreventiveActionArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveAction
      */
-    select?: PreventiveActionSelect | null
+    select?: PreventiveActionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionInclude | null
+    include?: PreventiveActionInclude<ExtArgs> | null
     where?: PreventiveActionWhereInput
     orderBy?: Enumerable<PreventiveActionOrderByWithRelationInput>
     cursor?: PreventiveActionWhereUniqueInput
@@ -3075,15 +3508,15 @@ export namespace Prisma {
   /**
    * Machine without action
    */
-  export type MachineArgs = {
+  export type MachineArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Machine
      */
-    select?: MachineSelect | null
+    select?: MachineSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: MachineInclude | null
+    include?: MachineInclude<ExtArgs> | null
   }
 
 
@@ -3166,7 +3599,7 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type WorkerAggregateArgs = {
+  export type WorkerAggregateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which Worker to aggregate.
      */
@@ -3238,7 +3671,7 @@ export namespace Prisma {
 
 
 
-  export type WorkerGroupByArgs = {
+  export type WorkerGroupByArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     where?: WorkerWhereInput
     orderBy?: Enumerable<WorkerOrderByWithAggregationInput>
     by: WorkerScalarFieldEnum[]
@@ -3265,7 +3698,7 @@ export namespace Prisma {
     _max: WorkerMaxAggregateOutputType | null
   }
 
-  type GetWorkerGroupByPayload<T extends WorkerGroupByArgs> = PrismaPromise<
+  type GetWorkerGroupByPayload<T extends WorkerGroupByArgs> = Prisma.PrismaPromise<
     Array<
       PickArray<WorkerGroupByOutputType, T['by']> &
         {
@@ -3279,47 +3712,37 @@ export namespace Prisma {
     >
 
 
-  export type WorkerSelect = {
+  export type WorkerSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     registration?: boolean
     name?: boolean
     class?: boolean
-    PreventiveOs?: boolean | Worker$PreventiveOsArgs
-    _count?: boolean | WorkerCountOutputTypeArgs
+    PreventiveOs?: boolean | Worker$PreventiveOsArgs<ExtArgs>
+    _count?: boolean | WorkerCountOutputTypeArgs<ExtArgs>
+  }, ExtArgs["result"]["worker"]>
+
+  export type WorkerSelectScalar = {
+    id?: boolean
+    registration?: boolean
+    name?: boolean
+    class?: boolean
+  }
+
+  export type WorkerInclude<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    PreventiveOs?: boolean | Worker$PreventiveOsArgs<ExtArgs>
+    _count?: boolean | WorkerCountOutputTypeArgs<ExtArgs>
   }
 
 
-  export type WorkerInclude = {
-    PreventiveOs?: boolean | Worker$PreventiveOsArgs
-    _count?: boolean | WorkerCountOutputTypeArgs
-  }
+  type WorkerGetPayload<S extends boolean | null | undefined | WorkerArgs> = $Types.GetResult<WorkerPayload, S>
 
-  export type WorkerGetPayload<S extends boolean | null | undefined | WorkerArgs> =
-    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
-    S extends true ? Worker :
-    S extends undefined ? never :
-    S extends { include: any } & (WorkerArgs | WorkerFindManyArgs)
-    ? Worker  & {
-    [P in TruthyKeys<S['include']>]:
-        P extends 'PreventiveOs' ? Array < PreventiveOSGetPayload<S['include'][P]>>  :
-        P extends '_count' ? WorkerCountOutputTypeGetPayload<S['include'][P]> :  never
-  } 
-    : S extends { select: any } & (WorkerArgs | WorkerFindManyArgs)
-      ? {
-    [P in TruthyKeys<S['select']>]:
-        P extends 'PreventiveOs' ? Array < PreventiveOSGetPayload<S['select'][P]>>  :
-        P extends '_count' ? WorkerCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof Worker ? Worker[P] : never
-  } 
-      : Worker
-
-
-  type WorkerCountArgs = 
+  type WorkerCountArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = 
     Omit<WorkerFindManyArgs, 'select' | 'include'> & {
       select?: WorkerCountAggregateInputType | true
     }
 
-  export interface WorkerDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
-
+  export interface WorkerDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Worker'], meta: { name: 'Worker' } }
     /**
      * Find zero or one Worker that matches the filter.
      * @param {WorkerFindUniqueArgs} args - Arguments to find a Worker
@@ -3331,9 +3754,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUnique<T extends WorkerFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args: SelectSubset<T, WorkerFindUniqueArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Worker'> extends True ? Prisma__WorkerClient<WorkerGetPayload<T>> : Prisma__WorkerClient<WorkerGetPayload<T> | null, null>
+    findUnique<T extends WorkerFindUniqueArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, WorkerFindUniqueArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Worker'> extends True ? Prisma__WorkerClient<$Types.GetResult<WorkerPayload<ExtArgs>, T, 'findUnique', never>, never, ExtArgs> : Prisma__WorkerClient<$Types.GetResult<WorkerPayload<ExtArgs>, T, 'findUnique', never> | null, null, ExtArgs>
 
     /**
      * Find one Worker that matches the filter or throw an error  with `error.code='P2025'` 
@@ -3347,9 +3770,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUniqueOrThrow<T extends WorkerFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, WorkerFindUniqueOrThrowArgs>
-    ): Prisma__WorkerClient<WorkerGetPayload<T>>
+    findUniqueOrThrow<T extends WorkerFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, WorkerFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__WorkerClient<$Types.GetResult<WorkerPayload<ExtArgs>, T, 'findUniqueOrThrow', never>, never, ExtArgs>
 
     /**
      * Find the first Worker that matches the filter.
@@ -3364,9 +3787,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirst<T extends WorkerFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args?: SelectSubset<T, WorkerFindFirstArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Worker'> extends True ? Prisma__WorkerClient<WorkerGetPayload<T>> : Prisma__WorkerClient<WorkerGetPayload<T> | null, null>
+    findFirst<T extends WorkerFindFirstArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, WorkerFindFirstArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Worker'> extends True ? Prisma__WorkerClient<$Types.GetResult<WorkerPayload<ExtArgs>, T, 'findFirst', never>, never, ExtArgs> : Prisma__WorkerClient<$Types.GetResult<WorkerPayload<ExtArgs>, T, 'findFirst', never> | null, null, ExtArgs>
 
     /**
      * Find the first Worker that matches the filter or
@@ -3382,9 +3805,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirstOrThrow<T extends WorkerFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, WorkerFindFirstOrThrowArgs>
-    ): Prisma__WorkerClient<WorkerGetPayload<T>>
+    findFirstOrThrow<T extends WorkerFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, WorkerFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__WorkerClient<$Types.GetResult<WorkerPayload<ExtArgs>, T, 'findFirstOrThrow', never>, never, ExtArgs>
 
     /**
      * Find zero or more Workers that matches the filter.
@@ -3402,9 +3825,9 @@ export namespace Prisma {
      * const workerWithIdOnly = await prisma.worker.findMany({ select: { id: true } })
      * 
     **/
-    findMany<T extends WorkerFindManyArgs>(
-      args?: SelectSubset<T, WorkerFindManyArgs>
-    ): PrismaPromise<Array<WorkerGetPayload<T>>>
+    findMany<T extends WorkerFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, WorkerFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Types.GetResult<WorkerPayload<ExtArgs>, T, 'findMany', never>>
 
     /**
      * Create a Worker.
@@ -3418,9 +3841,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    create<T extends WorkerCreateArgs>(
-      args: SelectSubset<T, WorkerCreateArgs>
-    ): Prisma__WorkerClient<WorkerGetPayload<T>>
+    create<T extends WorkerCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, WorkerCreateArgs<ExtArgs>>
+    ): Prisma__WorkerClient<$Types.GetResult<WorkerPayload<ExtArgs>, T, 'create', never>, never, ExtArgs>
 
     /**
      * Delete a Worker.
@@ -3434,9 +3857,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    delete<T extends WorkerDeleteArgs>(
-      args: SelectSubset<T, WorkerDeleteArgs>
-    ): Prisma__WorkerClient<WorkerGetPayload<T>>
+    delete<T extends WorkerDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, WorkerDeleteArgs<ExtArgs>>
+    ): Prisma__WorkerClient<$Types.GetResult<WorkerPayload<ExtArgs>, T, 'delete', never>, never, ExtArgs>
 
     /**
      * Update one Worker.
@@ -3453,9 +3876,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    update<T extends WorkerUpdateArgs>(
-      args: SelectSubset<T, WorkerUpdateArgs>
-    ): Prisma__WorkerClient<WorkerGetPayload<T>>
+    update<T extends WorkerUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, WorkerUpdateArgs<ExtArgs>>
+    ): Prisma__WorkerClient<$Types.GetResult<WorkerPayload<ExtArgs>, T, 'update', never>, never, ExtArgs>
 
     /**
      * Delete zero or more Workers.
@@ -3469,9 +3892,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    deleteMany<T extends WorkerDeleteManyArgs>(
-      args?: SelectSubset<T, WorkerDeleteManyArgs>
-    ): PrismaPromise<BatchPayload>
+    deleteMany<T extends WorkerDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, WorkerDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Update zero or more Workers.
@@ -3490,9 +3913,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    updateMany<T extends WorkerUpdateManyArgs>(
-      args: SelectSubset<T, WorkerUpdateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    updateMany<T extends WorkerUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, WorkerUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Create or update one Worker.
@@ -3511,9 +3934,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    upsert<T extends WorkerUpsertArgs>(
-      args: SelectSubset<T, WorkerUpsertArgs>
-    ): Prisma__WorkerClient<WorkerGetPayload<T>>
+    upsert<T extends WorkerUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, WorkerUpsertArgs<ExtArgs>>
+    ): Prisma__WorkerClient<$Types.GetResult<WorkerPayload<ExtArgs>, T, 'upsert', never>, never, ExtArgs>
 
     /**
      * Count the number of Workers.
@@ -3530,8 +3953,8 @@ export namespace Prisma {
     **/
     count<T extends WorkerCountArgs>(
       args?: Subset<T, WorkerCountArgs>,
-    ): PrismaPromise<
-      T extends _Record<'select', any>
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
           : GetScalarType<T['select'], WorkerCountAggregateOutputType>
@@ -3562,7 +3985,7 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends WorkerAggregateArgs>(args: Subset<T, WorkerAggregateArgs>): PrismaPromise<GetWorkerAggregateType<T>>
+    aggregate<T extends WorkerAggregateArgs>(args: Subset<T, WorkerAggregateArgs>): Prisma.PrismaPromise<GetWorkerAggregateType<T>>
 
     /**
      * Group by Worker.
@@ -3639,7 +4062,7 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, WorkerGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkerGroupByPayload<T> : PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, WorkerGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkerGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
 
   }
 
@@ -3649,10 +4072,8 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export class Prisma__WorkerClient<T, Null = never> implements PrismaPromise<T> {
-    [prisma]: true;
+  export class Prisma__WorkerClient<T, Null = never, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> implements Prisma.PrismaPromise<T> {
     private readonly _dmmf;
-    private readonly _fetcher;
     private readonly _queryType;
     private readonly _rootField;
     private readonly _clientMethod;
@@ -3663,10 +4084,10 @@ export namespace Prisma {
     private _isList;
     private _callsite;
     private _requestPromise?;
-    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+    constructor(_dmmf: runtime.DMMFClass, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
 
-    PreventiveOs<T extends Worker$PreventiveOsArgs= {}>(args?: Subset<T, Worker$PreventiveOsArgs>): PrismaPromise<Array<PreventiveOSGetPayload<T>>| Null>;
+    PreventiveOs<T extends Worker$PreventiveOsArgs<ExtArgs> = {}>(args?: Subset<T, Worker$PreventiveOsArgs<ExtArgs>>): Prisma.PrismaPromise<$Types.GetResult<PreventiveOSPayload<ExtArgs>, T, 'findMany', never>| Null>;
 
     private get _document();
     /**
@@ -3698,15 +4119,15 @@ export namespace Prisma {
   /**
    * Worker base type for findUnique actions
    */
-  export type WorkerFindUniqueArgsBase = {
+  export type WorkerFindUniqueArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Worker
      */
-    select?: WorkerSelect | null
+    select?: WorkerSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: WorkerInclude | null
+    include?: WorkerInclude<ExtArgs> | null
     /**
      * Filter, which Worker to fetch.
      */
@@ -3716,7 +4137,7 @@ export namespace Prisma {
   /**
    * Worker findUnique
    */
-  export interface WorkerFindUniqueArgs extends WorkerFindUniqueArgsBase {
+  export interface WorkerFindUniqueArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends WorkerFindUniqueArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
@@ -3728,15 +4149,15 @@ export namespace Prisma {
   /**
    * Worker findUniqueOrThrow
    */
-  export type WorkerFindUniqueOrThrowArgs = {
+  export type WorkerFindUniqueOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Worker
      */
-    select?: WorkerSelect | null
+    select?: WorkerSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: WorkerInclude | null
+    include?: WorkerInclude<ExtArgs> | null
     /**
      * Filter, which Worker to fetch.
      */
@@ -3747,15 +4168,15 @@ export namespace Prisma {
   /**
    * Worker base type for findFirst actions
    */
-  export type WorkerFindFirstArgsBase = {
+  export type WorkerFindFirstArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Worker
      */
-    select?: WorkerSelect | null
+    select?: WorkerSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: WorkerInclude | null
+    include?: WorkerInclude<ExtArgs> | null
     /**
      * Filter, which Worker to fetch.
      */
@@ -3795,7 +4216,7 @@ export namespace Prisma {
   /**
    * Worker findFirst
    */
-  export interface WorkerFindFirstArgs extends WorkerFindFirstArgsBase {
+  export interface WorkerFindFirstArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends WorkerFindFirstArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
@@ -3807,15 +4228,15 @@ export namespace Prisma {
   /**
    * Worker findFirstOrThrow
    */
-  export type WorkerFindFirstOrThrowArgs = {
+  export type WorkerFindFirstOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Worker
      */
-    select?: WorkerSelect | null
+    select?: WorkerSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: WorkerInclude | null
+    include?: WorkerInclude<ExtArgs> | null
     /**
      * Filter, which Worker to fetch.
      */
@@ -3856,15 +4277,15 @@ export namespace Prisma {
   /**
    * Worker findMany
    */
-  export type WorkerFindManyArgs = {
+  export type WorkerFindManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Worker
      */
-    select?: WorkerSelect | null
+    select?: WorkerSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: WorkerInclude | null
+    include?: WorkerInclude<ExtArgs> | null
     /**
      * Filter, which Workers to fetch.
      */
@@ -3900,15 +4321,15 @@ export namespace Prisma {
   /**
    * Worker create
    */
-  export type WorkerCreateArgs = {
+  export type WorkerCreateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Worker
      */
-    select?: WorkerSelect | null
+    select?: WorkerSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: WorkerInclude | null
+    include?: WorkerInclude<ExtArgs> | null
     /**
      * The data needed to create a Worker.
      */
@@ -3919,15 +4340,15 @@ export namespace Prisma {
   /**
    * Worker update
    */
-  export type WorkerUpdateArgs = {
+  export type WorkerUpdateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Worker
      */
-    select?: WorkerSelect | null
+    select?: WorkerSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: WorkerInclude | null
+    include?: WorkerInclude<ExtArgs> | null
     /**
      * The data needed to update a Worker.
      */
@@ -3942,7 +4363,7 @@ export namespace Prisma {
   /**
    * Worker updateMany
    */
-  export type WorkerUpdateManyArgs = {
+  export type WorkerUpdateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to update Workers.
      */
@@ -3957,15 +4378,15 @@ export namespace Prisma {
   /**
    * Worker upsert
    */
-  export type WorkerUpsertArgs = {
+  export type WorkerUpsertArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Worker
      */
-    select?: WorkerSelect | null
+    select?: WorkerSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: WorkerInclude | null
+    include?: WorkerInclude<ExtArgs> | null
     /**
      * The filter to search for the Worker to update in case it exists.
      */
@@ -3984,15 +4405,15 @@ export namespace Prisma {
   /**
    * Worker delete
    */
-  export type WorkerDeleteArgs = {
+  export type WorkerDeleteArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Worker
      */
-    select?: WorkerSelect | null
+    select?: WorkerSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: WorkerInclude | null
+    include?: WorkerInclude<ExtArgs> | null
     /**
      * Filter which Worker to delete.
      */
@@ -4003,7 +4424,7 @@ export namespace Prisma {
   /**
    * Worker deleteMany
    */
-  export type WorkerDeleteManyArgs = {
+  export type WorkerDeleteManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which Workers to delete
      */
@@ -4014,15 +4435,15 @@ export namespace Prisma {
   /**
    * Worker.PreventiveOs
    */
-  export type Worker$PreventiveOsArgs = {
+  export type Worker$PreventiveOsArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveOS
      */
-    select?: PreventiveOSSelect | null
+    select?: PreventiveOSSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveOSInclude | null
+    include?: PreventiveOSInclude<ExtArgs> | null
     where?: PreventiveOSWhereInput
     orderBy?: Enumerable<PreventiveOSOrderByWithRelationInput>
     cursor?: PreventiveOSWhereUniqueInput
@@ -4035,15 +4456,15 @@ export namespace Prisma {
   /**
    * Worker without action
    */
-  export type WorkerArgs = {
+  export type WorkerArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Worker
      */
-    select?: WorkerSelect | null
+    select?: WorkerSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: WorkerInclude | null
+    include?: WorkerInclude<ExtArgs> | null
   }
 
 
@@ -4136,7 +4557,7 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type PreventiveActionTakenAggregateArgs = {
+  export type PreventiveActionTakenAggregateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which PreventiveActionTaken to aggregate.
      */
@@ -4208,7 +4629,7 @@ export namespace Prisma {
 
 
 
-  export type PreventiveActionTakenGroupByArgs = {
+  export type PreventiveActionTakenGroupByArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     where?: PreventiveActionTakenWhereInput
     orderBy?: Enumerable<PreventiveActionTakenOrderByWithAggregationInput>
     by: PreventiveActionTakenScalarFieldEnum[]
@@ -4236,7 +4657,7 @@ export namespace Prisma {
     _max: PreventiveActionTakenMaxAggregateOutputType | null
   }
 
-  type GetPreventiveActionTakenGroupByPayload<T extends PreventiveActionTakenGroupByArgs> = PrismaPromise<
+  type GetPreventiveActionTakenGroupByPayload<T extends PreventiveActionTakenGroupByArgs> = Prisma.PrismaPromise<
     Array<
       PickArray<PreventiveActionTakenGroupByOutputType, T['by']> &
         {
@@ -4250,48 +4671,39 @@ export namespace Prisma {
     >
 
 
-  export type PreventiveActionTakenSelect = {
+  export type PreventiveActionTakenSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     date?: boolean
     osId?: boolean
     actionId?: boolean
     weekCode?: boolean
-    action?: boolean | PreventiveActionArgs
-    os?: boolean | PreventiveOSArgs
+    action?: boolean | PreventiveActionArgs<ExtArgs>
+    os?: boolean | PreventiveOSArgs<ExtArgs>
+  }, ExtArgs["result"]["preventiveActionTaken"]>
+
+  export type PreventiveActionTakenSelectScalar = {
+    id?: boolean
+    date?: boolean
+    osId?: boolean
+    actionId?: boolean
+    weekCode?: boolean
+  }
+
+  export type PreventiveActionTakenInclude<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    action?: boolean | PreventiveActionArgs<ExtArgs>
+    os?: boolean | PreventiveOSArgs<ExtArgs>
   }
 
 
-  export type PreventiveActionTakenInclude = {
-    action?: boolean | PreventiveActionArgs
-    os?: boolean | PreventiveOSArgs
-  }
+  type PreventiveActionTakenGetPayload<S extends boolean | null | undefined | PreventiveActionTakenArgs> = $Types.GetResult<PreventiveActionTakenPayload, S>
 
-  export type PreventiveActionTakenGetPayload<S extends boolean | null | undefined | PreventiveActionTakenArgs> =
-    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
-    S extends true ? PreventiveActionTaken :
-    S extends undefined ? never :
-    S extends { include: any } & (PreventiveActionTakenArgs | PreventiveActionTakenFindManyArgs)
-    ? PreventiveActionTaken  & {
-    [P in TruthyKeys<S['include']>]:
-        P extends 'action' ? PreventiveActionGetPayload<S['include'][P]> :
-        P extends 'os' ? PreventiveOSGetPayload<S['include'][P]> :  never
-  } 
-    : S extends { select: any } & (PreventiveActionTakenArgs | PreventiveActionTakenFindManyArgs)
-      ? {
-    [P in TruthyKeys<S['select']>]:
-        P extends 'action' ? PreventiveActionGetPayload<S['select'][P]> :
-        P extends 'os' ? PreventiveOSGetPayload<S['select'][P]> :  P extends keyof PreventiveActionTaken ? PreventiveActionTaken[P] : never
-  } 
-      : PreventiveActionTaken
-
-
-  type PreventiveActionTakenCountArgs = 
+  type PreventiveActionTakenCountArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = 
     Omit<PreventiveActionTakenFindManyArgs, 'select' | 'include'> & {
       select?: PreventiveActionTakenCountAggregateInputType | true
     }
 
-  export interface PreventiveActionTakenDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
-
+  export interface PreventiveActionTakenDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PreventiveActionTaken'], meta: { name: 'PreventiveActionTaken' } }
     /**
      * Find zero or one PreventiveActionTaken that matches the filter.
      * @param {PreventiveActionTakenFindUniqueArgs} args - Arguments to find a PreventiveActionTaken
@@ -4303,9 +4715,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUnique<T extends PreventiveActionTakenFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args: SelectSubset<T, PreventiveActionTakenFindUniqueArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'PreventiveActionTaken'> extends True ? Prisma__PreventiveActionTakenClient<PreventiveActionTakenGetPayload<T>> : Prisma__PreventiveActionTakenClient<PreventiveActionTakenGetPayload<T> | null, null>
+    findUnique<T extends PreventiveActionTakenFindUniqueArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, PreventiveActionTakenFindUniqueArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'PreventiveActionTaken'> extends True ? Prisma__PreventiveActionTakenClient<$Types.GetResult<PreventiveActionTakenPayload<ExtArgs>, T, 'findUnique', never>, never, ExtArgs> : Prisma__PreventiveActionTakenClient<$Types.GetResult<PreventiveActionTakenPayload<ExtArgs>, T, 'findUnique', never> | null, null, ExtArgs>
 
     /**
      * Find one PreventiveActionTaken that matches the filter or throw an error  with `error.code='P2025'` 
@@ -4319,9 +4731,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUniqueOrThrow<T extends PreventiveActionTakenFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, PreventiveActionTakenFindUniqueOrThrowArgs>
-    ): Prisma__PreventiveActionTakenClient<PreventiveActionTakenGetPayload<T>>
+    findUniqueOrThrow<T extends PreventiveActionTakenFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, PreventiveActionTakenFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__PreventiveActionTakenClient<$Types.GetResult<PreventiveActionTakenPayload<ExtArgs>, T, 'findUniqueOrThrow', never>, never, ExtArgs>
 
     /**
      * Find the first PreventiveActionTaken that matches the filter.
@@ -4336,9 +4748,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirst<T extends PreventiveActionTakenFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args?: SelectSubset<T, PreventiveActionTakenFindFirstArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'PreventiveActionTaken'> extends True ? Prisma__PreventiveActionTakenClient<PreventiveActionTakenGetPayload<T>> : Prisma__PreventiveActionTakenClient<PreventiveActionTakenGetPayload<T> | null, null>
+    findFirst<T extends PreventiveActionTakenFindFirstArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, PreventiveActionTakenFindFirstArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'PreventiveActionTaken'> extends True ? Prisma__PreventiveActionTakenClient<$Types.GetResult<PreventiveActionTakenPayload<ExtArgs>, T, 'findFirst', never>, never, ExtArgs> : Prisma__PreventiveActionTakenClient<$Types.GetResult<PreventiveActionTakenPayload<ExtArgs>, T, 'findFirst', never> | null, null, ExtArgs>
 
     /**
      * Find the first PreventiveActionTaken that matches the filter or
@@ -4354,9 +4766,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirstOrThrow<T extends PreventiveActionTakenFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, PreventiveActionTakenFindFirstOrThrowArgs>
-    ): Prisma__PreventiveActionTakenClient<PreventiveActionTakenGetPayload<T>>
+    findFirstOrThrow<T extends PreventiveActionTakenFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, PreventiveActionTakenFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__PreventiveActionTakenClient<$Types.GetResult<PreventiveActionTakenPayload<ExtArgs>, T, 'findFirstOrThrow', never>, never, ExtArgs>
 
     /**
      * Find zero or more PreventiveActionTakens that matches the filter.
@@ -4374,9 +4786,9 @@ export namespace Prisma {
      * const preventiveActionTakenWithIdOnly = await prisma.preventiveActionTaken.findMany({ select: { id: true } })
      * 
     **/
-    findMany<T extends PreventiveActionTakenFindManyArgs>(
-      args?: SelectSubset<T, PreventiveActionTakenFindManyArgs>
-    ): PrismaPromise<Array<PreventiveActionTakenGetPayload<T>>>
+    findMany<T extends PreventiveActionTakenFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, PreventiveActionTakenFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Types.GetResult<PreventiveActionTakenPayload<ExtArgs>, T, 'findMany', never>>
 
     /**
      * Create a PreventiveActionTaken.
@@ -4390,9 +4802,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    create<T extends PreventiveActionTakenCreateArgs>(
-      args: SelectSubset<T, PreventiveActionTakenCreateArgs>
-    ): Prisma__PreventiveActionTakenClient<PreventiveActionTakenGetPayload<T>>
+    create<T extends PreventiveActionTakenCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, PreventiveActionTakenCreateArgs<ExtArgs>>
+    ): Prisma__PreventiveActionTakenClient<$Types.GetResult<PreventiveActionTakenPayload<ExtArgs>, T, 'create', never>, never, ExtArgs>
 
     /**
      * Delete a PreventiveActionTaken.
@@ -4406,9 +4818,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    delete<T extends PreventiveActionTakenDeleteArgs>(
-      args: SelectSubset<T, PreventiveActionTakenDeleteArgs>
-    ): Prisma__PreventiveActionTakenClient<PreventiveActionTakenGetPayload<T>>
+    delete<T extends PreventiveActionTakenDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, PreventiveActionTakenDeleteArgs<ExtArgs>>
+    ): Prisma__PreventiveActionTakenClient<$Types.GetResult<PreventiveActionTakenPayload<ExtArgs>, T, 'delete', never>, never, ExtArgs>
 
     /**
      * Update one PreventiveActionTaken.
@@ -4425,9 +4837,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    update<T extends PreventiveActionTakenUpdateArgs>(
-      args: SelectSubset<T, PreventiveActionTakenUpdateArgs>
-    ): Prisma__PreventiveActionTakenClient<PreventiveActionTakenGetPayload<T>>
+    update<T extends PreventiveActionTakenUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, PreventiveActionTakenUpdateArgs<ExtArgs>>
+    ): Prisma__PreventiveActionTakenClient<$Types.GetResult<PreventiveActionTakenPayload<ExtArgs>, T, 'update', never>, never, ExtArgs>
 
     /**
      * Delete zero or more PreventiveActionTakens.
@@ -4441,9 +4853,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    deleteMany<T extends PreventiveActionTakenDeleteManyArgs>(
-      args?: SelectSubset<T, PreventiveActionTakenDeleteManyArgs>
-    ): PrismaPromise<BatchPayload>
+    deleteMany<T extends PreventiveActionTakenDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, PreventiveActionTakenDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Update zero or more PreventiveActionTakens.
@@ -4462,9 +4874,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    updateMany<T extends PreventiveActionTakenUpdateManyArgs>(
-      args: SelectSubset<T, PreventiveActionTakenUpdateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    updateMany<T extends PreventiveActionTakenUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, PreventiveActionTakenUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Create or update one PreventiveActionTaken.
@@ -4483,9 +4895,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    upsert<T extends PreventiveActionTakenUpsertArgs>(
-      args: SelectSubset<T, PreventiveActionTakenUpsertArgs>
-    ): Prisma__PreventiveActionTakenClient<PreventiveActionTakenGetPayload<T>>
+    upsert<T extends PreventiveActionTakenUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, PreventiveActionTakenUpsertArgs<ExtArgs>>
+    ): Prisma__PreventiveActionTakenClient<$Types.GetResult<PreventiveActionTakenPayload<ExtArgs>, T, 'upsert', never>, never, ExtArgs>
 
     /**
      * Count the number of PreventiveActionTakens.
@@ -4502,8 +4914,8 @@ export namespace Prisma {
     **/
     count<T extends PreventiveActionTakenCountArgs>(
       args?: Subset<T, PreventiveActionTakenCountArgs>,
-    ): PrismaPromise<
-      T extends _Record<'select', any>
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
           : GetScalarType<T['select'], PreventiveActionTakenCountAggregateOutputType>
@@ -4534,7 +4946,7 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends PreventiveActionTakenAggregateArgs>(args: Subset<T, PreventiveActionTakenAggregateArgs>): PrismaPromise<GetPreventiveActionTakenAggregateType<T>>
+    aggregate<T extends PreventiveActionTakenAggregateArgs>(args: Subset<T, PreventiveActionTakenAggregateArgs>): Prisma.PrismaPromise<GetPreventiveActionTakenAggregateType<T>>
 
     /**
      * Group by PreventiveActionTaken.
@@ -4611,7 +5023,7 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, PreventiveActionTakenGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPreventiveActionTakenGroupByPayload<T> : PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, PreventiveActionTakenGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPreventiveActionTakenGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
 
   }
 
@@ -4621,10 +5033,8 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export class Prisma__PreventiveActionTakenClient<T, Null = never> implements PrismaPromise<T> {
-    [prisma]: true;
+  export class Prisma__PreventiveActionTakenClient<T, Null = never, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> implements Prisma.PrismaPromise<T> {
     private readonly _dmmf;
-    private readonly _fetcher;
     private readonly _queryType;
     private readonly _rootField;
     private readonly _clientMethod;
@@ -4635,12 +5045,12 @@ export namespace Prisma {
     private _isList;
     private _callsite;
     private _requestPromise?;
-    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+    constructor(_dmmf: runtime.DMMFClass, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
 
-    action<T extends PreventiveActionArgs= {}>(args?: Subset<T, PreventiveActionArgs>): Prisma__PreventiveActionClient<PreventiveActionGetPayload<T> | Null>;
+    action<T extends PreventiveActionArgs<ExtArgs> = {}>(args?: Subset<T, PreventiveActionArgs<ExtArgs>>): Prisma__PreventiveActionClient<$Types.GetResult<PreventiveActionPayload<ExtArgs>, T, 'findUnique', never> | Null, never, ExtArgs>;
 
-    os<T extends PreventiveOSArgs= {}>(args?: Subset<T, PreventiveOSArgs>): Prisma__PreventiveOSClient<PreventiveOSGetPayload<T> | Null>;
+    os<T extends PreventiveOSArgs<ExtArgs> = {}>(args?: Subset<T, PreventiveOSArgs<ExtArgs>>): Prisma__PreventiveOSClient<$Types.GetResult<PreventiveOSPayload<ExtArgs>, T, 'findUnique', never> | Null, never, ExtArgs>;
 
     private get _document();
     /**
@@ -4672,15 +5082,15 @@ export namespace Prisma {
   /**
    * PreventiveActionTaken base type for findUnique actions
    */
-  export type PreventiveActionTakenFindUniqueArgsBase = {
+  export type PreventiveActionTakenFindUniqueArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveActionTaken
      */
-    select?: PreventiveActionTakenSelect | null
+    select?: PreventiveActionTakenSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionTakenInclude | null
+    include?: PreventiveActionTakenInclude<ExtArgs> | null
     /**
      * Filter, which PreventiveActionTaken to fetch.
      */
@@ -4690,7 +5100,7 @@ export namespace Prisma {
   /**
    * PreventiveActionTaken findUnique
    */
-  export interface PreventiveActionTakenFindUniqueArgs extends PreventiveActionTakenFindUniqueArgsBase {
+  export interface PreventiveActionTakenFindUniqueArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends PreventiveActionTakenFindUniqueArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
@@ -4702,15 +5112,15 @@ export namespace Prisma {
   /**
    * PreventiveActionTaken findUniqueOrThrow
    */
-  export type PreventiveActionTakenFindUniqueOrThrowArgs = {
+  export type PreventiveActionTakenFindUniqueOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveActionTaken
      */
-    select?: PreventiveActionTakenSelect | null
+    select?: PreventiveActionTakenSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionTakenInclude | null
+    include?: PreventiveActionTakenInclude<ExtArgs> | null
     /**
      * Filter, which PreventiveActionTaken to fetch.
      */
@@ -4721,15 +5131,15 @@ export namespace Prisma {
   /**
    * PreventiveActionTaken base type for findFirst actions
    */
-  export type PreventiveActionTakenFindFirstArgsBase = {
+  export type PreventiveActionTakenFindFirstArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveActionTaken
      */
-    select?: PreventiveActionTakenSelect | null
+    select?: PreventiveActionTakenSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionTakenInclude | null
+    include?: PreventiveActionTakenInclude<ExtArgs> | null
     /**
      * Filter, which PreventiveActionTaken to fetch.
      */
@@ -4769,7 +5179,7 @@ export namespace Prisma {
   /**
    * PreventiveActionTaken findFirst
    */
-  export interface PreventiveActionTakenFindFirstArgs extends PreventiveActionTakenFindFirstArgsBase {
+  export interface PreventiveActionTakenFindFirstArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends PreventiveActionTakenFindFirstArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
@@ -4781,15 +5191,15 @@ export namespace Prisma {
   /**
    * PreventiveActionTaken findFirstOrThrow
    */
-  export type PreventiveActionTakenFindFirstOrThrowArgs = {
+  export type PreventiveActionTakenFindFirstOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveActionTaken
      */
-    select?: PreventiveActionTakenSelect | null
+    select?: PreventiveActionTakenSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionTakenInclude | null
+    include?: PreventiveActionTakenInclude<ExtArgs> | null
     /**
      * Filter, which PreventiveActionTaken to fetch.
      */
@@ -4830,15 +5240,15 @@ export namespace Prisma {
   /**
    * PreventiveActionTaken findMany
    */
-  export type PreventiveActionTakenFindManyArgs = {
+  export type PreventiveActionTakenFindManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveActionTaken
      */
-    select?: PreventiveActionTakenSelect | null
+    select?: PreventiveActionTakenSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionTakenInclude | null
+    include?: PreventiveActionTakenInclude<ExtArgs> | null
     /**
      * Filter, which PreventiveActionTakens to fetch.
      */
@@ -4874,15 +5284,15 @@ export namespace Prisma {
   /**
    * PreventiveActionTaken create
    */
-  export type PreventiveActionTakenCreateArgs = {
+  export type PreventiveActionTakenCreateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveActionTaken
      */
-    select?: PreventiveActionTakenSelect | null
+    select?: PreventiveActionTakenSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionTakenInclude | null
+    include?: PreventiveActionTakenInclude<ExtArgs> | null
     /**
      * The data needed to create a PreventiveActionTaken.
      */
@@ -4893,15 +5303,15 @@ export namespace Prisma {
   /**
    * PreventiveActionTaken update
    */
-  export type PreventiveActionTakenUpdateArgs = {
+  export type PreventiveActionTakenUpdateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveActionTaken
      */
-    select?: PreventiveActionTakenSelect | null
+    select?: PreventiveActionTakenSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionTakenInclude | null
+    include?: PreventiveActionTakenInclude<ExtArgs> | null
     /**
      * The data needed to update a PreventiveActionTaken.
      */
@@ -4916,7 +5326,7 @@ export namespace Prisma {
   /**
    * PreventiveActionTaken updateMany
    */
-  export type PreventiveActionTakenUpdateManyArgs = {
+  export type PreventiveActionTakenUpdateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to update PreventiveActionTakens.
      */
@@ -4931,15 +5341,15 @@ export namespace Prisma {
   /**
    * PreventiveActionTaken upsert
    */
-  export type PreventiveActionTakenUpsertArgs = {
+  export type PreventiveActionTakenUpsertArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveActionTaken
      */
-    select?: PreventiveActionTakenSelect | null
+    select?: PreventiveActionTakenSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionTakenInclude | null
+    include?: PreventiveActionTakenInclude<ExtArgs> | null
     /**
      * The filter to search for the PreventiveActionTaken to update in case it exists.
      */
@@ -4958,15 +5368,15 @@ export namespace Prisma {
   /**
    * PreventiveActionTaken delete
    */
-  export type PreventiveActionTakenDeleteArgs = {
+  export type PreventiveActionTakenDeleteArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveActionTaken
      */
-    select?: PreventiveActionTakenSelect | null
+    select?: PreventiveActionTakenSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionTakenInclude | null
+    include?: PreventiveActionTakenInclude<ExtArgs> | null
     /**
      * Filter which PreventiveActionTaken to delete.
      */
@@ -4977,7 +5387,7 @@ export namespace Prisma {
   /**
    * PreventiveActionTaken deleteMany
    */
-  export type PreventiveActionTakenDeleteManyArgs = {
+  export type PreventiveActionTakenDeleteManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which PreventiveActionTakens to delete
      */
@@ -4988,15 +5398,15 @@ export namespace Prisma {
   /**
    * PreventiveActionTaken without action
    */
-  export type PreventiveActionTakenArgs = {
+  export type PreventiveActionTakenArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveActionTaken
      */
-    select?: PreventiveActionTakenSelect | null
+    select?: PreventiveActionTakenSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionTakenInclude | null
+    include?: PreventiveActionTakenInclude<ExtArgs> | null
   }
 
 
@@ -5121,7 +5531,7 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type PreventiveActionAggregateArgs = {
+  export type PreventiveActionAggregateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which PreventiveAction to aggregate.
      */
@@ -5193,7 +5603,7 @@ export namespace Prisma {
 
 
 
-  export type PreventiveActionGroupByArgs = {
+  export type PreventiveActionGroupByArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     where?: PreventiveActionWhereInput
     orderBy?: Enumerable<PreventiveActionOrderByWithAggregationInput>
     by: PreventiveActionScalarFieldEnum[]
@@ -5225,7 +5635,7 @@ export namespace Prisma {
     _max: PreventiveActionMaxAggregateOutputType | null
   }
 
-  type GetPreventiveActionGroupByPayload<T extends PreventiveActionGroupByArgs> = PrismaPromise<
+  type GetPreventiveActionGroupByPayload<T extends PreventiveActionGroupByArgs> = Prisma.PrismaPromise<
     Array<
       PickArray<PreventiveActionGroupByOutputType, T['by']> &
         {
@@ -5239,7 +5649,7 @@ export namespace Prisma {
     >
 
 
-  export type PreventiveActionSelect = {
+  export type PreventiveActionSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     description?: boolean
     machineId?: boolean
@@ -5249,54 +5659,43 @@ export namespace Prisma {
     preventiveOSId?: boolean
     natureId?: boolean
     ignore?: boolean
-    machine?: boolean | MachineArgs
-    PreventiveOS?: boolean | PreventiveOSArgs
-    nature?: boolean | NatureArgs
-    actionsTaken?: boolean | PreventiveAction$actionsTakenArgs
-    _count?: boolean | PreventiveActionCountOutputTypeArgs
+    machine?: boolean | MachineArgs<ExtArgs>
+    PreventiveOS?: boolean | PreventiveOSArgs<ExtArgs>
+    nature?: boolean | NatureArgs<ExtArgs>
+    actionsTaken?: boolean | PreventiveAction$actionsTakenArgs<ExtArgs>
+    _count?: boolean | PreventiveActionCountOutputTypeArgs<ExtArgs>
+  }, ExtArgs["result"]["preventiveAction"]>
+
+  export type PreventiveActionSelectScalar = {
+    id?: boolean
+    description?: boolean
+    machineId?: boolean
+    excution?: boolean
+    frequency?: boolean
+    nextExecution?: boolean
+    preventiveOSId?: boolean
+    natureId?: boolean
+    ignore?: boolean
+  }
+
+  export type PreventiveActionInclude<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    machine?: boolean | MachineArgs<ExtArgs>
+    PreventiveOS?: boolean | PreventiveOSArgs<ExtArgs>
+    nature?: boolean | NatureArgs<ExtArgs>
+    actionsTaken?: boolean | PreventiveAction$actionsTakenArgs<ExtArgs>
+    _count?: boolean | PreventiveActionCountOutputTypeArgs<ExtArgs>
   }
 
 
-  export type PreventiveActionInclude = {
-    machine?: boolean | MachineArgs
-    PreventiveOS?: boolean | PreventiveOSArgs
-    nature?: boolean | NatureArgs
-    actionsTaken?: boolean | PreventiveAction$actionsTakenArgs
-    _count?: boolean | PreventiveActionCountOutputTypeArgs
-  }
+  type PreventiveActionGetPayload<S extends boolean | null | undefined | PreventiveActionArgs> = $Types.GetResult<PreventiveActionPayload, S>
 
-  export type PreventiveActionGetPayload<S extends boolean | null | undefined | PreventiveActionArgs> =
-    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
-    S extends true ? PreventiveAction :
-    S extends undefined ? never :
-    S extends { include: any } & (PreventiveActionArgs | PreventiveActionFindManyArgs)
-    ? PreventiveAction  & {
-    [P in TruthyKeys<S['include']>]:
-        P extends 'machine' ? MachineGetPayload<S['include'][P]> :
-        P extends 'PreventiveOS' ? PreventiveOSGetPayload<S['include'][P]> | null :
-        P extends 'nature' ? NatureGetPayload<S['include'][P]> :
-        P extends 'actionsTaken' ? Array < PreventiveActionTakenGetPayload<S['include'][P]>>  :
-        P extends '_count' ? PreventiveActionCountOutputTypeGetPayload<S['include'][P]> :  never
-  } 
-    : S extends { select: any } & (PreventiveActionArgs | PreventiveActionFindManyArgs)
-      ? {
-    [P in TruthyKeys<S['select']>]:
-        P extends 'machine' ? MachineGetPayload<S['select'][P]> :
-        P extends 'PreventiveOS' ? PreventiveOSGetPayload<S['select'][P]> | null :
-        P extends 'nature' ? NatureGetPayload<S['select'][P]> :
-        P extends 'actionsTaken' ? Array < PreventiveActionTakenGetPayload<S['select'][P]>>  :
-        P extends '_count' ? PreventiveActionCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof PreventiveAction ? PreventiveAction[P] : never
-  } 
-      : PreventiveAction
-
-
-  type PreventiveActionCountArgs = 
+  type PreventiveActionCountArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = 
     Omit<PreventiveActionFindManyArgs, 'select' | 'include'> & {
       select?: PreventiveActionCountAggregateInputType | true
     }
 
-  export interface PreventiveActionDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
-
+  export interface PreventiveActionDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PreventiveAction'], meta: { name: 'PreventiveAction' } }
     /**
      * Find zero or one PreventiveAction that matches the filter.
      * @param {PreventiveActionFindUniqueArgs} args - Arguments to find a PreventiveAction
@@ -5308,9 +5707,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUnique<T extends PreventiveActionFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args: SelectSubset<T, PreventiveActionFindUniqueArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'PreventiveAction'> extends True ? Prisma__PreventiveActionClient<PreventiveActionGetPayload<T>> : Prisma__PreventiveActionClient<PreventiveActionGetPayload<T> | null, null>
+    findUnique<T extends PreventiveActionFindUniqueArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, PreventiveActionFindUniqueArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'PreventiveAction'> extends True ? Prisma__PreventiveActionClient<$Types.GetResult<PreventiveActionPayload<ExtArgs>, T, 'findUnique', never>, never, ExtArgs> : Prisma__PreventiveActionClient<$Types.GetResult<PreventiveActionPayload<ExtArgs>, T, 'findUnique', never> | null, null, ExtArgs>
 
     /**
      * Find one PreventiveAction that matches the filter or throw an error  with `error.code='P2025'` 
@@ -5324,9 +5723,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUniqueOrThrow<T extends PreventiveActionFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, PreventiveActionFindUniqueOrThrowArgs>
-    ): Prisma__PreventiveActionClient<PreventiveActionGetPayload<T>>
+    findUniqueOrThrow<T extends PreventiveActionFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, PreventiveActionFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__PreventiveActionClient<$Types.GetResult<PreventiveActionPayload<ExtArgs>, T, 'findUniqueOrThrow', never>, never, ExtArgs>
 
     /**
      * Find the first PreventiveAction that matches the filter.
@@ -5341,9 +5740,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirst<T extends PreventiveActionFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args?: SelectSubset<T, PreventiveActionFindFirstArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'PreventiveAction'> extends True ? Prisma__PreventiveActionClient<PreventiveActionGetPayload<T>> : Prisma__PreventiveActionClient<PreventiveActionGetPayload<T> | null, null>
+    findFirst<T extends PreventiveActionFindFirstArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, PreventiveActionFindFirstArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'PreventiveAction'> extends True ? Prisma__PreventiveActionClient<$Types.GetResult<PreventiveActionPayload<ExtArgs>, T, 'findFirst', never>, never, ExtArgs> : Prisma__PreventiveActionClient<$Types.GetResult<PreventiveActionPayload<ExtArgs>, T, 'findFirst', never> | null, null, ExtArgs>
 
     /**
      * Find the first PreventiveAction that matches the filter or
@@ -5359,9 +5758,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirstOrThrow<T extends PreventiveActionFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, PreventiveActionFindFirstOrThrowArgs>
-    ): Prisma__PreventiveActionClient<PreventiveActionGetPayload<T>>
+    findFirstOrThrow<T extends PreventiveActionFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, PreventiveActionFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__PreventiveActionClient<$Types.GetResult<PreventiveActionPayload<ExtArgs>, T, 'findFirstOrThrow', never>, never, ExtArgs>
 
     /**
      * Find zero or more PreventiveActions that matches the filter.
@@ -5379,9 +5778,9 @@ export namespace Prisma {
      * const preventiveActionWithIdOnly = await prisma.preventiveAction.findMany({ select: { id: true } })
      * 
     **/
-    findMany<T extends PreventiveActionFindManyArgs>(
-      args?: SelectSubset<T, PreventiveActionFindManyArgs>
-    ): PrismaPromise<Array<PreventiveActionGetPayload<T>>>
+    findMany<T extends PreventiveActionFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, PreventiveActionFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Types.GetResult<PreventiveActionPayload<ExtArgs>, T, 'findMany', never>>
 
     /**
      * Create a PreventiveAction.
@@ -5395,9 +5794,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    create<T extends PreventiveActionCreateArgs>(
-      args: SelectSubset<T, PreventiveActionCreateArgs>
-    ): Prisma__PreventiveActionClient<PreventiveActionGetPayload<T>>
+    create<T extends PreventiveActionCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, PreventiveActionCreateArgs<ExtArgs>>
+    ): Prisma__PreventiveActionClient<$Types.GetResult<PreventiveActionPayload<ExtArgs>, T, 'create', never>, never, ExtArgs>
 
     /**
      * Delete a PreventiveAction.
@@ -5411,9 +5810,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    delete<T extends PreventiveActionDeleteArgs>(
-      args: SelectSubset<T, PreventiveActionDeleteArgs>
-    ): Prisma__PreventiveActionClient<PreventiveActionGetPayload<T>>
+    delete<T extends PreventiveActionDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, PreventiveActionDeleteArgs<ExtArgs>>
+    ): Prisma__PreventiveActionClient<$Types.GetResult<PreventiveActionPayload<ExtArgs>, T, 'delete', never>, never, ExtArgs>
 
     /**
      * Update one PreventiveAction.
@@ -5430,9 +5829,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    update<T extends PreventiveActionUpdateArgs>(
-      args: SelectSubset<T, PreventiveActionUpdateArgs>
-    ): Prisma__PreventiveActionClient<PreventiveActionGetPayload<T>>
+    update<T extends PreventiveActionUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, PreventiveActionUpdateArgs<ExtArgs>>
+    ): Prisma__PreventiveActionClient<$Types.GetResult<PreventiveActionPayload<ExtArgs>, T, 'update', never>, never, ExtArgs>
 
     /**
      * Delete zero or more PreventiveActions.
@@ -5446,9 +5845,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    deleteMany<T extends PreventiveActionDeleteManyArgs>(
-      args?: SelectSubset<T, PreventiveActionDeleteManyArgs>
-    ): PrismaPromise<BatchPayload>
+    deleteMany<T extends PreventiveActionDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, PreventiveActionDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Update zero or more PreventiveActions.
@@ -5467,9 +5866,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    updateMany<T extends PreventiveActionUpdateManyArgs>(
-      args: SelectSubset<T, PreventiveActionUpdateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    updateMany<T extends PreventiveActionUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, PreventiveActionUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Create or update one PreventiveAction.
@@ -5488,9 +5887,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    upsert<T extends PreventiveActionUpsertArgs>(
-      args: SelectSubset<T, PreventiveActionUpsertArgs>
-    ): Prisma__PreventiveActionClient<PreventiveActionGetPayload<T>>
+    upsert<T extends PreventiveActionUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, PreventiveActionUpsertArgs<ExtArgs>>
+    ): Prisma__PreventiveActionClient<$Types.GetResult<PreventiveActionPayload<ExtArgs>, T, 'upsert', never>, never, ExtArgs>
 
     /**
      * Count the number of PreventiveActions.
@@ -5507,8 +5906,8 @@ export namespace Prisma {
     **/
     count<T extends PreventiveActionCountArgs>(
       args?: Subset<T, PreventiveActionCountArgs>,
-    ): PrismaPromise<
-      T extends _Record<'select', any>
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
           : GetScalarType<T['select'], PreventiveActionCountAggregateOutputType>
@@ -5539,7 +5938,7 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends PreventiveActionAggregateArgs>(args: Subset<T, PreventiveActionAggregateArgs>): PrismaPromise<GetPreventiveActionAggregateType<T>>
+    aggregate<T extends PreventiveActionAggregateArgs>(args: Subset<T, PreventiveActionAggregateArgs>): Prisma.PrismaPromise<GetPreventiveActionAggregateType<T>>
 
     /**
      * Group by PreventiveAction.
@@ -5616,7 +6015,7 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, PreventiveActionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPreventiveActionGroupByPayload<T> : PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, PreventiveActionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPreventiveActionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
 
   }
 
@@ -5626,10 +6025,8 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export class Prisma__PreventiveActionClient<T, Null = never> implements PrismaPromise<T> {
-    [prisma]: true;
+  export class Prisma__PreventiveActionClient<T, Null = never, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> implements Prisma.PrismaPromise<T> {
     private readonly _dmmf;
-    private readonly _fetcher;
     private readonly _queryType;
     private readonly _rootField;
     private readonly _clientMethod;
@@ -5640,16 +6037,16 @@ export namespace Prisma {
     private _isList;
     private _callsite;
     private _requestPromise?;
-    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+    constructor(_dmmf: runtime.DMMFClass, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
 
-    machine<T extends MachineArgs= {}>(args?: Subset<T, MachineArgs>): Prisma__MachineClient<MachineGetPayload<T> | Null>;
+    machine<T extends MachineArgs<ExtArgs> = {}>(args?: Subset<T, MachineArgs<ExtArgs>>): Prisma__MachineClient<$Types.GetResult<MachinePayload<ExtArgs>, T, 'findUnique', never> | Null, never, ExtArgs>;
 
-    PreventiveOS<T extends PreventiveOSArgs= {}>(args?: Subset<T, PreventiveOSArgs>): Prisma__PreventiveOSClient<PreventiveOSGetPayload<T> | Null>;
+    PreventiveOS<T extends PreventiveOSArgs<ExtArgs> = {}>(args?: Subset<T, PreventiveOSArgs<ExtArgs>>): Prisma__PreventiveOSClient<$Types.GetResult<PreventiveOSPayload<ExtArgs>, T, 'findUnique', never> | Null, never, ExtArgs>;
 
-    nature<T extends NatureArgs= {}>(args?: Subset<T, NatureArgs>): Prisma__NatureClient<NatureGetPayload<T> | Null>;
+    nature<T extends NatureArgs<ExtArgs> = {}>(args?: Subset<T, NatureArgs<ExtArgs>>): Prisma__NatureClient<$Types.GetResult<NaturePayload<ExtArgs>, T, 'findUnique', never> | Null, never, ExtArgs>;
 
-    actionsTaken<T extends PreventiveAction$actionsTakenArgs= {}>(args?: Subset<T, PreventiveAction$actionsTakenArgs>): PrismaPromise<Array<PreventiveActionTakenGetPayload<T>>| Null>;
+    actionsTaken<T extends PreventiveAction$actionsTakenArgs<ExtArgs> = {}>(args?: Subset<T, PreventiveAction$actionsTakenArgs<ExtArgs>>): Prisma.PrismaPromise<$Types.GetResult<PreventiveActionTakenPayload<ExtArgs>, T, 'findMany', never>| Null>;
 
     private get _document();
     /**
@@ -5681,15 +6078,15 @@ export namespace Prisma {
   /**
    * PreventiveAction base type for findUnique actions
    */
-  export type PreventiveActionFindUniqueArgsBase = {
+  export type PreventiveActionFindUniqueArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveAction
      */
-    select?: PreventiveActionSelect | null
+    select?: PreventiveActionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionInclude | null
+    include?: PreventiveActionInclude<ExtArgs> | null
     /**
      * Filter, which PreventiveAction to fetch.
      */
@@ -5699,7 +6096,7 @@ export namespace Prisma {
   /**
    * PreventiveAction findUnique
    */
-  export interface PreventiveActionFindUniqueArgs extends PreventiveActionFindUniqueArgsBase {
+  export interface PreventiveActionFindUniqueArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends PreventiveActionFindUniqueArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
@@ -5711,15 +6108,15 @@ export namespace Prisma {
   /**
    * PreventiveAction findUniqueOrThrow
    */
-  export type PreventiveActionFindUniqueOrThrowArgs = {
+  export type PreventiveActionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveAction
      */
-    select?: PreventiveActionSelect | null
+    select?: PreventiveActionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionInclude | null
+    include?: PreventiveActionInclude<ExtArgs> | null
     /**
      * Filter, which PreventiveAction to fetch.
      */
@@ -5730,15 +6127,15 @@ export namespace Prisma {
   /**
    * PreventiveAction base type for findFirst actions
    */
-  export type PreventiveActionFindFirstArgsBase = {
+  export type PreventiveActionFindFirstArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveAction
      */
-    select?: PreventiveActionSelect | null
+    select?: PreventiveActionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionInclude | null
+    include?: PreventiveActionInclude<ExtArgs> | null
     /**
      * Filter, which PreventiveAction to fetch.
      */
@@ -5778,7 +6175,7 @@ export namespace Prisma {
   /**
    * PreventiveAction findFirst
    */
-  export interface PreventiveActionFindFirstArgs extends PreventiveActionFindFirstArgsBase {
+  export interface PreventiveActionFindFirstArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends PreventiveActionFindFirstArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
@@ -5790,15 +6187,15 @@ export namespace Prisma {
   /**
    * PreventiveAction findFirstOrThrow
    */
-  export type PreventiveActionFindFirstOrThrowArgs = {
+  export type PreventiveActionFindFirstOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveAction
      */
-    select?: PreventiveActionSelect | null
+    select?: PreventiveActionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionInclude | null
+    include?: PreventiveActionInclude<ExtArgs> | null
     /**
      * Filter, which PreventiveAction to fetch.
      */
@@ -5839,15 +6236,15 @@ export namespace Prisma {
   /**
    * PreventiveAction findMany
    */
-  export type PreventiveActionFindManyArgs = {
+  export type PreventiveActionFindManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveAction
      */
-    select?: PreventiveActionSelect | null
+    select?: PreventiveActionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionInclude | null
+    include?: PreventiveActionInclude<ExtArgs> | null
     /**
      * Filter, which PreventiveActions to fetch.
      */
@@ -5883,15 +6280,15 @@ export namespace Prisma {
   /**
    * PreventiveAction create
    */
-  export type PreventiveActionCreateArgs = {
+  export type PreventiveActionCreateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveAction
      */
-    select?: PreventiveActionSelect | null
+    select?: PreventiveActionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionInclude | null
+    include?: PreventiveActionInclude<ExtArgs> | null
     /**
      * The data needed to create a PreventiveAction.
      */
@@ -5902,15 +6299,15 @@ export namespace Prisma {
   /**
    * PreventiveAction update
    */
-  export type PreventiveActionUpdateArgs = {
+  export type PreventiveActionUpdateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveAction
      */
-    select?: PreventiveActionSelect | null
+    select?: PreventiveActionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionInclude | null
+    include?: PreventiveActionInclude<ExtArgs> | null
     /**
      * The data needed to update a PreventiveAction.
      */
@@ -5925,7 +6322,7 @@ export namespace Prisma {
   /**
    * PreventiveAction updateMany
    */
-  export type PreventiveActionUpdateManyArgs = {
+  export type PreventiveActionUpdateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to update PreventiveActions.
      */
@@ -5940,15 +6337,15 @@ export namespace Prisma {
   /**
    * PreventiveAction upsert
    */
-  export type PreventiveActionUpsertArgs = {
+  export type PreventiveActionUpsertArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveAction
      */
-    select?: PreventiveActionSelect | null
+    select?: PreventiveActionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionInclude | null
+    include?: PreventiveActionInclude<ExtArgs> | null
     /**
      * The filter to search for the PreventiveAction to update in case it exists.
      */
@@ -5967,15 +6364,15 @@ export namespace Prisma {
   /**
    * PreventiveAction delete
    */
-  export type PreventiveActionDeleteArgs = {
+  export type PreventiveActionDeleteArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveAction
      */
-    select?: PreventiveActionSelect | null
+    select?: PreventiveActionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionInclude | null
+    include?: PreventiveActionInclude<ExtArgs> | null
     /**
      * Filter which PreventiveAction to delete.
      */
@@ -5986,7 +6383,7 @@ export namespace Prisma {
   /**
    * PreventiveAction deleteMany
    */
-  export type PreventiveActionDeleteManyArgs = {
+  export type PreventiveActionDeleteManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which PreventiveActions to delete
      */
@@ -5997,15 +6394,15 @@ export namespace Prisma {
   /**
    * PreventiveAction.actionsTaken
    */
-  export type PreventiveAction$actionsTakenArgs = {
+  export type PreventiveAction$actionsTakenArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveActionTaken
      */
-    select?: PreventiveActionTakenSelect | null
+    select?: PreventiveActionTakenSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionTakenInclude | null
+    include?: PreventiveActionTakenInclude<ExtArgs> | null
     where?: PreventiveActionTakenWhereInput
     orderBy?: Enumerable<PreventiveActionTakenOrderByWithRelationInput>
     cursor?: PreventiveActionTakenWhereUniqueInput
@@ -6018,15 +6415,15 @@ export namespace Prisma {
   /**
    * PreventiveAction without action
    */
-  export type PreventiveActionArgs = {
+  export type PreventiveActionArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveAction
      */
-    select?: PreventiveActionSelect | null
+    select?: PreventiveActionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionInclude | null
+    include?: PreventiveActionInclude<ExtArgs> | null
   }
 
 
@@ -6046,114 +6443,114 @@ export namespace Prisma {
 
   export type PreventiveOSAvgAggregateOutputType = {
     id: number | null
-    machineId: number | null
     natureId: number | null
     duration: number | null
+    machineId: number | null
   }
 
   export type PreventiveOSSumAggregateOutputType = {
     id: number | null
-    machineId: number | null
     natureId: number | null
     duration: number | null
+    machineId: number | null
   }
 
   export type PreventiveOSMinAggregateOutputType = {
     id: number | null
-    machineId: number | null
     weekCode: string | null
     date: Date | null
     natureId: number | null
-    actionsUniqueKey: string | null
     duration: number | null
     concluded: boolean | null
     startTime: Date | null
     finishTime: Date | null
+    machineId: number | null
+    actionsUniqueKey: string | null
   }
 
   export type PreventiveOSMaxAggregateOutputType = {
     id: number | null
-    machineId: number | null
     weekCode: string | null
     date: Date | null
     natureId: number | null
-    actionsUniqueKey: string | null
     duration: number | null
     concluded: boolean | null
     startTime: Date | null
     finishTime: Date | null
+    machineId: number | null
+    actionsUniqueKey: string | null
   }
 
   export type PreventiveOSCountAggregateOutputType = {
     id: number
-    machineId: number
     weekCode: number
     date: number
     natureId: number
-    actionsUniqueKey: number
     duration: number
     concluded: number
     startTime: number
     finishTime: number
+    machineId: number
+    actionsUniqueKey: number
     _all: number
   }
 
 
   export type PreventiveOSAvgAggregateInputType = {
     id?: true
-    machineId?: true
     natureId?: true
     duration?: true
+    machineId?: true
   }
 
   export type PreventiveOSSumAggregateInputType = {
     id?: true
-    machineId?: true
     natureId?: true
     duration?: true
+    machineId?: true
   }
 
   export type PreventiveOSMinAggregateInputType = {
     id?: true
-    machineId?: true
     weekCode?: true
     date?: true
     natureId?: true
-    actionsUniqueKey?: true
     duration?: true
     concluded?: true
     startTime?: true
     finishTime?: true
+    machineId?: true
+    actionsUniqueKey?: true
   }
 
   export type PreventiveOSMaxAggregateInputType = {
     id?: true
-    machineId?: true
     weekCode?: true
     date?: true
     natureId?: true
-    actionsUniqueKey?: true
     duration?: true
     concluded?: true
     startTime?: true
     finishTime?: true
+    machineId?: true
+    actionsUniqueKey?: true
   }
 
   export type PreventiveOSCountAggregateInputType = {
     id?: true
-    machineId?: true
     weekCode?: true
     date?: true
     natureId?: true
-    actionsUniqueKey?: true
     duration?: true
     concluded?: true
     startTime?: true
     finishTime?: true
+    machineId?: true
+    actionsUniqueKey?: true
     _all?: true
   }
 
-  export type PreventiveOSAggregateArgs = {
+  export type PreventiveOSAggregateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which PreventiveOS to aggregate.
      */
@@ -6225,7 +6622,7 @@ export namespace Prisma {
 
 
 
-  export type PreventiveOSGroupByArgs = {
+  export type PreventiveOSGroupByArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     where?: PreventiveOSWhereInput
     orderBy?: Enumerable<PreventiveOSOrderByWithAggregationInput>
     by: PreventiveOSScalarFieldEnum[]
@@ -6242,15 +6639,15 @@ export namespace Prisma {
 
   export type PreventiveOSGroupByOutputType = {
     id: number
-    machineId: number
     weekCode: string
     date: Date | null
     natureId: number
-    actionsUniqueKey: string
     duration: number | null
     concluded: boolean | null
     startTime: Date | null
     finishTime: Date | null
+    machineId: number
+    actionsUniqueKey: string
     _count: PreventiveOSCountAggregateOutputType | null
     _avg: PreventiveOSAvgAggregateOutputType | null
     _sum: PreventiveOSSumAggregateOutputType | null
@@ -6258,7 +6655,7 @@ export namespace Prisma {
     _max: PreventiveOSMaxAggregateOutputType | null
   }
 
-  type GetPreventiveOSGroupByPayload<T extends PreventiveOSGroupByArgs> = PrismaPromise<
+  type GetPreventiveOSGroupByPayload<T extends PreventiveOSGroupByArgs> = Prisma.PrismaPromise<
     Array<
       PickArray<PreventiveOSGroupByOutputType, T['by']> &
         {
@@ -6272,69 +6669,57 @@ export namespace Prisma {
     >
 
 
-  export type PreventiveOSSelect = {
+  export type PreventiveOSSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    machineId?: boolean
     weekCode?: boolean
     date?: boolean
     natureId?: boolean
-    actions?: boolean | PreventiveOS$actionsArgs
-    actionsUniqueKey?: boolean
     duration?: boolean
     concluded?: boolean
     startTime?: boolean
     finishTime?: boolean
-    nature?: boolean | NatureArgs
-    machine?: boolean | MachineArgs
-    responsible?: boolean | PreventiveOS$responsibleArgs
-    actionsTaken?: boolean | PreventiveOS$actionsTakenArgs
-    _count?: boolean | PreventiveOSCountOutputTypeArgs
+    machineId?: boolean
+    actionsUniqueKey?: boolean
+    nature?: boolean | NatureArgs<ExtArgs>
+    machine?: boolean | MachineArgs<ExtArgs>
+    responsible?: boolean | PreventiveOS$responsibleArgs<ExtArgs>
+    actions?: boolean | PreventiveOS$actionsArgs<ExtArgs>
+    actionsTaken?: boolean | PreventiveOS$actionsTakenArgs<ExtArgs>
+    _count?: boolean | PreventiveOSCountOutputTypeArgs<ExtArgs>
+  }, ExtArgs["result"]["preventiveOS"]>
+
+  export type PreventiveOSSelectScalar = {
+    id?: boolean
+    weekCode?: boolean
+    date?: boolean
+    natureId?: boolean
+    duration?: boolean
+    concluded?: boolean
+    startTime?: boolean
+    finishTime?: boolean
+    machineId?: boolean
+    actionsUniqueKey?: boolean
+  }
+
+  export type PreventiveOSInclude<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    nature?: boolean | NatureArgs<ExtArgs>
+    machine?: boolean | MachineArgs<ExtArgs>
+    responsible?: boolean | PreventiveOS$responsibleArgs<ExtArgs>
+    actions?: boolean | PreventiveOS$actionsArgs<ExtArgs>
+    actionsTaken?: boolean | PreventiveOS$actionsTakenArgs<ExtArgs>
+    _count?: boolean | PreventiveOSCountOutputTypeArgs<ExtArgs>
   }
 
 
-  export type PreventiveOSInclude = {
-    actions?: boolean | PreventiveOS$actionsArgs
-    nature?: boolean | NatureArgs
-    machine?: boolean | MachineArgs
-    responsible?: boolean | PreventiveOS$responsibleArgs
-    actionsTaken?: boolean | PreventiveOS$actionsTakenArgs
-    _count?: boolean | PreventiveOSCountOutputTypeArgs
-  }
+  type PreventiveOSGetPayload<S extends boolean | null | undefined | PreventiveOSArgs> = $Types.GetResult<PreventiveOSPayload, S>
 
-  export type PreventiveOSGetPayload<S extends boolean | null | undefined | PreventiveOSArgs> =
-    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
-    S extends true ? PreventiveOS :
-    S extends undefined ? never :
-    S extends { include: any } & (PreventiveOSArgs | PreventiveOSFindManyArgs)
-    ? PreventiveOS  & {
-    [P in TruthyKeys<S['include']>]:
-        P extends 'actions' ? Array < PreventiveActionGetPayload<S['include'][P]>>  :
-        P extends 'nature' ? NatureGetPayload<S['include'][P]> :
-        P extends 'machine' ? MachineGetPayload<S['include'][P]> :
-        P extends 'responsible' ? Array < WorkerGetPayload<S['include'][P]>>  :
-        P extends 'actionsTaken' ? Array < PreventiveActionTakenGetPayload<S['include'][P]>>  :
-        P extends '_count' ? PreventiveOSCountOutputTypeGetPayload<S['include'][P]> :  never
-  } 
-    : S extends { select: any } & (PreventiveOSArgs | PreventiveOSFindManyArgs)
-      ? {
-    [P in TruthyKeys<S['select']>]:
-        P extends 'actions' ? Array < PreventiveActionGetPayload<S['select'][P]>>  :
-        P extends 'nature' ? NatureGetPayload<S['select'][P]> :
-        P extends 'machine' ? MachineGetPayload<S['select'][P]> :
-        P extends 'responsible' ? Array < WorkerGetPayload<S['select'][P]>>  :
-        P extends 'actionsTaken' ? Array < PreventiveActionTakenGetPayload<S['select'][P]>>  :
-        P extends '_count' ? PreventiveOSCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof PreventiveOS ? PreventiveOS[P] : never
-  } 
-      : PreventiveOS
-
-
-  type PreventiveOSCountArgs = 
+  type PreventiveOSCountArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = 
     Omit<PreventiveOSFindManyArgs, 'select' | 'include'> & {
       select?: PreventiveOSCountAggregateInputType | true
     }
 
-  export interface PreventiveOSDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
-
+  export interface PreventiveOSDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PreventiveOS'], meta: { name: 'PreventiveOS' } }
     /**
      * Find zero or one PreventiveOS that matches the filter.
      * @param {PreventiveOSFindUniqueArgs} args - Arguments to find a PreventiveOS
@@ -6346,9 +6731,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUnique<T extends PreventiveOSFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args: SelectSubset<T, PreventiveOSFindUniqueArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'PreventiveOS'> extends True ? Prisma__PreventiveOSClient<PreventiveOSGetPayload<T>> : Prisma__PreventiveOSClient<PreventiveOSGetPayload<T> | null, null>
+    findUnique<T extends PreventiveOSFindUniqueArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, PreventiveOSFindUniqueArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'PreventiveOS'> extends True ? Prisma__PreventiveOSClient<$Types.GetResult<PreventiveOSPayload<ExtArgs>, T, 'findUnique', never>, never, ExtArgs> : Prisma__PreventiveOSClient<$Types.GetResult<PreventiveOSPayload<ExtArgs>, T, 'findUnique', never> | null, null, ExtArgs>
 
     /**
      * Find one PreventiveOS that matches the filter or throw an error  with `error.code='P2025'` 
@@ -6362,9 +6747,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUniqueOrThrow<T extends PreventiveOSFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, PreventiveOSFindUniqueOrThrowArgs>
-    ): Prisma__PreventiveOSClient<PreventiveOSGetPayload<T>>
+    findUniqueOrThrow<T extends PreventiveOSFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, PreventiveOSFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__PreventiveOSClient<$Types.GetResult<PreventiveOSPayload<ExtArgs>, T, 'findUniqueOrThrow', never>, never, ExtArgs>
 
     /**
      * Find the first PreventiveOS that matches the filter.
@@ -6379,9 +6764,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirst<T extends PreventiveOSFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args?: SelectSubset<T, PreventiveOSFindFirstArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'PreventiveOS'> extends True ? Prisma__PreventiveOSClient<PreventiveOSGetPayload<T>> : Prisma__PreventiveOSClient<PreventiveOSGetPayload<T> | null, null>
+    findFirst<T extends PreventiveOSFindFirstArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, PreventiveOSFindFirstArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'PreventiveOS'> extends True ? Prisma__PreventiveOSClient<$Types.GetResult<PreventiveOSPayload<ExtArgs>, T, 'findFirst', never>, never, ExtArgs> : Prisma__PreventiveOSClient<$Types.GetResult<PreventiveOSPayload<ExtArgs>, T, 'findFirst', never> | null, null, ExtArgs>
 
     /**
      * Find the first PreventiveOS that matches the filter or
@@ -6397,9 +6782,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirstOrThrow<T extends PreventiveOSFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, PreventiveOSFindFirstOrThrowArgs>
-    ): Prisma__PreventiveOSClient<PreventiveOSGetPayload<T>>
+    findFirstOrThrow<T extends PreventiveOSFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, PreventiveOSFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__PreventiveOSClient<$Types.GetResult<PreventiveOSPayload<ExtArgs>, T, 'findFirstOrThrow', never>, never, ExtArgs>
 
     /**
      * Find zero or more PreventiveOS that matches the filter.
@@ -6417,9 +6802,9 @@ export namespace Prisma {
      * const preventiveOSWithIdOnly = await prisma.preventiveOS.findMany({ select: { id: true } })
      * 
     **/
-    findMany<T extends PreventiveOSFindManyArgs>(
-      args?: SelectSubset<T, PreventiveOSFindManyArgs>
-    ): PrismaPromise<Array<PreventiveOSGetPayload<T>>>
+    findMany<T extends PreventiveOSFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, PreventiveOSFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Types.GetResult<PreventiveOSPayload<ExtArgs>, T, 'findMany', never>>
 
     /**
      * Create a PreventiveOS.
@@ -6433,9 +6818,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    create<T extends PreventiveOSCreateArgs>(
-      args: SelectSubset<T, PreventiveOSCreateArgs>
-    ): Prisma__PreventiveOSClient<PreventiveOSGetPayload<T>>
+    create<T extends PreventiveOSCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, PreventiveOSCreateArgs<ExtArgs>>
+    ): Prisma__PreventiveOSClient<$Types.GetResult<PreventiveOSPayload<ExtArgs>, T, 'create', never>, never, ExtArgs>
 
     /**
      * Delete a PreventiveOS.
@@ -6449,9 +6834,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    delete<T extends PreventiveOSDeleteArgs>(
-      args: SelectSubset<T, PreventiveOSDeleteArgs>
-    ): Prisma__PreventiveOSClient<PreventiveOSGetPayload<T>>
+    delete<T extends PreventiveOSDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, PreventiveOSDeleteArgs<ExtArgs>>
+    ): Prisma__PreventiveOSClient<$Types.GetResult<PreventiveOSPayload<ExtArgs>, T, 'delete', never>, never, ExtArgs>
 
     /**
      * Update one PreventiveOS.
@@ -6468,9 +6853,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    update<T extends PreventiveOSUpdateArgs>(
-      args: SelectSubset<T, PreventiveOSUpdateArgs>
-    ): Prisma__PreventiveOSClient<PreventiveOSGetPayload<T>>
+    update<T extends PreventiveOSUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, PreventiveOSUpdateArgs<ExtArgs>>
+    ): Prisma__PreventiveOSClient<$Types.GetResult<PreventiveOSPayload<ExtArgs>, T, 'update', never>, never, ExtArgs>
 
     /**
      * Delete zero or more PreventiveOS.
@@ -6484,9 +6869,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    deleteMany<T extends PreventiveOSDeleteManyArgs>(
-      args?: SelectSubset<T, PreventiveOSDeleteManyArgs>
-    ): PrismaPromise<BatchPayload>
+    deleteMany<T extends PreventiveOSDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, PreventiveOSDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Update zero or more PreventiveOS.
@@ -6505,9 +6890,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    updateMany<T extends PreventiveOSUpdateManyArgs>(
-      args: SelectSubset<T, PreventiveOSUpdateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    updateMany<T extends PreventiveOSUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, PreventiveOSUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Create or update one PreventiveOS.
@@ -6526,9 +6911,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    upsert<T extends PreventiveOSUpsertArgs>(
-      args: SelectSubset<T, PreventiveOSUpsertArgs>
-    ): Prisma__PreventiveOSClient<PreventiveOSGetPayload<T>>
+    upsert<T extends PreventiveOSUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, PreventiveOSUpsertArgs<ExtArgs>>
+    ): Prisma__PreventiveOSClient<$Types.GetResult<PreventiveOSPayload<ExtArgs>, T, 'upsert', never>, never, ExtArgs>
 
     /**
      * Count the number of PreventiveOS.
@@ -6545,8 +6930,8 @@ export namespace Prisma {
     **/
     count<T extends PreventiveOSCountArgs>(
       args?: Subset<T, PreventiveOSCountArgs>,
-    ): PrismaPromise<
-      T extends _Record<'select', any>
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
           : GetScalarType<T['select'], PreventiveOSCountAggregateOutputType>
@@ -6577,7 +6962,7 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends PreventiveOSAggregateArgs>(args: Subset<T, PreventiveOSAggregateArgs>): PrismaPromise<GetPreventiveOSAggregateType<T>>
+    aggregate<T extends PreventiveOSAggregateArgs>(args: Subset<T, PreventiveOSAggregateArgs>): Prisma.PrismaPromise<GetPreventiveOSAggregateType<T>>
 
     /**
      * Group by PreventiveOS.
@@ -6654,7 +7039,7 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, PreventiveOSGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPreventiveOSGroupByPayload<T> : PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, PreventiveOSGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPreventiveOSGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
 
   }
 
@@ -6664,10 +7049,8 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export class Prisma__PreventiveOSClient<T, Null = never> implements PrismaPromise<T> {
-    [prisma]: true;
+  export class Prisma__PreventiveOSClient<T, Null = never, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> implements Prisma.PrismaPromise<T> {
     private readonly _dmmf;
-    private readonly _fetcher;
     private readonly _queryType;
     private readonly _rootField;
     private readonly _clientMethod;
@@ -6678,18 +7061,18 @@ export namespace Prisma {
     private _isList;
     private _callsite;
     private _requestPromise?;
-    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+    constructor(_dmmf: runtime.DMMFClass, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
 
-    actions<T extends PreventiveOS$actionsArgs= {}>(args?: Subset<T, PreventiveOS$actionsArgs>): PrismaPromise<Array<PreventiveActionGetPayload<T>>| Null>;
+    nature<T extends NatureArgs<ExtArgs> = {}>(args?: Subset<T, NatureArgs<ExtArgs>>): Prisma__NatureClient<$Types.GetResult<NaturePayload<ExtArgs>, T, 'findUnique', never> | Null, never, ExtArgs>;
 
-    nature<T extends NatureArgs= {}>(args?: Subset<T, NatureArgs>): Prisma__NatureClient<NatureGetPayload<T> | Null>;
+    machine<T extends MachineArgs<ExtArgs> = {}>(args?: Subset<T, MachineArgs<ExtArgs>>): Prisma__MachineClient<$Types.GetResult<MachinePayload<ExtArgs>, T, 'findUnique', never> | Null, never, ExtArgs>;
 
-    machine<T extends MachineArgs= {}>(args?: Subset<T, MachineArgs>): Prisma__MachineClient<MachineGetPayload<T> | Null>;
+    responsible<T extends PreventiveOS$responsibleArgs<ExtArgs> = {}>(args?: Subset<T, PreventiveOS$responsibleArgs<ExtArgs>>): Prisma.PrismaPromise<$Types.GetResult<WorkerPayload<ExtArgs>, T, 'findMany', never>| Null>;
 
-    responsible<T extends PreventiveOS$responsibleArgs= {}>(args?: Subset<T, PreventiveOS$responsibleArgs>): PrismaPromise<Array<WorkerGetPayload<T>>| Null>;
+    actions<T extends PreventiveOS$actionsArgs<ExtArgs> = {}>(args?: Subset<T, PreventiveOS$actionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Types.GetResult<PreventiveActionPayload<ExtArgs>, T, 'findMany', never>| Null>;
 
-    actionsTaken<T extends PreventiveOS$actionsTakenArgs= {}>(args?: Subset<T, PreventiveOS$actionsTakenArgs>): PrismaPromise<Array<PreventiveActionTakenGetPayload<T>>| Null>;
+    actionsTaken<T extends PreventiveOS$actionsTakenArgs<ExtArgs> = {}>(args?: Subset<T, PreventiveOS$actionsTakenArgs<ExtArgs>>): Prisma.PrismaPromise<$Types.GetResult<PreventiveActionTakenPayload<ExtArgs>, T, 'findMany', never>| Null>;
 
     private get _document();
     /**
@@ -6721,15 +7104,15 @@ export namespace Prisma {
   /**
    * PreventiveOS base type for findUnique actions
    */
-  export type PreventiveOSFindUniqueArgsBase = {
+  export type PreventiveOSFindUniqueArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveOS
      */
-    select?: PreventiveOSSelect | null
+    select?: PreventiveOSSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveOSInclude | null
+    include?: PreventiveOSInclude<ExtArgs> | null
     /**
      * Filter, which PreventiveOS to fetch.
      */
@@ -6739,7 +7122,7 @@ export namespace Prisma {
   /**
    * PreventiveOS findUnique
    */
-  export interface PreventiveOSFindUniqueArgs extends PreventiveOSFindUniqueArgsBase {
+  export interface PreventiveOSFindUniqueArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends PreventiveOSFindUniqueArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
@@ -6751,15 +7134,15 @@ export namespace Prisma {
   /**
    * PreventiveOS findUniqueOrThrow
    */
-  export type PreventiveOSFindUniqueOrThrowArgs = {
+  export type PreventiveOSFindUniqueOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveOS
      */
-    select?: PreventiveOSSelect | null
+    select?: PreventiveOSSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveOSInclude | null
+    include?: PreventiveOSInclude<ExtArgs> | null
     /**
      * Filter, which PreventiveOS to fetch.
      */
@@ -6770,15 +7153,15 @@ export namespace Prisma {
   /**
    * PreventiveOS base type for findFirst actions
    */
-  export type PreventiveOSFindFirstArgsBase = {
+  export type PreventiveOSFindFirstArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveOS
      */
-    select?: PreventiveOSSelect | null
+    select?: PreventiveOSSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveOSInclude | null
+    include?: PreventiveOSInclude<ExtArgs> | null
     /**
      * Filter, which PreventiveOS to fetch.
      */
@@ -6818,7 +7201,7 @@ export namespace Prisma {
   /**
    * PreventiveOS findFirst
    */
-  export interface PreventiveOSFindFirstArgs extends PreventiveOSFindFirstArgsBase {
+  export interface PreventiveOSFindFirstArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends PreventiveOSFindFirstArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
@@ -6830,15 +7213,15 @@ export namespace Prisma {
   /**
    * PreventiveOS findFirstOrThrow
    */
-  export type PreventiveOSFindFirstOrThrowArgs = {
+  export type PreventiveOSFindFirstOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveOS
      */
-    select?: PreventiveOSSelect | null
+    select?: PreventiveOSSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveOSInclude | null
+    include?: PreventiveOSInclude<ExtArgs> | null
     /**
      * Filter, which PreventiveOS to fetch.
      */
@@ -6879,15 +7262,15 @@ export namespace Prisma {
   /**
    * PreventiveOS findMany
    */
-  export type PreventiveOSFindManyArgs = {
+  export type PreventiveOSFindManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveOS
      */
-    select?: PreventiveOSSelect | null
+    select?: PreventiveOSSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveOSInclude | null
+    include?: PreventiveOSInclude<ExtArgs> | null
     /**
      * Filter, which PreventiveOS to fetch.
      */
@@ -6923,15 +7306,15 @@ export namespace Prisma {
   /**
    * PreventiveOS create
    */
-  export type PreventiveOSCreateArgs = {
+  export type PreventiveOSCreateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveOS
      */
-    select?: PreventiveOSSelect | null
+    select?: PreventiveOSSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveOSInclude | null
+    include?: PreventiveOSInclude<ExtArgs> | null
     /**
      * The data needed to create a PreventiveOS.
      */
@@ -6942,15 +7325,15 @@ export namespace Prisma {
   /**
    * PreventiveOS update
    */
-  export type PreventiveOSUpdateArgs = {
+  export type PreventiveOSUpdateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveOS
      */
-    select?: PreventiveOSSelect | null
+    select?: PreventiveOSSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveOSInclude | null
+    include?: PreventiveOSInclude<ExtArgs> | null
     /**
      * The data needed to update a PreventiveOS.
      */
@@ -6965,7 +7348,7 @@ export namespace Prisma {
   /**
    * PreventiveOS updateMany
    */
-  export type PreventiveOSUpdateManyArgs = {
+  export type PreventiveOSUpdateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to update PreventiveOS.
      */
@@ -6980,15 +7363,15 @@ export namespace Prisma {
   /**
    * PreventiveOS upsert
    */
-  export type PreventiveOSUpsertArgs = {
+  export type PreventiveOSUpsertArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveOS
      */
-    select?: PreventiveOSSelect | null
+    select?: PreventiveOSSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveOSInclude | null
+    include?: PreventiveOSInclude<ExtArgs> | null
     /**
      * The filter to search for the PreventiveOS to update in case it exists.
      */
@@ -7007,15 +7390,15 @@ export namespace Prisma {
   /**
    * PreventiveOS delete
    */
-  export type PreventiveOSDeleteArgs = {
+  export type PreventiveOSDeleteArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveOS
      */
-    select?: PreventiveOSSelect | null
+    select?: PreventiveOSSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveOSInclude | null
+    include?: PreventiveOSInclude<ExtArgs> | null
     /**
      * Filter which PreventiveOS to delete.
      */
@@ -7026,7 +7409,7 @@ export namespace Prisma {
   /**
    * PreventiveOS deleteMany
    */
-  export type PreventiveOSDeleteManyArgs = {
+  export type PreventiveOSDeleteManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which PreventiveOS to delete
      */
@@ -7035,38 +7418,17 @@ export namespace Prisma {
 
 
   /**
-   * PreventiveOS.actions
-   */
-  export type PreventiveOS$actionsArgs = {
-    /**
-     * Select specific fields to fetch from the PreventiveAction
-     */
-    select?: PreventiveActionSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     */
-    include?: PreventiveActionInclude | null
-    where?: PreventiveActionWhereInput
-    orderBy?: Enumerable<PreventiveActionOrderByWithRelationInput>
-    cursor?: PreventiveActionWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: Enumerable<PreventiveActionScalarFieldEnum>
-  }
-
-
-  /**
    * PreventiveOS.responsible
    */
-  export type PreventiveOS$responsibleArgs = {
+  export type PreventiveOS$responsibleArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Worker
      */
-    select?: WorkerSelect | null
+    select?: WorkerSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: WorkerInclude | null
+    include?: WorkerInclude<ExtArgs> | null
     where?: WorkerWhereInput
     orderBy?: Enumerable<WorkerOrderByWithRelationInput>
     cursor?: WorkerWhereUniqueInput
@@ -7077,17 +7439,38 @@ export namespace Prisma {
 
 
   /**
-   * PreventiveOS.actionsTaken
+   * PreventiveOS.actions
    */
-  export type PreventiveOS$actionsTakenArgs = {
+  export type PreventiveOS$actionsArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the PreventiveActionTaken
+     * Select specific fields to fetch from the PreventiveAction
      */
-    select?: PreventiveActionTakenSelect | null
+    select?: PreventiveActionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveActionTakenInclude | null
+    include?: PreventiveActionInclude<ExtArgs> | null
+    where?: PreventiveActionWhereInput
+    orderBy?: Enumerable<PreventiveActionOrderByWithRelationInput>
+    cursor?: PreventiveActionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Enumerable<PreventiveActionScalarFieldEnum>
+  }
+
+
+  /**
+   * PreventiveOS.actionsTaken
+   */
+  export type PreventiveOS$actionsTakenArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PreventiveActionTaken
+     */
+    select?: PreventiveActionTakenSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: PreventiveActionTakenInclude<ExtArgs> | null
     where?: PreventiveActionTakenWhereInput
     orderBy?: Enumerable<PreventiveActionTakenOrderByWithRelationInput>
     cursor?: PreventiveActionTakenWhereUniqueInput
@@ -7100,15 +7483,15 @@ export namespace Prisma {
   /**
    * PreventiveOS without action
    */
-  export type PreventiveOSArgs = {
+  export type PreventiveOSArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PreventiveOS
      */
-    select?: PreventiveOSSelect | null
+    select?: PreventiveOSSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PreventiveOSInclude | null
+    include?: PreventiveOSInclude<ExtArgs> | null
   }
 
 
@@ -7117,8 +7500,20 @@ export namespace Prisma {
    * Enums
    */
 
-  // Based on
-  // https://github.com/microsoft/TypeScript/issues/3192#issuecomment-261720275
+  export const TransactionIsolationLevel: {
+    Serializable: 'Serializable'
+  };
+
+  export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+  export const NatureScalarFieldEnum: {
+    id: 'id',
+    name: 'name'
+  };
+
+  export type NatureScalarFieldEnum = (typeof NatureScalarFieldEnum)[keyof typeof NatureScalarFieldEnum]
+
 
   export const MachineScalarFieldEnum: {
     id: 'id',
@@ -7130,12 +7525,25 @@ export namespace Prisma {
   export type MachineScalarFieldEnum = (typeof MachineScalarFieldEnum)[keyof typeof MachineScalarFieldEnum]
 
 
-  export const NatureScalarFieldEnum: {
+  export const WorkerScalarFieldEnum: {
     id: 'id',
-    name: 'name'
+    registration: 'registration',
+    name: 'name',
+    class: 'class'
   };
 
-  export type NatureScalarFieldEnum = (typeof NatureScalarFieldEnum)[keyof typeof NatureScalarFieldEnum]
+  export type WorkerScalarFieldEnum = (typeof WorkerScalarFieldEnum)[keyof typeof WorkerScalarFieldEnum]
+
+
+  export const PreventiveActionTakenScalarFieldEnum: {
+    id: 'id',
+    date: 'date',
+    osId: 'osId',
+    actionId: 'actionId',
+    weekCode: 'weekCode'
+  };
+
+  export type PreventiveActionTakenScalarFieldEnum = (typeof PreventiveActionTakenScalarFieldEnum)[keyof typeof PreventiveActionTakenScalarFieldEnum]
 
 
   export const PreventiveActionScalarFieldEnum: {
@@ -7153,28 +7561,17 @@ export namespace Prisma {
   export type PreventiveActionScalarFieldEnum = (typeof PreventiveActionScalarFieldEnum)[keyof typeof PreventiveActionScalarFieldEnum]
 
 
-  export const PreventiveActionTakenScalarFieldEnum: {
-    id: 'id',
-    date: 'date',
-    osId: 'osId',
-    actionId: 'actionId',
-    weekCode: 'weekCode'
-  };
-
-  export type PreventiveActionTakenScalarFieldEnum = (typeof PreventiveActionTakenScalarFieldEnum)[keyof typeof PreventiveActionTakenScalarFieldEnum]
-
-
   export const PreventiveOSScalarFieldEnum: {
     id: 'id',
-    machineId: 'machineId',
     weekCode: 'weekCode',
     date: 'date',
     natureId: 'natureId',
-    actionsUniqueKey: 'actionsUniqueKey',
     duration: 'duration',
     concluded: 'concluded',
     startTime: 'startTime',
-    finishTime: 'finishTime'
+    finishTime: 'finishTime',
+    machineId: 'machineId',
+    actionsUniqueKey: 'actionsUniqueKey'
   };
 
   export type PreventiveOSScalarFieldEnum = (typeof PreventiveOSScalarFieldEnum)[keyof typeof PreventiveOSScalarFieldEnum]
@@ -7188,21 +7585,12 @@ export namespace Prisma {
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
-  export const TransactionIsolationLevel: {
-    Serializable: 'Serializable'
+  export const NullsOrder: {
+    first: 'first',
+    last: 'last'
   };
 
-  export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
-
-
-  export const WorkerScalarFieldEnum: {
-    id: 'id',
-    registration: 'registration',
-    name: 'name',
-    class: 'class'
-  };
-
-  export type WorkerScalarFieldEnum = (typeof WorkerScalarFieldEnum)[keyof typeof WorkerScalarFieldEnum]
+  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
   /**
@@ -7420,7 +7808,7 @@ export namespace Prisma {
     excution?: SortOrder
     frequency?: SortOrder
     nextExecution?: SortOrder
-    preventiveOSId?: SortOrder
+    preventiveOSId?: SortOrderInput | SortOrder
     natureId?: SortOrder
     ignore?: SortOrder
     machine?: MachineOrderByWithRelationInput
@@ -7440,7 +7828,7 @@ export namespace Prisma {
     excution?: SortOrder
     frequency?: SortOrder
     nextExecution?: SortOrder
-    preventiveOSId?: SortOrder
+    preventiveOSId?: SortOrderInput | SortOrder
     natureId?: SortOrder
     ignore?: SortOrder
     _count?: PreventiveActionCountOrderByAggregateInput
@@ -7470,37 +7858,37 @@ export namespace Prisma {
     OR?: Enumerable<PreventiveOSWhereInput>
     NOT?: Enumerable<PreventiveOSWhereInput>
     id?: IntFilter | number
-    machineId?: IntFilter | number
     weekCode?: StringFilter | string
     date?: DateTimeNullableFilter | Date | string | null
     natureId?: IntFilter | number
-    actions?: PreventiveActionListRelationFilter
-    actionsUniqueKey?: StringFilter | string
     duration?: IntNullableFilter | number | null
     concluded?: BoolNullableFilter | boolean | null
     startTime?: DateTimeNullableFilter | Date | string | null
     finishTime?: DateTimeNullableFilter | Date | string | null
+    machineId?: IntFilter | number
+    actionsUniqueKey?: StringFilter | string
     nature?: XOR<NatureRelationFilter, NatureWhereInput>
     machine?: XOR<MachineRelationFilter, MachineWhereInput>
     responsible?: WorkerListRelationFilter
+    actions?: PreventiveActionListRelationFilter
     actionsTaken?: PreventiveActionTakenListRelationFilter
   }
 
   export type PreventiveOSOrderByWithRelationInput = {
     id?: SortOrder
-    machineId?: SortOrder
     weekCode?: SortOrder
-    date?: SortOrder
+    date?: SortOrderInput | SortOrder
     natureId?: SortOrder
-    actions?: PreventiveActionOrderByRelationAggregateInput
+    duration?: SortOrderInput | SortOrder
+    concluded?: SortOrderInput | SortOrder
+    startTime?: SortOrderInput | SortOrder
+    finishTime?: SortOrderInput | SortOrder
+    machineId?: SortOrder
     actionsUniqueKey?: SortOrder
-    duration?: SortOrder
-    concluded?: SortOrder
-    startTime?: SortOrder
-    finishTime?: SortOrder
     nature?: NatureOrderByWithRelationInput
     machine?: MachineOrderByWithRelationInput
     responsible?: WorkerOrderByRelationAggregateInput
+    actions?: PreventiveActionOrderByRelationAggregateInput
     actionsTaken?: PreventiveActionTakenOrderByRelationAggregateInput
   }
 
@@ -7511,15 +7899,15 @@ export namespace Prisma {
 
   export type PreventiveOSOrderByWithAggregationInput = {
     id?: SortOrder
-    machineId?: SortOrder
     weekCode?: SortOrder
-    date?: SortOrder
+    date?: SortOrderInput | SortOrder
     natureId?: SortOrder
+    duration?: SortOrderInput | SortOrder
+    concluded?: SortOrderInput | SortOrder
+    startTime?: SortOrderInput | SortOrder
+    finishTime?: SortOrderInput | SortOrder
+    machineId?: SortOrder
     actionsUniqueKey?: SortOrder
-    duration?: SortOrder
-    concluded?: SortOrder
-    startTime?: SortOrder
-    finishTime?: SortOrder
     _count?: PreventiveOSCountOrderByAggregateInput
     _avg?: PreventiveOSAvgOrderByAggregateInput
     _max?: PreventiveOSMaxOrderByAggregateInput
@@ -7532,15 +7920,15 @@ export namespace Prisma {
     OR?: Enumerable<PreventiveOSScalarWhereWithAggregatesInput>
     NOT?: Enumerable<PreventiveOSScalarWhereWithAggregatesInput>
     id?: IntWithAggregatesFilter | number
-    machineId?: IntWithAggregatesFilter | number
     weekCode?: StringWithAggregatesFilter | string
     date?: DateTimeNullableWithAggregatesFilter | Date | string | null
     natureId?: IntWithAggregatesFilter | number
-    actionsUniqueKey?: StringWithAggregatesFilter | string
     duration?: IntNullableWithAggregatesFilter | number | null
     concluded?: BoolNullableWithAggregatesFilter | boolean | null
     startTime?: DateTimeNullableWithAggregatesFilter | Date | string | null
     finishTime?: DateTimeNullableWithAggregatesFilter | Date | string | null
+    machineId?: IntWithAggregatesFilter | number
+    actionsUniqueKey?: StringWithAggregatesFilter | string
   }
 
   export type NatureCreateInput = {
@@ -7784,92 +8172,92 @@ export namespace Prisma {
   export type PreventiveOSCreateInput = {
     weekCode: string
     date?: Date | string | null
-    actions?: PreventiveActionCreateNestedManyWithoutPreventiveOSInput
-    actionsUniqueKey: string
     duration?: number | null
     concluded?: boolean | null
     startTime?: Date | string | null
     finishTime?: Date | string | null
+    actionsUniqueKey: string
     nature: NatureCreateNestedOneWithoutPreventiveOSInput
     machine: MachineCreateNestedOneWithoutPreventiveOSInput
     responsible?: WorkerCreateNestedManyWithoutPreventiveOsInput
+    actions?: PreventiveActionCreateNestedManyWithoutPreventiveOSInput
     actionsTaken?: PreventiveActionTakenCreateNestedManyWithoutOsInput
   }
 
   export type PreventiveOSUncheckedCreateInput = {
     id?: number
-    machineId: number
     weekCode: string
     date?: Date | string | null
     natureId: number
-    actions?: PreventiveActionUncheckedCreateNestedManyWithoutPreventiveOSInput
-    actionsUniqueKey: string
     duration?: number | null
     concluded?: boolean | null
     startTime?: Date | string | null
     finishTime?: Date | string | null
+    machineId: number
+    actionsUniqueKey: string
     responsible?: WorkerUncheckedCreateNestedManyWithoutPreventiveOsInput
+    actions?: PreventiveActionUncheckedCreateNestedManyWithoutPreventiveOSInput
     actionsTaken?: PreventiveActionTakenUncheckedCreateNestedManyWithoutOsInput
   }
 
   export type PreventiveOSUpdateInput = {
     weekCode?: StringFieldUpdateOperationsInput | string
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    actions?: PreventiveActionUpdateManyWithoutPreventiveOSNestedInput
-    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     nature?: NatureUpdateOneRequiredWithoutPreventiveOSNestedInput
     machine?: MachineUpdateOneRequiredWithoutPreventiveOSNestedInput
     responsible?: WorkerUpdateManyWithoutPreventiveOsNestedInput
+    actions?: PreventiveActionUpdateManyWithoutPreventiveOSNestedInput
     actionsTaken?: PreventiveActionTakenUpdateManyWithoutOsNestedInput
   }
 
   export type PreventiveOSUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
-    machineId?: IntFieldUpdateOperationsInput | number
     weekCode?: StringFieldUpdateOperationsInput | string
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     natureId?: IntFieldUpdateOperationsInput | number
-    actions?: PreventiveActionUncheckedUpdateManyWithoutPreventiveOSNestedInput
-    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    machineId?: IntFieldUpdateOperationsInput | number
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     responsible?: WorkerUncheckedUpdateManyWithoutPreventiveOsNestedInput
+    actions?: PreventiveActionUncheckedUpdateManyWithoutPreventiveOSNestedInput
     actionsTaken?: PreventiveActionTakenUncheckedUpdateManyWithoutOsNestedInput
   }
 
   export type PreventiveOSUpdateManyMutationInput = {
     weekCode?: StringFieldUpdateOperationsInput | string
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
   }
 
   export type PreventiveOSUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
-    machineId?: IntFieldUpdateOperationsInput | number
     weekCode?: StringFieldUpdateOperationsInput | string
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     natureId?: IntFieldUpdateOperationsInput | number
-    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    machineId?: IntFieldUpdateOperationsInput | number
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
   }
 
   export type IntFilter = {
     equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
+    in?: Enumerable<number> | number
+    notIn?: Enumerable<number> | number
     lt?: number
     lte?: number
     gt?: number
@@ -7879,8 +8267,8 @@ export namespace Prisma {
 
   export type StringFilter = {
     equals?: string
-    in?: Enumerable<string>
-    notIn?: Enumerable<string>
+    in?: Enumerable<string> | string
+    notIn?: Enumerable<string> | string
     lt?: string
     lte?: string
     gt?: string
@@ -7936,8 +8324,8 @@ export namespace Prisma {
 
   export type IntWithAggregatesFilter = {
     equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
+    in?: Enumerable<number> | number
+    notIn?: Enumerable<number> | number
     lt?: number
     lte?: number
     gt?: number
@@ -7952,8 +8340,8 @@ export namespace Prisma {
 
   export type StringWithAggregatesFilter = {
     equals?: string
-    in?: Enumerable<string>
-    notIn?: Enumerable<string>
+    in?: Enumerable<string> | string
+    notIn?: Enumerable<string> | string
     lt?: string
     lte?: string
     gt?: string
@@ -8029,8 +8417,8 @@ export namespace Prisma {
 
   export type DateTimeFilter = {
     equals?: Date | string
-    in?: Enumerable<Date> | Enumerable<string>
-    notIn?: Enumerable<Date> | Enumerable<string>
+    in?: Enumerable<Date> | Enumerable<string> | Date | string
+    notIn?: Enumerable<Date> | Enumerable<string> | Date | string
     lt?: Date | string
     lte?: Date | string
     gt?: Date | string
@@ -8039,8 +8427,8 @@ export namespace Prisma {
   }
 
   export type PreventiveActionRelationFilter = {
-    is?: PreventiveActionWhereInput
-    isNot?: PreventiveActionWhereInput
+    is?: PreventiveActionWhereInput | null
+    isNot?: PreventiveActionWhereInput | null
   }
 
   export type PreventiveOSRelationFilter = {
@@ -8086,8 +8474,8 @@ export namespace Prisma {
 
   export type DateTimeWithAggregatesFilter = {
     equals?: Date | string
-    in?: Enumerable<Date> | Enumerable<string>
-    notIn?: Enumerable<Date> | Enumerable<string>
+    in?: Enumerable<Date> | Enumerable<string> | Date | string
+    notIn?: Enumerable<Date> | Enumerable<string> | Date | string
     lt?: Date | string
     lte?: Date | string
     gt?: Date | string
@@ -8100,8 +8488,8 @@ export namespace Prisma {
 
   export type IntNullableFilter = {
     equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
+    in?: Enumerable<number> | number | null
+    notIn?: Enumerable<number> | number | null
     lt?: number
     lte?: number
     gt?: number
@@ -8115,19 +8503,24 @@ export namespace Prisma {
   }
 
   export type MachineRelationFilter = {
-    is?: MachineWhereInput
-    isNot?: MachineWhereInput
+    is?: MachineWhereInput | null
+    isNot?: MachineWhereInput | null
   }
 
   export type NatureRelationFilter = {
-    is?: NatureWhereInput
-    isNot?: NatureWhereInput
+    is?: NatureWhereInput | null
+    isNot?: NatureWhereInput | null
   }
 
   export type PreventiveActionTakenListRelationFilter = {
     every?: PreventiveActionTakenWhereInput
     some?: PreventiveActionTakenWhereInput
     none?: PreventiveActionTakenWhereInput
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
   }
 
   export type PreventiveActionTakenOrderByRelationAggregateInput = {
@@ -8188,8 +8581,8 @@ export namespace Prisma {
 
   export type IntNullableWithAggregatesFilter = {
     equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
+    in?: Enumerable<number> | number | null
+    notIn?: Enumerable<number> | number | null
     lt?: number
     lte?: number
     gt?: number
@@ -8212,8 +8605,8 @@ export namespace Prisma {
 
   export type DateTimeNullableFilter = {
     equals?: Date | string | null
-    in?: Enumerable<Date> | Enumerable<string> | null
-    notIn?: Enumerable<Date> | Enumerable<string> | null
+    in?: Enumerable<Date> | Enumerable<string> | Date | string | null
+    notIn?: Enumerable<Date> | Enumerable<string> | Date | string | null
     lt?: Date | string
     lte?: Date | string
     gt?: Date | string
@@ -8245,61 +8638,61 @@ export namespace Prisma {
 
   export type PreventiveOSCountOrderByAggregateInput = {
     id?: SortOrder
-    machineId?: SortOrder
     weekCode?: SortOrder
     date?: SortOrder
     natureId?: SortOrder
-    actionsUniqueKey?: SortOrder
     duration?: SortOrder
     concluded?: SortOrder
     startTime?: SortOrder
     finishTime?: SortOrder
+    machineId?: SortOrder
+    actionsUniqueKey?: SortOrder
   }
 
   export type PreventiveOSAvgOrderByAggregateInput = {
     id?: SortOrder
-    machineId?: SortOrder
     natureId?: SortOrder
     duration?: SortOrder
+    machineId?: SortOrder
   }
 
   export type PreventiveOSMaxOrderByAggregateInput = {
     id?: SortOrder
-    machineId?: SortOrder
     weekCode?: SortOrder
     date?: SortOrder
     natureId?: SortOrder
-    actionsUniqueKey?: SortOrder
     duration?: SortOrder
     concluded?: SortOrder
     startTime?: SortOrder
     finishTime?: SortOrder
+    machineId?: SortOrder
+    actionsUniqueKey?: SortOrder
   }
 
   export type PreventiveOSMinOrderByAggregateInput = {
     id?: SortOrder
-    machineId?: SortOrder
     weekCode?: SortOrder
     date?: SortOrder
     natureId?: SortOrder
-    actionsUniqueKey?: SortOrder
     duration?: SortOrder
     concluded?: SortOrder
     startTime?: SortOrder
     finishTime?: SortOrder
+    machineId?: SortOrder
+    actionsUniqueKey?: SortOrder
   }
 
   export type PreventiveOSSumOrderByAggregateInput = {
     id?: SortOrder
-    machineId?: SortOrder
     natureId?: SortOrder
     duration?: SortOrder
+    machineId?: SortOrder
   }
 
   export type DateTimeNullableWithAggregatesFilter = {
     equals?: Date | string | null
-    in?: Enumerable<Date> | Enumerable<string> | null
-    notIn?: Enumerable<Date> | Enumerable<string> | null
+    in?: Enumerable<Date> | Enumerable<string> | Date | string | null
+    notIn?: Enumerable<Date> | Enumerable<string> | Date | string | null
     lt?: Date | string
     lte?: Date | string
     gt?: Date | string
@@ -8646,12 +9039,6 @@ export namespace Prisma {
     deleteMany?: Enumerable<PreventiveActionTakenScalarWhereInput>
   }
 
-  export type PreventiveActionCreateNestedManyWithoutPreventiveOSInput = {
-    create?: XOR<Enumerable<PreventiveActionCreateWithoutPreventiveOSInput>, Enumerable<PreventiveActionUncheckedCreateWithoutPreventiveOSInput>>
-    connectOrCreate?: Enumerable<PreventiveActionCreateOrConnectWithoutPreventiveOSInput>
-    connect?: Enumerable<PreventiveActionWhereUniqueInput>
-  }
-
   export type NatureCreateNestedOneWithoutPreventiveOSInput = {
     create?: XOR<NatureCreateWithoutPreventiveOSInput, NatureUncheckedCreateWithoutPreventiveOSInput>
     connectOrCreate?: NatureCreateOrConnectWithoutPreventiveOSInput
@@ -8670,22 +9057,28 @@ export namespace Prisma {
     connect?: Enumerable<WorkerWhereUniqueInput>
   }
 
+  export type PreventiveActionCreateNestedManyWithoutPreventiveOSInput = {
+    create?: XOR<Enumerable<PreventiveActionCreateWithoutPreventiveOSInput>, Enumerable<PreventiveActionUncheckedCreateWithoutPreventiveOSInput>>
+    connectOrCreate?: Enumerable<PreventiveActionCreateOrConnectWithoutPreventiveOSInput>
+    connect?: Enumerable<PreventiveActionWhereUniqueInput>
+  }
+
   export type PreventiveActionTakenCreateNestedManyWithoutOsInput = {
     create?: XOR<Enumerable<PreventiveActionTakenCreateWithoutOsInput>, Enumerable<PreventiveActionTakenUncheckedCreateWithoutOsInput>>
     connectOrCreate?: Enumerable<PreventiveActionTakenCreateOrConnectWithoutOsInput>
     connect?: Enumerable<PreventiveActionTakenWhereUniqueInput>
   }
 
-  export type PreventiveActionUncheckedCreateNestedManyWithoutPreventiveOSInput = {
-    create?: XOR<Enumerable<PreventiveActionCreateWithoutPreventiveOSInput>, Enumerable<PreventiveActionUncheckedCreateWithoutPreventiveOSInput>>
-    connectOrCreate?: Enumerable<PreventiveActionCreateOrConnectWithoutPreventiveOSInput>
-    connect?: Enumerable<PreventiveActionWhereUniqueInput>
-  }
-
   export type WorkerUncheckedCreateNestedManyWithoutPreventiveOsInput = {
     create?: XOR<Enumerable<WorkerCreateWithoutPreventiveOsInput>, Enumerable<WorkerUncheckedCreateWithoutPreventiveOsInput>>
     connectOrCreate?: Enumerable<WorkerCreateOrConnectWithoutPreventiveOsInput>
     connect?: Enumerable<WorkerWhereUniqueInput>
+  }
+
+  export type PreventiveActionUncheckedCreateNestedManyWithoutPreventiveOSInput = {
+    create?: XOR<Enumerable<PreventiveActionCreateWithoutPreventiveOSInput>, Enumerable<PreventiveActionUncheckedCreateWithoutPreventiveOSInput>>
+    connectOrCreate?: Enumerable<PreventiveActionCreateOrConnectWithoutPreventiveOSInput>
+    connect?: Enumerable<PreventiveActionWhereUniqueInput>
   }
 
   export type PreventiveActionTakenUncheckedCreateNestedManyWithoutOsInput = {
@@ -8696,19 +9089,6 @@ export namespace Prisma {
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null
-  }
-
-  export type PreventiveActionUpdateManyWithoutPreventiveOSNestedInput = {
-    create?: XOR<Enumerable<PreventiveActionCreateWithoutPreventiveOSInput>, Enumerable<PreventiveActionUncheckedCreateWithoutPreventiveOSInput>>
-    connectOrCreate?: Enumerable<PreventiveActionCreateOrConnectWithoutPreventiveOSInput>
-    upsert?: Enumerable<PreventiveActionUpsertWithWhereUniqueWithoutPreventiveOSInput>
-    set?: Enumerable<PreventiveActionWhereUniqueInput>
-    disconnect?: Enumerable<PreventiveActionWhereUniqueInput>
-    delete?: Enumerable<PreventiveActionWhereUniqueInput>
-    connect?: Enumerable<PreventiveActionWhereUniqueInput>
-    update?: Enumerable<PreventiveActionUpdateWithWhereUniqueWithoutPreventiveOSInput>
-    updateMany?: Enumerable<PreventiveActionUpdateManyWithWhereWithoutPreventiveOSInput>
-    deleteMany?: Enumerable<PreventiveActionScalarWhereInput>
   }
 
   export type NullableBoolFieldUpdateOperationsInput = {
@@ -8744,6 +9124,19 @@ export namespace Prisma {
     deleteMany?: Enumerable<WorkerScalarWhereInput>
   }
 
+  export type PreventiveActionUpdateManyWithoutPreventiveOSNestedInput = {
+    create?: XOR<Enumerable<PreventiveActionCreateWithoutPreventiveOSInput>, Enumerable<PreventiveActionUncheckedCreateWithoutPreventiveOSInput>>
+    connectOrCreate?: Enumerable<PreventiveActionCreateOrConnectWithoutPreventiveOSInput>
+    upsert?: Enumerable<PreventiveActionUpsertWithWhereUniqueWithoutPreventiveOSInput>
+    set?: Enumerable<PreventiveActionWhereUniqueInput>
+    disconnect?: Enumerable<PreventiveActionWhereUniqueInput>
+    delete?: Enumerable<PreventiveActionWhereUniqueInput>
+    connect?: Enumerable<PreventiveActionWhereUniqueInput>
+    update?: Enumerable<PreventiveActionUpdateWithWhereUniqueWithoutPreventiveOSInput>
+    updateMany?: Enumerable<PreventiveActionUpdateManyWithWhereWithoutPreventiveOSInput>
+    deleteMany?: Enumerable<PreventiveActionScalarWhereInput>
+  }
+
   export type PreventiveActionTakenUpdateManyWithoutOsNestedInput = {
     create?: XOR<Enumerable<PreventiveActionTakenCreateWithoutOsInput>, Enumerable<PreventiveActionTakenUncheckedCreateWithoutOsInput>>
     connectOrCreate?: Enumerable<PreventiveActionTakenCreateOrConnectWithoutOsInput>
@@ -8757,19 +9150,6 @@ export namespace Prisma {
     deleteMany?: Enumerable<PreventiveActionTakenScalarWhereInput>
   }
 
-  export type PreventiveActionUncheckedUpdateManyWithoutPreventiveOSNestedInput = {
-    create?: XOR<Enumerable<PreventiveActionCreateWithoutPreventiveOSInput>, Enumerable<PreventiveActionUncheckedCreateWithoutPreventiveOSInput>>
-    connectOrCreate?: Enumerable<PreventiveActionCreateOrConnectWithoutPreventiveOSInput>
-    upsert?: Enumerable<PreventiveActionUpsertWithWhereUniqueWithoutPreventiveOSInput>
-    set?: Enumerable<PreventiveActionWhereUniqueInput>
-    disconnect?: Enumerable<PreventiveActionWhereUniqueInput>
-    delete?: Enumerable<PreventiveActionWhereUniqueInput>
-    connect?: Enumerable<PreventiveActionWhereUniqueInput>
-    update?: Enumerable<PreventiveActionUpdateWithWhereUniqueWithoutPreventiveOSInput>
-    updateMany?: Enumerable<PreventiveActionUpdateManyWithWhereWithoutPreventiveOSInput>
-    deleteMany?: Enumerable<PreventiveActionScalarWhereInput>
-  }
-
   export type WorkerUncheckedUpdateManyWithoutPreventiveOsNestedInput = {
     create?: XOR<Enumerable<WorkerCreateWithoutPreventiveOsInput>, Enumerable<WorkerUncheckedCreateWithoutPreventiveOsInput>>
     connectOrCreate?: Enumerable<WorkerCreateOrConnectWithoutPreventiveOsInput>
@@ -8781,6 +9161,19 @@ export namespace Prisma {
     update?: Enumerable<WorkerUpdateWithWhereUniqueWithoutPreventiveOsInput>
     updateMany?: Enumerable<WorkerUpdateManyWithWhereWithoutPreventiveOsInput>
     deleteMany?: Enumerable<WorkerScalarWhereInput>
+  }
+
+  export type PreventiveActionUncheckedUpdateManyWithoutPreventiveOSNestedInput = {
+    create?: XOR<Enumerable<PreventiveActionCreateWithoutPreventiveOSInput>, Enumerable<PreventiveActionUncheckedCreateWithoutPreventiveOSInput>>
+    connectOrCreate?: Enumerable<PreventiveActionCreateOrConnectWithoutPreventiveOSInput>
+    upsert?: Enumerable<PreventiveActionUpsertWithWhereUniqueWithoutPreventiveOSInput>
+    set?: Enumerable<PreventiveActionWhereUniqueInput>
+    disconnect?: Enumerable<PreventiveActionWhereUniqueInput>
+    delete?: Enumerable<PreventiveActionWhereUniqueInput>
+    connect?: Enumerable<PreventiveActionWhereUniqueInput>
+    update?: Enumerable<PreventiveActionUpdateWithWhereUniqueWithoutPreventiveOSInput>
+    updateMany?: Enumerable<PreventiveActionUpdateManyWithWhereWithoutPreventiveOSInput>
+    deleteMany?: Enumerable<PreventiveActionScalarWhereInput>
   }
 
   export type PreventiveActionTakenUncheckedUpdateManyWithoutOsNestedInput = {
@@ -8798,8 +9191,8 @@ export namespace Prisma {
 
   export type NestedIntFilter = {
     equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
+    in?: Enumerable<number> | number
+    notIn?: Enumerable<number> | number
     lt?: number
     lte?: number
     gt?: number
@@ -8809,8 +9202,8 @@ export namespace Prisma {
 
   export type NestedStringFilter = {
     equals?: string
-    in?: Enumerable<string>
-    notIn?: Enumerable<string>
+    in?: Enumerable<string> | string
+    notIn?: Enumerable<string> | string
     lt?: string
     lte?: string
     gt?: string
@@ -8823,8 +9216,8 @@ export namespace Prisma {
 
   export type NestedIntWithAggregatesFilter = {
     equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
+    in?: Enumerable<number> | number
+    notIn?: Enumerable<number> | number
     lt?: number
     lte?: number
     gt?: number
@@ -8839,8 +9232,8 @@ export namespace Prisma {
 
   export type NestedFloatFilter = {
     equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
+    in?: Enumerable<number> | number
+    notIn?: Enumerable<number> | number
     lt?: number
     lte?: number
     gt?: number
@@ -8850,8 +9243,8 @@ export namespace Prisma {
 
   export type NestedStringWithAggregatesFilter = {
     equals?: string
-    in?: Enumerable<string>
-    notIn?: Enumerable<string>
+    in?: Enumerable<string> | string
+    notIn?: Enumerable<string> | string
     lt?: string
     lte?: string
     gt?: string
@@ -8867,8 +9260,8 @@ export namespace Prisma {
 
   export type NestedDateTimeFilter = {
     equals?: Date | string
-    in?: Enumerable<Date> | Enumerable<string>
-    notIn?: Enumerable<Date> | Enumerable<string>
+    in?: Enumerable<Date> | Enumerable<string> | Date | string
+    notIn?: Enumerable<Date> | Enumerable<string> | Date | string
     lt?: Date | string
     lte?: Date | string
     gt?: Date | string
@@ -8878,8 +9271,8 @@ export namespace Prisma {
 
   export type NestedDateTimeWithAggregatesFilter = {
     equals?: Date | string
-    in?: Enumerable<Date> | Enumerable<string>
-    notIn?: Enumerable<Date> | Enumerable<string>
+    in?: Enumerable<Date> | Enumerable<string> | Date | string
+    notIn?: Enumerable<Date> | Enumerable<string> | Date | string
     lt?: Date | string
     lte?: Date | string
     gt?: Date | string
@@ -8892,8 +9285,8 @@ export namespace Prisma {
 
   export type NestedIntNullableFilter = {
     equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
+    in?: Enumerable<number> | number | null
+    notIn?: Enumerable<number> | number | null
     lt?: number
     lte?: number
     gt?: number
@@ -8908,8 +9301,8 @@ export namespace Prisma {
 
   export type NestedIntNullableWithAggregatesFilter = {
     equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
+    in?: Enumerable<number> | number | null
+    notIn?: Enumerable<number> | number | null
     lt?: number
     lte?: number
     gt?: number
@@ -8924,8 +9317,8 @@ export namespace Prisma {
 
   export type NestedFloatNullableFilter = {
     equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
+    in?: Enumerable<number> | number | null
+    notIn?: Enumerable<number> | number | null
     lt?: number
     lte?: number
     gt?: number
@@ -8943,8 +9336,8 @@ export namespace Prisma {
 
   export type NestedDateTimeNullableFilter = {
     equals?: Date | string | null
-    in?: Enumerable<Date> | Enumerable<string> | null
-    notIn?: Enumerable<Date> | Enumerable<string> | null
+    in?: Enumerable<Date> | Enumerable<string> | Date | string | null
+    notIn?: Enumerable<Date> | Enumerable<string> | Date | string | null
     lt?: Date | string
     lte?: Date | string
     gt?: Date | string
@@ -8959,8 +9352,8 @@ export namespace Prisma {
 
   export type NestedDateTimeNullableWithAggregatesFilter = {
     equals?: Date | string | null
-    in?: Enumerable<Date> | Enumerable<string> | null
-    notIn?: Enumerable<Date> | Enumerable<string> | null
+    in?: Enumerable<Date> | Enumerable<string> | Date | string | null
+    notIn?: Enumerable<Date> | Enumerable<string> | Date | string | null
     lt?: Date | string
     lte?: Date | string
     gt?: Date | string
@@ -8982,29 +9375,29 @@ export namespace Prisma {
   export type PreventiveOSCreateWithoutNatureInput = {
     weekCode: string
     date?: Date | string | null
-    actions?: PreventiveActionCreateNestedManyWithoutPreventiveOSInput
-    actionsUniqueKey: string
     duration?: number | null
     concluded?: boolean | null
     startTime?: Date | string | null
     finishTime?: Date | string | null
+    actionsUniqueKey: string
     machine: MachineCreateNestedOneWithoutPreventiveOSInput
     responsible?: WorkerCreateNestedManyWithoutPreventiveOsInput
+    actions?: PreventiveActionCreateNestedManyWithoutPreventiveOSInput
     actionsTaken?: PreventiveActionTakenCreateNestedManyWithoutOsInput
   }
 
   export type PreventiveOSUncheckedCreateWithoutNatureInput = {
     id?: number
-    machineId: number
     weekCode: string
     date?: Date | string | null
-    actions?: PreventiveActionUncheckedCreateNestedManyWithoutPreventiveOSInput
-    actionsUniqueKey: string
     duration?: number | null
     concluded?: boolean | null
     startTime?: Date | string | null
     finishTime?: Date | string | null
+    machineId: number
+    actionsUniqueKey: string
     responsible?: WorkerUncheckedCreateNestedManyWithoutPreventiveOsInput
+    actions?: PreventiveActionUncheckedCreateNestedManyWithoutPreventiveOSInput
     actionsTaken?: PreventiveActionTakenUncheckedCreateNestedManyWithoutOsInput
   }
 
@@ -9062,15 +9455,15 @@ export namespace Prisma {
     OR?: Enumerable<PreventiveOSScalarWhereInput>
     NOT?: Enumerable<PreventiveOSScalarWhereInput>
     id?: IntFilter | number
-    machineId?: IntFilter | number
     weekCode?: StringFilter | string
     date?: DateTimeNullableFilter | Date | string | null
     natureId?: IntFilter | number
-    actionsUniqueKey?: StringFilter | string
     duration?: IntNullableFilter | number | null
     concluded?: BoolNullableFilter | boolean | null
     startTime?: DateTimeNullableFilter | Date | string | null
     finishTime?: DateTimeNullableFilter | Date | string | null
+    machineId?: IntFilter | number
+    actionsUniqueKey?: StringFilter | string
   }
 
   export type PreventiveActionUpsertWithWhereUniqueWithoutNatureInput = {
@@ -9107,14 +9500,14 @@ export namespace Prisma {
   export type PreventiveOSCreateWithoutMachineInput = {
     weekCode: string
     date?: Date | string | null
-    actions?: PreventiveActionCreateNestedManyWithoutPreventiveOSInput
-    actionsUniqueKey: string
     duration?: number | null
     concluded?: boolean | null
     startTime?: Date | string | null
     finishTime?: Date | string | null
+    actionsUniqueKey: string
     nature: NatureCreateNestedOneWithoutPreventiveOSInput
     responsible?: WorkerCreateNestedManyWithoutPreventiveOsInput
+    actions?: PreventiveActionCreateNestedManyWithoutPreventiveOSInput
     actionsTaken?: PreventiveActionTakenCreateNestedManyWithoutOsInput
   }
 
@@ -9123,13 +9516,13 @@ export namespace Prisma {
     weekCode: string
     date?: Date | string | null
     natureId: number
-    actions?: PreventiveActionUncheckedCreateNestedManyWithoutPreventiveOSInput
-    actionsUniqueKey: string
     duration?: number | null
     concluded?: boolean | null
     startTime?: Date | string | null
     finishTime?: Date | string | null
+    actionsUniqueKey: string
     responsible?: WorkerUncheckedCreateNestedManyWithoutPreventiveOsInput
+    actions?: PreventiveActionUncheckedCreateNestedManyWithoutPreventiveOSInput
     actionsTaken?: PreventiveActionTakenUncheckedCreateNestedManyWithoutOsInput
   }
 
@@ -9201,29 +9594,29 @@ export namespace Prisma {
   export type PreventiveOSCreateWithoutResponsibleInput = {
     weekCode: string
     date?: Date | string | null
-    actions?: PreventiveActionCreateNestedManyWithoutPreventiveOSInput
-    actionsUniqueKey: string
     duration?: number | null
     concluded?: boolean | null
     startTime?: Date | string | null
     finishTime?: Date | string | null
+    actionsUniqueKey: string
     nature: NatureCreateNestedOneWithoutPreventiveOSInput
     machine: MachineCreateNestedOneWithoutPreventiveOSInput
+    actions?: PreventiveActionCreateNestedManyWithoutPreventiveOSInput
     actionsTaken?: PreventiveActionTakenCreateNestedManyWithoutOsInput
   }
 
   export type PreventiveOSUncheckedCreateWithoutResponsibleInput = {
     id?: number
-    machineId: number
     weekCode: string
     date?: Date | string | null
     natureId: number
-    actions?: PreventiveActionUncheckedCreateNestedManyWithoutPreventiveOSInput
-    actionsUniqueKey: string
     duration?: number | null
     concluded?: boolean | null
     startTime?: Date | string | null
     finishTime?: Date | string | null
+    machineId: number
+    actionsUniqueKey: string
+    actions?: PreventiveActionUncheckedCreateNestedManyWithoutPreventiveOSInput
     actionsTaken?: PreventiveActionTakenUncheckedCreateNestedManyWithoutOsInput
   }
 
@@ -9279,30 +9672,30 @@ export namespace Prisma {
   export type PreventiveOSCreateWithoutActionsTakenInput = {
     weekCode: string
     date?: Date | string | null
-    actions?: PreventiveActionCreateNestedManyWithoutPreventiveOSInput
-    actionsUniqueKey: string
     duration?: number | null
     concluded?: boolean | null
     startTime?: Date | string | null
     finishTime?: Date | string | null
+    actionsUniqueKey: string
     nature: NatureCreateNestedOneWithoutPreventiveOSInput
     machine: MachineCreateNestedOneWithoutPreventiveOSInput
     responsible?: WorkerCreateNestedManyWithoutPreventiveOsInput
+    actions?: PreventiveActionCreateNestedManyWithoutPreventiveOSInput
   }
 
   export type PreventiveOSUncheckedCreateWithoutActionsTakenInput = {
     id?: number
-    machineId: number
     weekCode: string
     date?: Date | string | null
     natureId: number
-    actions?: PreventiveActionUncheckedCreateNestedManyWithoutPreventiveOSInput
-    actionsUniqueKey: string
     duration?: number | null
     concluded?: boolean | null
     startTime?: Date | string | null
     finishTime?: Date | string | null
+    machineId: number
+    actionsUniqueKey: string
     responsible?: WorkerUncheckedCreateNestedManyWithoutPreventiveOsInput
+    actions?: PreventiveActionUncheckedCreateNestedManyWithoutPreventiveOSInput
   }
 
   export type PreventiveOSCreateOrConnectWithoutActionsTakenInput = {
@@ -9346,30 +9739,30 @@ export namespace Prisma {
   export type PreventiveOSUpdateWithoutActionsTakenInput = {
     weekCode?: StringFieldUpdateOperationsInput | string
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    actions?: PreventiveActionUpdateManyWithoutPreventiveOSNestedInput
-    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     nature?: NatureUpdateOneRequiredWithoutPreventiveOSNestedInput
     machine?: MachineUpdateOneRequiredWithoutPreventiveOSNestedInput
     responsible?: WorkerUpdateManyWithoutPreventiveOsNestedInput
+    actions?: PreventiveActionUpdateManyWithoutPreventiveOSNestedInput
   }
 
   export type PreventiveOSUncheckedUpdateWithoutActionsTakenInput = {
     id?: IntFieldUpdateOperationsInput | number
-    machineId?: IntFieldUpdateOperationsInput | number
     weekCode?: StringFieldUpdateOperationsInput | string
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     natureId?: IntFieldUpdateOperationsInput | number
-    actions?: PreventiveActionUncheckedUpdateManyWithoutPreventiveOSNestedInput
-    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    machineId?: IntFieldUpdateOperationsInput | number
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     responsible?: WorkerUncheckedUpdateManyWithoutPreventiveOsNestedInput
+    actions?: PreventiveActionUncheckedUpdateManyWithoutPreventiveOSNestedInput
   }
 
   export type MachineCreateWithoutPreventiveActionInput = {
@@ -9395,11 +9788,11 @@ export namespace Prisma {
   export type PreventiveOSCreateWithoutActionsInput = {
     weekCode: string
     date?: Date | string | null
-    actionsUniqueKey: string
     duration?: number | null
     concluded?: boolean | null
     startTime?: Date | string | null
     finishTime?: Date | string | null
+    actionsUniqueKey: string
     nature: NatureCreateNestedOneWithoutPreventiveOSInput
     machine: MachineCreateNestedOneWithoutPreventiveOSInput
     responsible?: WorkerCreateNestedManyWithoutPreventiveOsInput
@@ -9408,15 +9801,15 @@ export namespace Prisma {
 
   export type PreventiveOSUncheckedCreateWithoutActionsInput = {
     id?: number
-    machineId: number
     weekCode: string
     date?: Date | string | null
     natureId: number
-    actionsUniqueKey: string
     duration?: number | null
     concluded?: boolean | null
     startTime?: Date | string | null
     finishTime?: Date | string | null
+    machineId: number
+    actionsUniqueKey: string
     responsible?: WorkerUncheckedCreateNestedManyWithoutPreventiveOsInput
     actionsTaken?: PreventiveActionTakenUncheckedCreateNestedManyWithoutOsInput
   }
@@ -9488,11 +9881,11 @@ export namespace Prisma {
   export type PreventiveOSUpdateWithoutActionsInput = {
     weekCode?: StringFieldUpdateOperationsInput | string
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     nature?: NatureUpdateOneRequiredWithoutPreventiveOSNestedInput
     machine?: MachineUpdateOneRequiredWithoutPreventiveOSNestedInput
     responsible?: WorkerUpdateManyWithoutPreventiveOsNestedInput
@@ -9501,15 +9894,15 @@ export namespace Prisma {
 
   export type PreventiveOSUncheckedUpdateWithoutActionsInput = {
     id?: IntFieldUpdateOperationsInput | number
-    machineId?: IntFieldUpdateOperationsInput | number
     weekCode?: StringFieldUpdateOperationsInput | string
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     natureId?: IntFieldUpdateOperationsInput | number
-    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    machineId?: IntFieldUpdateOperationsInput | number
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     responsible?: WorkerUncheckedUpdateManyWithoutPreventiveOsNestedInput
     actionsTaken?: PreventiveActionTakenUncheckedUpdateManyWithoutOsNestedInput
   }
@@ -9555,34 +9948,6 @@ export namespace Prisma {
     osId?: IntFilter | number
     actionId?: IntFilter | number
     weekCode?: StringFilter | string
-  }
-
-  export type PreventiveActionCreateWithoutPreventiveOSInput = {
-    description: string
-    excution: string
-    frequency: number
-    nextExecution: string
-    ignore?: boolean
-    machine: MachineCreateNestedOneWithoutPreventiveActionInput
-    nature: NatureCreateNestedOneWithoutPreventiveActionInput
-    actionsTaken?: PreventiveActionTakenCreateNestedManyWithoutActionInput
-  }
-
-  export type PreventiveActionUncheckedCreateWithoutPreventiveOSInput = {
-    id?: number
-    description: string
-    machineId: number
-    excution: string
-    frequency: number
-    nextExecution: string
-    natureId: number
-    ignore?: boolean
-    actionsTaken?: PreventiveActionTakenUncheckedCreateNestedManyWithoutActionInput
-  }
-
-  export type PreventiveActionCreateOrConnectWithoutPreventiveOSInput = {
-    where: PreventiveActionWhereUniqueInput
-    create: XOR<PreventiveActionCreateWithoutPreventiveOSInput, PreventiveActionUncheckedCreateWithoutPreventiveOSInput>
   }
 
   export type NatureCreateWithoutPreventiveOSInput = {
@@ -9639,6 +10004,34 @@ export namespace Prisma {
     create: XOR<WorkerCreateWithoutPreventiveOsInput, WorkerUncheckedCreateWithoutPreventiveOsInput>
   }
 
+  export type PreventiveActionCreateWithoutPreventiveOSInput = {
+    description: string
+    excution: string
+    frequency: number
+    nextExecution: string
+    ignore?: boolean
+    machine: MachineCreateNestedOneWithoutPreventiveActionInput
+    nature: NatureCreateNestedOneWithoutPreventiveActionInput
+    actionsTaken?: PreventiveActionTakenCreateNestedManyWithoutActionInput
+  }
+
+  export type PreventiveActionUncheckedCreateWithoutPreventiveOSInput = {
+    id?: number
+    description: string
+    machineId: number
+    excution: string
+    frequency: number
+    nextExecution: string
+    natureId: number
+    ignore?: boolean
+    actionsTaken?: PreventiveActionTakenUncheckedCreateNestedManyWithoutActionInput
+  }
+
+  export type PreventiveActionCreateOrConnectWithoutPreventiveOSInput = {
+    where: PreventiveActionWhereUniqueInput
+    create: XOR<PreventiveActionCreateWithoutPreventiveOSInput, PreventiveActionUncheckedCreateWithoutPreventiveOSInput>
+  }
+
   export type PreventiveActionTakenCreateWithoutOsInput = {
     date: Date | string
     weekCode: string
@@ -9655,22 +10048,6 @@ export namespace Prisma {
   export type PreventiveActionTakenCreateOrConnectWithoutOsInput = {
     where: PreventiveActionTakenWhereUniqueInput
     create: XOR<PreventiveActionTakenCreateWithoutOsInput, PreventiveActionTakenUncheckedCreateWithoutOsInput>
-  }
-
-  export type PreventiveActionUpsertWithWhereUniqueWithoutPreventiveOSInput = {
-    where: PreventiveActionWhereUniqueInput
-    update: XOR<PreventiveActionUpdateWithoutPreventiveOSInput, PreventiveActionUncheckedUpdateWithoutPreventiveOSInput>
-    create: XOR<PreventiveActionCreateWithoutPreventiveOSInput, PreventiveActionUncheckedCreateWithoutPreventiveOSInput>
-  }
-
-  export type PreventiveActionUpdateWithWhereUniqueWithoutPreventiveOSInput = {
-    where: PreventiveActionWhereUniqueInput
-    data: XOR<PreventiveActionUpdateWithoutPreventiveOSInput, PreventiveActionUncheckedUpdateWithoutPreventiveOSInput>
-  }
-
-  export type PreventiveActionUpdateManyWithWhereWithoutPreventiveOSInput = {
-    where: PreventiveActionScalarWhereInput
-    data: XOR<PreventiveActionUpdateManyMutationInput, PreventiveActionUncheckedUpdateManyWithoutActionsInput>
   }
 
   export type NatureUpsertWithoutPreventiveOSInput = {
@@ -9735,6 +10112,22 @@ export namespace Prisma {
     class?: StringFilter | string
   }
 
+  export type PreventiveActionUpsertWithWhereUniqueWithoutPreventiveOSInput = {
+    where: PreventiveActionWhereUniqueInput
+    update: XOR<PreventiveActionUpdateWithoutPreventiveOSInput, PreventiveActionUncheckedUpdateWithoutPreventiveOSInput>
+    create: XOR<PreventiveActionCreateWithoutPreventiveOSInput, PreventiveActionUncheckedCreateWithoutPreventiveOSInput>
+  }
+
+  export type PreventiveActionUpdateWithWhereUniqueWithoutPreventiveOSInput = {
+    where: PreventiveActionWhereUniqueInput
+    data: XOR<PreventiveActionUpdateWithoutPreventiveOSInput, PreventiveActionUncheckedUpdateWithoutPreventiveOSInput>
+  }
+
+  export type PreventiveActionUpdateManyWithWhereWithoutPreventiveOSInput = {
+    where: PreventiveActionScalarWhereInput
+    data: XOR<PreventiveActionUpdateManyMutationInput, PreventiveActionUncheckedUpdateManyWithoutActionsInput>
+  }
+
   export type PreventiveActionTakenUpsertWithWhereUniqueWithoutOsInput = {
     where: PreventiveActionTakenWhereUniqueInput
     update: XOR<PreventiveActionTakenUpdateWithoutOsInput, PreventiveActionTakenUncheckedUpdateWithoutOsInput>
@@ -9754,42 +10147,42 @@ export namespace Prisma {
   export type PreventiveOSUpdateWithoutNatureInput = {
     weekCode?: StringFieldUpdateOperationsInput | string
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    actions?: PreventiveActionUpdateManyWithoutPreventiveOSNestedInput
-    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     machine?: MachineUpdateOneRequiredWithoutPreventiveOSNestedInput
     responsible?: WorkerUpdateManyWithoutPreventiveOsNestedInput
+    actions?: PreventiveActionUpdateManyWithoutPreventiveOSNestedInput
     actionsTaken?: PreventiveActionTakenUpdateManyWithoutOsNestedInput
   }
 
   export type PreventiveOSUncheckedUpdateWithoutNatureInput = {
     id?: IntFieldUpdateOperationsInput | number
-    machineId?: IntFieldUpdateOperationsInput | number
     weekCode?: StringFieldUpdateOperationsInput | string
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    actions?: PreventiveActionUncheckedUpdateManyWithoutPreventiveOSNestedInput
-    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    machineId?: IntFieldUpdateOperationsInput | number
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     responsible?: WorkerUncheckedUpdateManyWithoutPreventiveOsNestedInput
+    actions?: PreventiveActionUncheckedUpdateManyWithoutPreventiveOSNestedInput
     actionsTaken?: PreventiveActionTakenUncheckedUpdateManyWithoutOsNestedInput
   }
 
   export type PreventiveOSUncheckedUpdateManyWithoutPreventiveOSInput = {
     id?: IntFieldUpdateOperationsInput | number
-    machineId?: IntFieldUpdateOperationsInput | number
     weekCode?: StringFieldUpdateOperationsInput | string
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    machineId?: IntFieldUpdateOperationsInput | number
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
   }
 
   export type PreventiveActionUpdateWithoutNatureInput = {
@@ -9829,14 +10222,14 @@ export namespace Prisma {
   export type PreventiveOSUpdateWithoutMachineInput = {
     weekCode?: StringFieldUpdateOperationsInput | string
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    actions?: PreventiveActionUpdateManyWithoutPreventiveOSNestedInput
-    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     nature?: NatureUpdateOneRequiredWithoutPreventiveOSNestedInput
     responsible?: WorkerUpdateManyWithoutPreventiveOsNestedInput
+    actions?: PreventiveActionUpdateManyWithoutPreventiveOSNestedInput
     actionsTaken?: PreventiveActionTakenUpdateManyWithoutOsNestedInput
   }
 
@@ -9845,13 +10238,13 @@ export namespace Prisma {
     weekCode?: StringFieldUpdateOperationsInput | string
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     natureId?: IntFieldUpdateOperationsInput | number
-    actions?: PreventiveActionUncheckedUpdateManyWithoutPreventiveOSNestedInput
-    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     responsible?: WorkerUncheckedUpdateManyWithoutPreventiveOsNestedInput
+    actions?: PreventiveActionUncheckedUpdateManyWithoutPreventiveOSNestedInput
     actionsTaken?: PreventiveActionTakenUncheckedUpdateManyWithoutOsNestedInput
   }
 
@@ -9881,43 +10274,43 @@ export namespace Prisma {
   export type PreventiveOSUpdateWithoutResponsibleInput = {
     weekCode?: StringFieldUpdateOperationsInput | string
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    actions?: PreventiveActionUpdateManyWithoutPreventiveOSNestedInput
-    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     nature?: NatureUpdateOneRequiredWithoutPreventiveOSNestedInput
     machine?: MachineUpdateOneRequiredWithoutPreventiveOSNestedInput
+    actions?: PreventiveActionUpdateManyWithoutPreventiveOSNestedInput
     actionsTaken?: PreventiveActionTakenUpdateManyWithoutOsNestedInput
   }
 
   export type PreventiveOSUncheckedUpdateWithoutResponsibleInput = {
     id?: IntFieldUpdateOperationsInput | number
-    machineId?: IntFieldUpdateOperationsInput | number
     weekCode?: StringFieldUpdateOperationsInput | string
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     natureId?: IntFieldUpdateOperationsInput | number
-    actions?: PreventiveActionUncheckedUpdateManyWithoutPreventiveOSNestedInput
-    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    machineId?: IntFieldUpdateOperationsInput | number
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
+    actions?: PreventiveActionUncheckedUpdateManyWithoutPreventiveOSNestedInput
     actionsTaken?: PreventiveActionTakenUncheckedUpdateManyWithoutOsNestedInput
   }
 
   export type PreventiveOSUncheckedUpdateManyWithoutPreventiveOsInput = {
     id?: IntFieldUpdateOperationsInput | number
-    machineId?: IntFieldUpdateOperationsInput | number
     weekCode?: StringFieldUpdateOperationsInput | string
     date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     natureId?: IntFieldUpdateOperationsInput | number
-    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     concluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    machineId?: IntFieldUpdateOperationsInput | number
+    actionsUniqueKey?: StringFieldUpdateOperationsInput | string
   }
 
   export type PreventiveActionTakenUpdateWithoutActionInput = {
@@ -9938,6 +10331,26 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     osId?: IntFieldUpdateOperationsInput | number
     weekCode?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type WorkerUpdateWithoutPreventiveOsInput = {
+    registration?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    class?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type WorkerUncheckedUpdateWithoutPreventiveOsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    registration?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    class?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type WorkerUncheckedUpdateManyWithoutResponsibleInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    registration?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    class?: StringFieldUpdateOperationsInput | string
   }
 
   export type PreventiveActionUpdateWithoutPreventiveOSInput = {
@@ -9972,26 +10385,6 @@ export namespace Prisma {
     nextExecution?: StringFieldUpdateOperationsInput | string
     natureId?: IntFieldUpdateOperationsInput | number
     ignore?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type WorkerUpdateWithoutPreventiveOsInput = {
-    registration?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    class?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type WorkerUncheckedUpdateWithoutPreventiveOsInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    registration?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    class?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type WorkerUncheckedUpdateManyWithoutResponsibleInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    registration?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    class?: StringFieldUpdateOperationsInput | string
   }
 
   export type PreventiveActionTakenUpdateWithoutOsInput = {

@@ -13,9 +13,9 @@ export function Routes() {
   return (
     <PagesContextProvider>
       <DialogContextProvider>
-        <NavBar />
+        {/* <NavBar /> */}
         <div className='h-page w-[100%] flex flex-row'>
-          <SideMenu />
+          {/* <SideMenu /> */}
           <AppRoutes />
           <ToastProvider />
           <Dialogs />

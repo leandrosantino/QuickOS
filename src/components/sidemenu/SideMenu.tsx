@@ -34,7 +34,7 @@ export function SideMenu() {
       <SideMenuTitle reduced={reduced} />
 
       <div className='mt-2'>
-        
+
       {/* <button
         className="bg-gray-100 w-10 h-4"
         onClick={()=>backPage()}
@@ -42,13 +42,13 @@ export function SideMenu() {
         voltar
       </button> */}
 
-        <SideMenuPageButton
+        {/* <SideMenuPageButton
           reduced={reduced}
           Icon={IoBarChartSharp}
           activated={currentPage === "Dashboard"}
           title="Dashboard"
           onclick={() => goToPage<HomeProps>('Dashboard', { nome: 'Leandro' })}
-        />
+        /> */}
         <SideMenuPageButton
           reduced={reduced}
           Icon={BsFillCalendar2CheckFill}

@@ -25,7 +25,7 @@ export function NavBar() {
   }, [])
 
   return (
-    <nav className='drag h-navBar w-screen bg-gray-900 flex flex-row justify-between text-gray-300'>
+    <nav className='drag h-navBar w-screen bg-zinc-900 flex flex-row justify-between text-zinc-300'>
 
       <div className=' w-1/3 h-[100%] flex justify-start'>
         <button
@@ -34,13 +34,13 @@ export function NavBar() {
         >
           <VscMenu />
         </button>
-        <header className='no-drag flex text-[10pt] justify-center items-center py-1 text-white-500'>
+        {/* <header className='no-drag flex text-[10pt] justify-center items-center py-1 text-white-500'>
           <PageNameLink page={currentPage}/>
-        </header>
+        </header> */}
       </div>
-      
+
       <header className='w-1/3 flex text-[10pt] justify-center items-center py-1 text-white-500'>
-        Quick OS
+        App Preventivas
       </header>
 
       <div className='h-[100%] w-1/3 flex flex-row justify-end'>

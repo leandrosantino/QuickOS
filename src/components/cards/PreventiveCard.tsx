@@ -35,14 +35,15 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
 
   return (
     <div
-      className='
+      className={`
         w-full h-full p-2
         flex flex-warp flex-col
         justify-start items-center
-        shadow-md rounded-2xl
-        bg-gray-400
-        text-gray-900
-      '
+        shadow-lg rounded-2xl
+        bg-zinc-100
+        text-zinc-900
+        ${data.concluded ?'border-2 border-green-500 bg-green-400/5 ':'border border-zinc-500'}
+      `}
     >
       <header
         className={`
@@ -142,7 +143,7 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
               {
                 data.concluded ?
                   <InputButton
-                    title='Imprimir'
+                    title=''
                     className="text-gray-100 bg-green-500 "
                     Icon={BsPrinterFill}
                     onClick={() => {
@@ -152,15 +153,15 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
                   <>
                     <InputButton
                       title='Execultar'
-                      className="text-gray-100 bg-yellow-500 mr-2"
+                      className="text-gray-100 bg-orange-500 mr-2"
                       Icon={VscSaveAs}
                       onClick={() => {
                         goToPage('Preventive.Plan.Calendar.ServiceOrders.Execute', { id: data.id })
                       }}
                     />
                     <InputButton
-                      title='Imprimir'
-                      className="text-gray-100 bg-orange-500 "
+                      title=''
+                      className="text-gray-100 bg-zinc-500 "
                       Icon={BsPrinterFill}
                       onClick={() => {
                         ipc.send('printServiceOrder', data)

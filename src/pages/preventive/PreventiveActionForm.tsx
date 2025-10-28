@@ -25,6 +25,8 @@ import {
   ActionsInfoTypeWithActonsTaken
 } from '../../utils/schemas'
 import { CheckBox } from '../../components/forms/CheckBox';
+import { getWeek } from 'date-fns';
+import { incrementWeekYear, weekYearToString } from '@/utils/weekTools';
 
 interface PreventiveActionFormProps {
   id?: number;
@@ -73,7 +75,16 @@ export function PreventiveActionForm({ id, data, onBack }: PreventiveActionFormP
     setExecution('')
   }
 
+  useEffect(() => {
+    const now = new Date()
+    const currentYear = now.getFullYear()
+    const currentWeek = getWeek(now)
+    const {week, year} = incrementWeekYear(currentWeek, currentYear, frequency)
+    setNextExecution(weekYearToString(week, year))
+  }, [frequency])
+
   function handleActionCreate(actionInfo: ActionsInfoType) {
+    console.log(actionInfo)
     return new Promise((resolve, reject) => {
       saveAction.mutateAsync(actionInfo)
         .then((resp: any) => {
@@ -139,7 +150,10 @@ export function PreventiveActionForm({ id, data, onBack }: PreventiveActionFormP
 
     try {
       const actionInfo = actionInfoSchema.parse(actionData)
-      dialogQuestion('Atenção!', 'Realmente deseja salvar as alterações??',
+      dialogQuestion('Atenção!', `
+        Realmente deseja salvar as alterações?? <br>
+        <strong style="color: #e1401e;" >Lembre-se de verificar a semana da proxima execução!!</strong>
+      `,
         () => {
           toast.promise(() => {
             return id ?
@@ -183,7 +197,7 @@ export function PreventiveActionForm({ id, data, onBack }: PreventiveActionFormP
       <div
         className="
           w-full h-full p-5 pb-5
-          bg-gray-200 z-50
+          bg-[#fff] z-50
           rounded-3xl
         "
       >

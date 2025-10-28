@@ -9,10 +9,10 @@ export function PageHeader({ title, children }: PageHeaderProps) {
   return (
     <div
       className="
-        w-full h-14 
+        w-full h-14
         flex items-center justify-start
-        border-b-2 border-gray-900
-        indent-5 text-gray-900 text-2xl font-medium
+        border-b-2 border-zinc-900
+        indent-5 text-zinc-900 text-2xl font-medium
       "
     >
       <div

@@ -12,17 +12,17 @@
   "scripts": {
     "react": "craco start",
     "react:build": "craco build ",
-    "electron:build": "set NODE_ENV=production && webpack --progress",
-    "electron:build:dev": "set NODE_ENV=development && webpack --progress ",
-    "app": "cls && npm run electron:build:dev && cls && electron . && cls",
+    "electron:build": "webpack --progress",
+    "app": "bun run electron:build && electron .",
     "dist": "craco build && npm run electron:build && electron-builder -w -c.extraMetadata.main=build/main.js",
     "server": "tsx watch ./server/index.ts",
-    "dbstudio": "npx prisma studio",
+    "dbstudio": "prisma studio",
     "seed": "tsx prisma/seed/seed.ts",
-    "dbmigrate": "npx prisma migrate dev"
+    "dbmigrate": "prisma migrate dev",
+    "build": "electron-builder -w -c.extraMetadata.main=build/main.js"
   },
   "prisma": {
-    "seed": "npm run seed"
+    "seed": "bun run seed"
   },
   "build": {
     "asar": true,

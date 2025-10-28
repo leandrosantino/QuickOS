@@ -15,9 +15,11 @@ export function InputButton({ onClick, Icon, title, className, type }: InputButt
 			type={type}
 			onClick={() => onClick?onClick():{}}
 			className={`
-				py-1 px-1.5 
+				py-1 px-1.5
+				min-h-[28px] min-w-[45px]
+				font-medium
 				flex justify-center items-center rounded-lg
-        		hover:opacity-90 active:opacity-80 
+        		hover:opacity-90 active:opacity-80
 			` + className}
 		>
 			{

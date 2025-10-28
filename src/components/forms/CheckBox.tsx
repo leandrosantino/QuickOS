@@ -15,7 +15,7 @@ export function CheckBox({ title, className, checked, onChange, fontSize }: Inpu
     return (
         <div
             className={`
-				py-1 px-1.5 
+				py-1 px-1.5
 				flex justify-center items-center rounded-lg
 			` + className}
         >
@@ -34,8 +34,8 @@ export function CheckBox({ title, className, checked, onChange, fontSize }: Inpu
                 <Switch
                     onColor={theme.red[400]}
                     onHandleColor={theme.red[600]}
-                    offColor={theme.gray[400]}
-                    offHandleColor={theme.gray[500]}
+                    offColor={'#a1a1aa'}
+                    offHandleColor={'#71717a'}
                     checkedIcon={false}
                     uncheckedIcon={false}
                     handleDiameter={20}

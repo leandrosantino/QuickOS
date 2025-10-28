@@ -1,26 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PageHeader } from "../../../components/PageHeader";
 import { usePages } from "../../../hooks/usePages";
 
 import { api } from '../../../utils/trpc'
+import { getWeek, set } from "date-fns";
+import { is } from "date-fns/locale";
 
 export function WeekCalendar() {
 
   const { goToPage } = usePages()
 
-  const [year, setYear] = useState<number>(2023)
+  const [year, setYear] = useState<number>(new Date().getFullYear())
 
   const semanas = new Array<string>(52).fill('teste')
 
   return (
     <div
       className="
-        w-full h-[100%]
+        w-full h-tabPage
         px-5
       "
     >
 
-      <PageHeader title={'Calendário Semanal - ' + year} >
+      <PageHeader title="Calendário de Preventivas" >
         <div
           className="flex flex-row justify-center items-center"
         >
@@ -35,13 +37,29 @@ export function WeekCalendar() {
             minLength={4}
             onChange={(e) => setYear(Number(e.target.value))}
             className={`
-              w-1/3 h-full text-center text-lg
-              bg-transparent
-              border-gray-900 border-b indent-2
+              h-full text-center text-lg p-1 w-24
+              rounded-md
+              border-zinc-700 border
             `}
           />
         </div>
       </PageHeader>
+
+      <div className="p-1 flex items-center" >
+        <span className="font-medium mr-3" >Legenda:</span>
+        <div className="flex p-1 justify-center items-center gap-1" >
+          <div className="bg-zinc-500 w-5 h-5 rounded-full" ></div>
+          <span className="mr-2" >Pendente</span>
+        </div>
+        <div className="flex p-1 justify-center items-center gap-1" >
+          <div className="bg-orange-500 w-5 h-5 rounded-full" ></div>
+          <span className="mr-2" >Atrazado</span>
+        </div>
+        <div className="flex p-1 justify-center items-center gap-1" >
+          <div className="bg-green-500 w-5 h-5 rounded-full" ></div>
+          <span className="mr-2" >Concluído</span>
+        </div>
+      </div>
 
       <div
         className="
@@ -76,29 +94,38 @@ interface WeekCardType {
 function WeekCard({ week, year, onClick }: WeekCardType) {
 
   const { data } = api.preventive.getcountPreventiveOs.useQuery({ week, year })
+  const [isDefeated, setIsDefeated] = useState<boolean>(false)
+  const [percent, setPercent] = useState<number>(0)
 
-  function getPecernt() {
+  useEffect(() => {
+    setIsDefeated(false)
     let value: number = 0
+    const now = new Date()
+    const currentYear = now.getFullYear()
+    const currentWeek = getWeek(now)
+
     if (data) {
       if (data?.unfinished > 0 || data?.finished > 0) {
         value = data.finished === 0 ? 0 : (data.finished / (data.finished + data.unfinished)) * 100
+        if(year < currentYear) setIsDefeated(true)
+        if(year === currentYear && week < currentWeek) setIsDefeated(true)
       }
     }
-    return Math.round(value)
-  }
-
-  const percent = getPecernt()
+    setPercent(Math.round(value))
+  }, [week, year, data])
 
   return (
     <div
       className="
-        w-full h-full 
-        bg-gray-300 rounded-md
+        w-full h-full
+        bg-zinc-200 rounded-md
         flex flex-col justify-center items-center
         font-medium text-xl
         cursor-pointer
         active:bg-opacity-90
         hover:bg-opacity-70
+        shadow-md border border-zinc-500
+        overflow-auto
       "
       onClick={() => onClick()}
     >
@@ -111,9 +138,9 @@ function WeekCard({ week, year, onClick }: WeekCardType) {
         {week}
       </div>
       <div
-        className={`  
+        className={`
           w-full h-1.5
-          bg-gray-500
+          ${isDefeated ? 'bg-orange-500' : 'bg-zinc-500'}
         `}
       >
         <div

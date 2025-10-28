@@ -13,18 +13,20 @@ import { printServiceOrder } from "./ipc.routes/printServiceOrder";
 async function main() {
 
     const window = windowCreator({
-        title: 'QuikOs',
-        width: 1300,
-        height: 650,
+        title: 'Gestão de OS Preventiva',
+        width: 1280,
+        height: 720,
         devTools: isDev,
         maximizable: true,
         minimizable: true,
-        frame: false,
+        frame: true,
         resizable: true,
         url: isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, "./index.html")}`,
         icon: '',
         maximize: true,
     }).load()
+
+    window.setMenuBarVisibility(false)
 
     const routes = useRoutes({ window, ipcMain })
 

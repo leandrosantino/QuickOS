@@ -10,25 +10,20 @@ interface PageModalContainerProps {
 
 export function PageModalContainer({ children, onClick, width ,height }: PageModalContainerProps) {
 
-  const { sideMenuIsReduce } = usePages()
-
   return (
     <>
       <div
         className={`
-          h-tabPage 
-          absolute top-[58px] z-40
+          h-full
+          w-screen
+          absolute top-0 left-0
           flex justify-center items-center
-          ${sideMenuIsReduce ?
-            'w-[calc(100vw-50px)] left-[50px]' :
-            'w-[calc(100vw-208px)] lg1:w-test xl:w-[calc(100vw-216px)] xl:left-[216px] left-[208px]'
-          }
         `}
       >
 
         <div
           className='
-            w-full h-full 
+            w-full h-full
             bg-gray-900 bg-opacity-50
           '
           onClick={onClick}

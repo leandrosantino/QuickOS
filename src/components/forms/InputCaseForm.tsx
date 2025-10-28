@@ -13,7 +13,7 @@ export function InputCaseForm({ children, labelName, className }: InputCaseFormP
       className={`
       min-w-[100px] h-16
       flex flex-col justify-center items-start
-      border-b border-gray-900
+      border-b border-zinc-900
     ` + className}
     >
 

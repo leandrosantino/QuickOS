@@ -72,21 +72,22 @@ model PreventiveAction {
 
 model PreventiveOS {
   id               Int                @id @default(autoincrement())
-  machineId        Int
   weekCode         String
   date             DateTime?
   natureId         Int
-  actions          PreventiveAction[]
-  actionsUniqueKey String
   duration         Int?
   concluded        Boolean?           @default(false)
   startTime        DateTime?
   finishTime       DateTime?
 
+  machineId        Int
+
   nature      Nature   @relation(fields: [natureId], references: [id])
   machine     Machine  @relation(fields: [machineId], references: [id])
   responsible Worker[]
 
+  actions          PreventiveAction[]
+  actionsUniqueKey String
   actionsTaken PreventiveActionTaken[]
 
   @@unique([machineId, natureId, weekCode, actionsUniqueKey])

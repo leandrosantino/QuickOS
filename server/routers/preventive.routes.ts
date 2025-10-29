@@ -16,6 +16,7 @@ import {
 } from '../../schemas/preventive'
 
 import { weekYearToString } from '../utils/weekTools'
+import { differenceInMinutes } from 'date-fns'
 
 const t = initTRPC.create()
 
@@ -44,6 +45,7 @@ export const preventive = t.router({
                     include: {
                         nature: true,
                         machine: true,
+                        responsible: true,
                         actions: {
                             include: {
                                 nature: true, machine: true
@@ -70,17 +72,31 @@ export const preventive = t.router({
     updateServiceOrder: t.procedure
         .input(z.object({
             id: z.number(),
-            data: z.object({
-                date: z.date(),
-                responsibleId: z.number(),
-            }),
+            data: executeServiceOrdersParamsSchema.omit({ id: true }),
         }))
         .output(SuccessResponseSchema)
         .mutation(async ({ input }) => {
             try {
+                console.log(input)
+                const { id, data: { date, workers, finishTime, startTime } } = input
+                const duration = differenceInMinutes(new Date(finishTime), new Date(startTime))
                 await prisma.preventiveOS.update({
-                    where: { id: input.id },
-                    data: input.data
+                    where: {
+                        id
+                    },
+                    data: {
+                        date: new Date(date),
+                        responsible: {
+                            connect: workers.map(({ id }) => ({ id }))
+                        },
+                        duration,
+                        startTime: new Date(startTime),
+                        finishTime: new Date(finishTime),
+                        concluded: true
+                    },
+                    include: {
+                        actions: {}
+                    }
                 })
                 return successResponse()
             } catch (error) {

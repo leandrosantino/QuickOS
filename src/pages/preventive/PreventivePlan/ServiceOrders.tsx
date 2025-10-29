@@ -42,7 +42,8 @@ export function ServiceOrders({ _week, _year }: type) {
   const natures = api.main.getNatures.useQuery()
 
   useEffect(() => {
-    refetch()
+    // refetch()
+    console.log(data)
   }, [data, refetch])
 
 

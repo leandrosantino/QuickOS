@@ -89,7 +89,7 @@ export const serviceOrdersSchema = z.object({
 
 export type ServiceOrderType = z.infer<typeof serviceOrdersSchema>
 
-export const executePreventiveServiceOrderSchema = z.object({
+const savePreventiveServiceOrderSchema = z.object({
     id: z.number(),
     date: z.date({ invalid_type_error: 'A data informada é inválida !!' })
         .transform(value => String(value)),
@@ -103,6 +103,10 @@ export const executePreventiveServiceOrderSchema = z.object({
     workers: z.array(z.object({ id: z.number() }))
         .refine(workers => workers.length >= 1, 'Informe no mínimo 1 Manutencista!')
 })
+
+export const updatePreventiveServiceOrderSchema = savePreventiveServiceOrderSchema.omit({ id: true })
+
+export const executePreventiveServiceOrderSchema = savePreventiveServiceOrderSchema
     .refine(data => differenceInMinutes(new Date(data.finishTime), new Date(data.startTime)) >= 1,
         { message: 'A hora de final precisa ser maior que a hora de início!' })
 

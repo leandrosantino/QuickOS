@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { VscDebugBreakpointLogUnverified, VscDebugBreakpointLog, VscSaveAs } from 'react-icons/vsc'
+import { VscDebugBreakpointLogUnverified, VscDebugBreakpointLog, VscSaveAs, VscEdit } from 'react-icons/vsc'
 import { BsPrinterFill } from 'react-icons/bs'
 import { InputButton } from '../forms/InputButton'
 import { ServiceOrderType } from '../../utils/schemas'
@@ -141,15 +141,24 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
               w-1/2 flex justify-end items-center font-bold
             `} >
               {
-                data.concluded ?
-                  <InputButton
-                    title=''
-                    className="text-gray-100 bg-green-500 "
-                    Icon={BsPrinterFill}
-                    onClick={() => {
-                      ipc.send('printServiceOrder', data)
-                    }}
-                  /> :
+                data.concluded ?<>
+                    <InputButton
+                      title=''
+                      className="text-gray-100 bg-green-500 mr-2"
+                      Icon={VscEdit}
+                      onClick={() => {
+                        goToPage('Preventive.Plan.Calendar.ServiceOrders.Execute', { id: data.id })
+                      }}
+                    />
+                    <InputButton
+                      title=''
+                      className="text-gray-100 bg-green-500 "
+                      Icon={BsPrinterFill}
+                      onClick={() => {
+                        ipc.send('printServiceOrder', data)
+                      }}
+                    />
+                  </> :
                   <>
                     <InputButton
                       title='Execultar'

@@ -1,7 +1,12 @@
+const dotenv = require('dotenv');
+dotenv.config();
+
 const path = require('path');
 const nopdeExternals = require('webpack-node-externals')
 const mode = /production/.test(String(process.env.NODE_ENV))?'production':'development'
 const tsconfigPaths = require('tsconfig-paths-webpack-plugin')
+
+console.log(mode)
 
 module.exports = {
   mode,

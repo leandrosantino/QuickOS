@@ -40,6 +40,7 @@ export default class Server {
                     include: {
                         nature: true,
                         machine: true,
+                        responsible: true,
                         actions: {
                             include: {
                                 nature: true, machine: true

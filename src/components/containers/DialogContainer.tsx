@@ -1,5 +1,4 @@
 import { ReactNode } from 'react'
-import { usePages } from '../../hooks/usePages';
 
 interface PageModalContainerProps {
   children?: ReactNode;
@@ -8,8 +7,6 @@ interface PageModalContainerProps {
 }
 
 export function DialogContainer({ children, width ,height }: PageModalContainerProps) {
-
-  const {sideMenuIsReduce} = usePages()
 
   return (
     <>

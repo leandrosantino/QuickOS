@@ -26,7 +26,7 @@ import {
 } from '../../utils/schemas'
 import { CheckBox } from '../../components/forms/CheckBox';
 import { getWeek } from 'date-fns';
-import { incrementWeekYear, weekYearToString } from '@/utils/weekTools';
+import { incrementWeekYear, weekYearToString } from '../../utils/weekTools';
 
 interface PreventiveActionFormProps {
   id?: number;

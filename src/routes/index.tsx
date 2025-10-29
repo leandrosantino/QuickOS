@@ -1,7 +1,5 @@
 import AppRoutes from '../routes/app.routes'
 
-import { NavBar } from '../components/navbar/NavBar';
-import { SideMenu } from '../components/sidemenu/SideMenu';
 import { PagesContextProvider } from '../contexts/PagesContext';
 
 import { DialogContextProvider, Dialogs } from '../contexts/DialogContext'

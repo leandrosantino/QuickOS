@@ -1,6 +1,5 @@
 import {PagesContainer, Screen} from '../contexts/PagesContext';
 
-import { Home } from '../pages/Dashboard';
 import { Preventive } from '../pages/preventive';
 import { Historic } from '../pages/corrective/Historic';
 

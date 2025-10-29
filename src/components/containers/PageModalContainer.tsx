@@ -1,5 +1,4 @@
 import { ReactNode } from 'react'
-import { usePages } from '../../hooks/usePages'
 
 interface PageModalContainerProps {
   children?: ReactNode;

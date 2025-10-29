@@ -3,8 +3,7 @@ import { PageHeader } from "../../../components/PageHeader";
 import { usePages } from "../../../hooks/usePages";
 
 import { api } from '../../../utils/trpc'
-import { getWeek, set } from "date-fns";
-import { is } from "date-fns/locale";
+import { getWeek } from "date-fns";
 
 export function WeekCalendar() {
 

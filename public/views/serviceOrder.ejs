@@ -87,8 +87,9 @@
 
         .container {
             width: 210mm;
-            min-height: 275mm;
+            min-height: 280mm;
             border: 1px solid black;
+            margin-bottom: 20px;
             padding: 20px;
         }
 
@@ -113,6 +114,8 @@
 
         .infoCase {
             margin-top: 10px;
+            height: 40px;
+            display: flex;
         }
 
         .info {
@@ -121,25 +124,28 @@
             flex-direction: row;
             justify-content: center;
             align-items: center;
-            border-bottom: 1px solid black;
+            border: 1px solid black;
         }
 
-        .info div {
+        .info div:last-child {
             width: 100%;
-            padding: 3px;
+            text-align: end;
+            padding: 0 4px;
         }
 
         .info .label {
-            width: 30%;
+            width: fit-content;
             font-weight: bold;
+            padding: 0 4px;
         }
 
         .label {
             font-weight: bold;
+            font-size: 10pt;
         }
 
         .formCase {
-            margin-top: 20px;
+            /* margin-top: 20px; */
             display: flex;
             flex-direction: row;
             width: 100%;
@@ -198,6 +204,7 @@
             width: 100%;
             display: flex;
             flex-direction: row;
+            min-height: 60px;
         }
 
         .tableCase .tableRow div {
@@ -214,9 +221,9 @@
             width: 200mm;
             display: flex;
             justify-content: end;
-            padding: 4px 8px;
+            padding: 4px 0;
             margin-bottom: 10px;
-
+            margin-top: -20px;
         }
     </style>
 </head>
@@ -241,49 +248,27 @@
         </div>
 
         <div class="infoCase">
-            <div class="info">
-                <div class="label">Máquina:</div>
-                <div>
+            <div class="info" style="width: 35%;">
+                <div class="label" >Máquina:</div>
+                <div style="font-size: 16px;" >
                     <%- data.machine.tag %>
                 </div>
             </div>
-            <div class="info">
+            <div class="info" style="width: 30%;">
                 <div class="label">Semana:</div>
                 <div>
-                    <%- data.weekCode.split('-W')[1] %>
+                    <%- data.weekCode.split('-W')[1] %>, <%- data.weekCode.split('-W')[0] %>
                 </div>
             </div>
-            <div class="info">
-                <div class="label">Ano:</div>
+            <div class="info" style="width: 35%;">
+                <div class="label">Data:</div>
                 <div>
-                    <%- data.weekCode.split('-W')[0] %>
+                    <%-data.date? new Date(data.date).toLocaleDateString(): '' %>
                 </div>
             </div>
-            <!-- <%if(data.duration){%>
-                <div class="info">
-                    <div class="label">Tempo:</div>
-                    <div>
-                        <%- data.duration %> min
-                    </div>
-                </div>
-                <%}%> -->
         </div>
 
         <div class="formCase">
-            <div class="formBlock">
-                <div class="formInput">
-                    <div class="label">Data:</div>
-                    <div class="value"></div>
-                </div>
-                <div class="formInput">
-                    <div class="label">Hora de Início:</div>
-                    <div class="value"></div>
-                </div>
-                <div class="formInput">
-                    <div class="label">Hora Final:</div>
-                    <div class="value"></div>
-                </div>
-            </div>
             <div class="formBlock">
                 <div class="formInput">
                     <div class="label">Especialidade:</div>
@@ -293,12 +278,30 @@
                 </div>
                 <div class="formInput">
                     <div class="label">Manutencistas:</div>
-                    <div class="value">
+                    <div class="value" style="font-size: 9pt;" >
+                        <%- data.responsible?data.responsible.map(item => item.name).join(', '):'' %>
                     </div>
                 </div>
+            </div>
+            <div class="formBlock">
                 <div class="formInput">
-                    <div class="label">Surpevisor de Manutenção:</div>
-                    <div class="value"></div>
+                    <div class="label">Hora de Início:</div>
+                    <div class="value"><%- data.startTime?new Date(data.startTime).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}):'' %></div>
+                    <div class="label">Hora Final:</div>
+                    <div class="value"><%- data.finishTime?new Date(data.finishTime).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}):'' %></div>
+                </div>
+                <div class="formInput">
+                    <div class="label">Duração:</div>
+                    <div class="value"><%- data.duration? `${data.duration} min` :'' %> </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="formCase" style="margin-top: 20px;">
+            <div class="formBlock" style="width: 100%;">
+                <div class="formInput" style="width: 100%; height: 80px; align-items: start;">
+                    <div class="label">Observações: </div>
+                    <div><%- data.comments %></div>
                 </div>
             </div>
         </div>
@@ -307,9 +310,8 @@
             <div class="tableHead">
                 <div style="width: 5%; justify-content: center;">Cod.</div>
                 <div style="width: 5%; justify-content: center;">?</div>
-                <div style="width: 35%;">Descrição</div>
-                <div style="width: 20%;">Execução</div>
-                <div style="width: 35%;">Observações</div>
+                <div style="width: 45%;">Descrição</div>
+                <div style="width: 45%;">Execução</div>
             </div>
 
             <% (!data.concluded?data.actions:data.actionsTaken).map((value)=>{
@@ -320,24 +322,19 @@
                         <%- item.id %>
                     </div>
                     <div style="width: 5%; justify-content: center;">[<span style="width: 10px;"></span>]</div>
-                    <div style="width: 35%;">
+                    <div style="width: 45%;">
                         <%- item.description %>
                     </div>
-                    <div style="width: 20%;">
+                    <div style="width: 45%;">
                         <%- item.excution %>
-                    </div>
-                    <div style="width: 35%;">
-                        <%- 'obs:_______________________________ __________________________________ __________________________________'
-                            %>
                     </div>
                 </div>
                 <%}) %>
         </div>
 
-
     </div>
     <div id="version">
-        ANEXO 03-P-APG-24_rev05
+        ANEXO 03-P-APG-24_rev06
     </div>
 
     <script>

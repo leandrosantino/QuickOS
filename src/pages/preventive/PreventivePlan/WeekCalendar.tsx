@@ -4,12 +4,12 @@ import { usePages } from "../../../hooks/usePages";
 
 import { api } from '../../../utils/trpc'
 import { getWeek } from "date-fns";
+import { useYear } from "../../../hooks/useYear";
 
 export function WeekCalendar() {
 
   const { goToPage } = usePages()
-
-  const [year, setYear] = useState<number>(new Date().getFullYear())
+  const {setYear, year} = useYear()
 
   const semanas = new Array<string>(52).fill('teste')
 
@@ -52,7 +52,7 @@ export function WeekCalendar() {
         </div>
         <div className="flex p-1 justify-center items-center gap-1" >
           <div className="bg-orange-500 w-5 h-5 rounded-full" ></div>
-          <span className="mr-2" >Atrazado</span>
+          <span className="mr-2" >Atrasado</span>
         </div>
         <div className="flex p-1 justify-center items-center gap-1" >
           <div className="bg-green-500 w-5 h-5 rounded-full" ></div>
@@ -91,10 +91,12 @@ interface WeekCardType {
 }
 
 function WeekCard({ week, year, onClick }: WeekCardType) {
-
-  const { data } = api.preventive.getcountPreventiveOs.useQuery({ week, year })
+  const { revalidate } = usePages()
+  const { data, refetch } = api.preventive.getcountPreventiveOs.useQuery({ week, year })
   const [isDefeated, setIsDefeated] = useState<boolean>(false)
   const [percent, setPercent] = useState<number>(0)
+
+  useEffect(() => {refetch()}, [revalidate, refetch])
 
   useEffect(() => {
     setIsDefeated(false)

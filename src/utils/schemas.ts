@@ -104,7 +104,7 @@ const savePreventiveServiceOrderSchema = z.object({
         .refine(workers => workers.length >= 1, 'Informe no mínimo 1 Manutencista!')
 })
 
-export const updatePreventiveServiceOrderSchema = savePreventiveServiceOrderSchema.omit({ id: true })
+export const updatePreventiveServiceOrderSchema = savePreventiveServiceOrderSchema.omit({ id: true, workers: true })
 
 export const executePreventiveServiceOrderSchema = savePreventiveServiceOrderSchema
     .refine(data => differenceInMinutes(new Date(data.finishTime), new Date(data.startTime)) >= 1,

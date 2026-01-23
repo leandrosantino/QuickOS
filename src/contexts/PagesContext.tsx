@@ -22,6 +22,7 @@ export interface PageContextDataProps {
 	sideMenuIsReduce: boolean;
 	changeSideMenu: (value: boolean) => void,
 	PageNameLink: PageNameLinkType,
+	revalidate: boolean
 }
 
 interface PagesContextProviderProps {
@@ -36,15 +37,18 @@ export function PagesContextProvider({ children }: PagesContextProviderProps) {
 	const [lastPage, setlastPage] = useState<string>('Dashboard')
 	const [currentPageProps, setCurrentPageProps] = useState<any>()
 	const [sideMenuIsReduce, setSideMenuIsReduce] = useState<boolean>(false)
+	const [revalidate, setRevalidate] = useState(false)
 
 	const goToPage: GoToPageType = (name, props) => {
 		setlastPage(currentPage)
 		setcurrentPage(name)
 		setCurrentPageProps(props)
+		setRevalidate(false)
 	}
 
 	function backPage() {
 		setcurrentPage(lastPage)
+		setRevalidate(true)
 	}
 
 	function changeSideMenu(value: boolean) {
@@ -102,8 +106,8 @@ export function PagesContextProvider({ children }: PagesContextProviderProps) {
 			sideMenuIsReduce,
 			changeSideMenu,
 			PageNameLink,
-			backPage
-
+			backPage,
+			revalidate,
 		}}>
 			{children}
 		</PagesContext.Provider>

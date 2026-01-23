@@ -7,6 +7,7 @@ import { Routes } from './routes';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { httpBatchLink } from '@trpc/client';
 import { api } from './utils/trpc';
+import { YearContextProvider } from './contexts/yearContext';
 
 //sdhth
 function App({ children }: { children: ReactNode }) {
@@ -36,9 +37,11 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode >
     <App>
-      <div className="w-screen h-screen" >
-        <Routes />
-      </div>
+      <YearContextProvider>
+        <div className="w-screen h-screen" >
+          <Routes />
+        </div>
+      </YearContextProvider>
     </App>
   </React.StrictMode>
 );

@@ -15,6 +15,8 @@ interface type {
 
 export function ServiceOrders({ _week, _year }: type) {
 
+  const {revalidate} = usePages()
+
   // eslint-disable-next-line
   const [week, setWeek] = useState(_week)
   // eslint-disable-next-line
@@ -31,7 +33,7 @@ export function ServiceOrders({ _week, _year }: type) {
     setFiltered(nature !== -1 || machine !== -1 || status !== 'all')
   }, [nature, machine, status])
 
-  const { data, refetch, isLoading } = api.preventive.getServiceOrders.useQuery({
+  const { data, isLoading, ...getServiceOrdersQuery } = api.preventive.getServiceOrders.useQuery({
     week,
     year,
     machine,
@@ -41,11 +43,8 @@ export function ServiceOrders({ _week, _year }: type) {
   const machines = api.main.getMachines.useQuery()
   const natures = api.main.getNatures.useQuery()
 
-  useEffect(() => {
-    // refetch()
-    console.log(data)
-  }, [data, refetch])
-
+  useEffect(() => { getServiceOrdersQuery.refetch() }, [revalidate])
+  useEffect(() => { console.log(data) }, [data])
 
   const { goToPage } = usePages()
 

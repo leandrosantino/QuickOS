@@ -167,7 +167,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "D:\\dev\\old\\QuickOs\\database\\client",
+      "value": "D:\\dev\\QuickOS\\database\\client",
       "fromEnvVar": null
     },
     "config": {
@@ -195,7 +195,7 @@ const config = {
   ],
   "activeProvider": "sqlite",
   "dataProxy": false,
-  "postinstall": false
+  "postinstall": true
 }
 
 const fs = require('fs')

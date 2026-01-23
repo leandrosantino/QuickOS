@@ -7,7 +7,7 @@ import { InputCaseForm } from '../../../components/forms/InputCaseForm'
 import { PageHeader } from '../../../components/PageHeader'
 import { useDialog } from '../../../hooks/useDialog'
 import { usePages } from '../../../hooks/usePages'
-import { api } from '../../../utils/trpc'
+import { api, fetch } from '../../../utils/trpc'
 import { splitWorkerName } from '../../../utils/stringTools'
 import {
   ExecutePreventiveServiceOrderType,
@@ -17,7 +17,7 @@ import {
 import { toast } from 'react-toastify'
 import { ZodError } from 'zod'
 import { differenceInMinutes, format } from 'date-fns'
-import { da } from 'date-fns/locale'
+import { ServiceOrdersType } from '@schemas/preventive'
 
 
 function timeInStringToDate(hour: string | undefined) {
@@ -49,7 +49,8 @@ type ResponsableType = { id: number }
 export function ExecuteServiceOrderForm({ id }: { id: number }) {
   const { backPage } = usePages()
   const { dialogQuestion } = useDialog()
-  const { data } = api.preventive.getServiceOrderById.useQuery({ id })
+  // const { data: serviceOrder, ...serviceOrderQuery } = api.preventive.getServiceOrderById.useQuery({ id })
+  const [serviceOrder, setServiceOrder] = useState<ServiceOrdersType>()
   const executeServiceOrder = api.preventive.executeServiceOrders.useMutation()
   const updateServiceOrder = api.preventive.updateServiceOrder.useMutation()
 
@@ -76,32 +77,45 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
   }, [startTime, finishTime])
 
   useEffect(() => {
-    if (data) {
+    (async () => {
+      try {
+        const data = await fetch.preventive.getServiceOrderById.query({ id })
+        console.log(data)
+        setServiceOrder(data as any)
+      } catch (err) {
+        console.log(err)
+      }
+    })()
+  }, [])
 
-      setDate(data.date ? format(new Date(data?.date), "yyyy-MM-dd" ) : '')
-      setStartTime(data.startTime ? new Date(data.startTime).toLocaleTimeString('pt-br', {
-        hour: '2-digit',
-        minute: '2-digit'
-      }) : '')
-      setFinishTime(data.finishTime ? new Date(data.finishTime).toLocaleTimeString('pt-br', {
-        hour: '2-digit',
-        minute: '2-digit'
-      }) : '')
-      data?.duration && setDuration(data.duration)
-      const resp = [setResp1, setResp2, setResp3, setResp4]
-      data?.responsible?.forEach((entry, index) => {
-        resp[index]({ id: entry.id })
-      })
+  useEffect(() => {
+    if(!serviceOrder) return
 
-    }
-  }, [data])
+    setDate(serviceOrder.date ? format(new Date(serviceOrder?.date), "yyyy-MM-dd" ) : '')
+    setStartTime(serviceOrder.startTime ? new Date(serviceOrder.startTime).toLocaleTimeString('pt-br', {
+      hour: '2-digit',
+      minute: '2-digit'
+    }) : '')
+    setFinishTime(serviceOrder.finishTime ? new Date(serviceOrder.finishTime).toLocaleTimeString('pt-br', {
+      hour: '2-digit',
+      minute: '2-digit'
+    }) : '')
+    serviceOrder?.duration && setDuration(serviceOrder.duration)
+
+    if(!serviceOrder.responsible || serviceOrder.responsible.length < 0) return
+
+    setResp1({id: serviceOrder.responsible[0]?serviceOrder.responsible[0].registration:-1})
+    setResp2({id: serviceOrder.responsible[1]?serviceOrder.responsible[1].registration:-1})
+    setResp3({id: serviceOrder.responsible[2]?serviceOrder.responsible[2].registration:-1})
+    setResp4({id: serviceOrder.responsible[3]?serviceOrder.responsible[3].registration:-1})
+
+  }, [serviceOrder, id])
 
   function handleUpdate(){
     const executeServiceOrderData = {
       date: dateInStringToDate(date),
       finishTime: timeInStringToDate(finishTime),
-      startTime: timeInStringToDate(startTime),
-      workers: refineResponsableList([rep1, rep2, rep3, rep4])
+      startTime: timeInStringToDate(startTime)
     } as Omit<ExecutePreventiveServiceOrderType, 'id'>
 
     console.log(executeServiceOrderData)
@@ -149,7 +163,7 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
 
   function handleSubmit() {
     const executeServiceOrderData = {
-      id: data?.id,
+      id: serviceOrder?.id,
       date: dateInStringToDate(date),
       finishTime: timeInStringToDate(finishTime),
       startTime: timeInStringToDate(startTime),
@@ -196,6 +210,14 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
 
   }
 
+  function getRegistration(index:number){
+    //serviceOrder?.responsible ? serviceOrder.responsible[0].registration.toString() : ''
+    if(serviceOrder?.responsible && index in serviceOrder.responsible){
+      return serviceOrder.responsible[index].registration.toString()
+    }
+    return ''
+  }
+
   return (
     <PageModalContainer
       onClick={() => backPage()}
@@ -213,7 +235,7 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
 
         <PageHeader title='Executar Preventiva' >
           <div className="text-lg font-medium w-full" >
-            {data?.machine?.tag} - {data?.nature?.name} / Nº {data?.id}
+            {serviceOrder?.machine?.tag} - {serviceOrder?.nature?.name} / Nº {serviceOrder?.id}
           </div>
         </PageHeader>
 
@@ -261,23 +283,27 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
           <div className="w-full grid grid-cols-4 gap-10 p-5 mt-[-30px]">
             <WorkerInput
               labelName='Manutencista 1'
-              reg={data?.responsible?data?.responsible[0]?.registration.toString():''}
+              value={getRegistration(0)}
               onChange={(id) => setResp1(id ? { id } : { id: -1 })}
+              disabled={serviceOrder?.concluded ? true : false}
             />
             <WorkerInput
               labelName='Manutencista 2'
-              reg={data?.responsible?data?.responsible[1]?.registration.toString():''}
+              value={getRegistration(1)}
               onChange={(id) => setResp2(id ? { id } : { id: -1 })}
+              disabled={serviceOrder?.concluded ? true : false}
             />
             <WorkerInput
               labelName='Manutencista 3'
-              reg={data?.responsible?data?.responsible[2]?.registration.toString():''}
+              value={getRegistration(2)}
               onChange={(id) => setResp3(id ? { id } : { id: -1 })}
+              disabled={serviceOrder?.concluded ? true : false}
             />
             <WorkerInput
               labelName='Manutencista 4'
-              reg={data?.responsible?data?.responsible[3]?.registration.toString():''}
+              value={getRegistration(3)}
               onChange={(id) => setResp4(id ? { id } : { id: -1 })}
+              disabled={serviceOrder?.concluded ? true : false}
             />
           </div>
 
@@ -290,7 +316,15 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
                 <div
                   className="flex flex-col w-full p-0.5 "
                 >
-                  {data?.actions?.map((entry) => (
+                  {serviceOrder?.actionsTaken?.map((entry) => (
+                    <li
+                      key={entry.id}
+                      className="py-0.5"
+                    >
+                      Nº {entry.id} - {entry.action.excution}, {entry.action.description}
+                    </li>
+                  ))}
+                  {serviceOrder?.actions?.map((entry) => (
                     <li
                       key={entry.id}
                       className="py-0.5"
@@ -311,7 +345,7 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
 
             <InputButton
               onClick={() => {
-                data?.concluded ? handleUpdate() : handleSubmit()
+                serviceOrder?.concluded ? handleUpdate() : handleSubmit()
               }}
               title='Salvar'
               Icon={BiSave}
@@ -328,16 +362,19 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
 }
 
 
-const WorkerInput = ({ onChange, labelName, reg = ''}: {
+const WorkerInput = ({ onChange, labelName, value = '', disabled = false}: {
   onChange(value: number | null | undefined): void,
-  labelName: string, reg?: string
+  labelName: string, disabled?: boolean, value?: string
 }) => {
 
-  const [registration, setRegistration] = useState<string>(reg)
+  const [registration, setRegistration] = useState<string>('')
   const worker = api.main.getWorkersByRegistration
     .useQuery(Number(registration === '' ? -1 : registration))
 
-  useEffect(() => {worker.refetch()}, [reg, registration])
+  useEffect(() => {
+    console.log(value)
+    setRegistration(value)
+  }, [value])
 
   return (
     <InputCaseForm
@@ -346,6 +383,7 @@ const WorkerInput = ({ onChange, labelName, reg = ''}: {
       <input
         className='w-1/4 bg-transparent'
         type="text"
+        disabled={disabled}
         onChange={(e) => {
           setRegistration(e.target.value)
           worker.refetch()

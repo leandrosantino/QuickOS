@@ -78,7 +78,6 @@ export const preventive = t.router({
         .mutation(async ({ input }) => {
             try {
                 const { id, data: { date, finishTime, startTime, workers } } = input
-                console.log(workers)
                 const duration = differenceInMinutes(new Date(finishTime), new Date(startTime))
                 await prisma.preventiveOS.update({
                     where: {
@@ -97,7 +96,6 @@ export const preventive = t.router({
                 })
                 return successResponse()
             } catch (error) {
-                console.log(error)
                 throw internalServerError(error)
             }
         })

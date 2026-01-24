@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { PageHeader } from "../../../components/PageHeader";
 import { usePages } from "../../../hooks/usePages";
+import {BiArrowFromLeft, BiArrowFromRight} from 'react-icons/bi'
 
 import { api } from '../../../utils/trpc'
 import { getWeek } from "date-fns";
@@ -23,24 +24,17 @@ export function WeekCalendar() {
 
       <PageHeader title="Calendário de Preventivas" >
         <div
-          className="flex flex-row justify-center items-center"
+          className="flex flex-row justify-center items-center gap-2"
         >
-          <label htmlFor="year"
-            className="font-medium text-lg mr-2"
-          >Ano: </label>
-          <input
-            id="year"
-            value={year}
-            type="number"
-            min={2019}
-            minLength={4}
-            onChange={(e) => setYear(Number(e.target.value))}
-            className={`
-              h-full text-center text-lg p-1 w-24
-              rounded-md
-              border-zinc-700 border
-            `}
-          />
+          <button className="p-2 hover:bg-zinc-200 rounded-md text-lg" onClick={() => setYear(year - 1)} >
+            <BiArrowFromRight/>
+          </button>
+          <div className="!indent-0 justify-center items-center text-lg py-1 px-4 rounded-md border-zinc-700 border">
+            <span>{year}</span>
+          </div>
+          <button className="p-2 hover:bg-zinc-200 rounded-md text-lg" onClick={() => setYear(year + 1)} >
+            <BiArrowFromLeft/>
+          </button>
         </div>
       </PageHeader>
 

@@ -86,7 +86,7 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
         console.log(err)
       }
     })()
-  }, [])
+  }, [id])
 
   useEffect(() => {
     if(!serviceOrder) return
@@ -104,10 +104,10 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
 
     if(!serviceOrder.responsible || serviceOrder.responsible.length < 0) return
 
-    setResp1({id: serviceOrder.responsible[0]?serviceOrder.responsible[0].registration:-1})
-    setResp2({id: serviceOrder.responsible[1]?serviceOrder.responsible[1].registration:-1})
-    setResp3({id: serviceOrder.responsible[2]?serviceOrder.responsible[2].registration:-1})
-    setResp4({id: serviceOrder.responsible[3]?serviceOrder.responsible[3].registration:-1})
+    setResp1({id: serviceOrder.responsible[0]?serviceOrder.responsible[0].id:-1})
+    setResp2({id: serviceOrder.responsible[1]?serviceOrder.responsible[1].id:-1})
+    setResp3({id: serviceOrder.responsible[2]?serviceOrder.responsible[2].id:-1})
+    setResp4({id: serviceOrder.responsible[3]?serviceOrder.responsible[3].id:-1})
 
   }, [serviceOrder, id])
 
@@ -115,7 +115,8 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
     const executeServiceOrderData = {
       date: dateInStringToDate(date),
       finishTime: timeInStringToDate(finishTime),
-      startTime: timeInStringToDate(startTime)
+      startTime: timeInStringToDate(startTime),
+      workers: [rep1, rep2, rep3, rep4].filter(({id}) => id > 0)
     } as Omit<ExecutePreventiveServiceOrderType, 'id'>
 
     console.log(executeServiceOrderData)
@@ -285,25 +286,25 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
               labelName='Manutencista 1'
               value={getRegistration(0)}
               onChange={(id) => setResp1(id ? { id } : { id: -1 })}
-              disabled={serviceOrder?.concluded ? true : false}
+              // disabled={serviceOrder?.concluded ? true : false}
             />
             <WorkerInput
               labelName='Manutencista 2'
               value={getRegistration(1)}
               onChange={(id) => setResp2(id ? { id } : { id: -1 })}
-              disabled={serviceOrder?.concluded ? true : false}
+              // disabled={serviceOrder?.concluded ? true : false}
             />
             <WorkerInput
               labelName='Manutencista 3'
               value={getRegistration(2)}
               onChange={(id) => setResp3(id ? { id } : { id: -1 })}
-              disabled={serviceOrder?.concluded ? true : false}
+              // disabled={serviceOrder?.concluded ? true : false}
             />
             <WorkerInput
               labelName='Manutencista 4'
               value={getRegistration(3)}
               onChange={(id) => setResp4(id ? { id } : { id: -1 })}
-              disabled={serviceOrder?.concluded ? true : false}
+              // disabled={serviceOrder?.concluded ? true : false}
             />
           </div>
 

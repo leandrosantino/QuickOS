@@ -72,12 +72,13 @@ export const preventive = t.router({
     updateServiceOrder: t.procedure
         .input(z.object({
             id: z.number(),
-            data: executeServiceOrdersParamsSchema.omit({ id: true, workers: true }),
+            data: executeServiceOrdersParamsSchema.omit({ id: true }),
         }))
         .output(SuccessResponseSchema)
         .mutation(async ({ input }) => {
             try {
-                const { id, data: { date, finishTime, startTime } } = input
+                const { id, data: { date, finishTime, startTime, workers } } = input
+                console.log(workers)
                 const duration = differenceInMinutes(new Date(finishTime), new Date(startTime))
                 await prisma.preventiveOS.update({
                     where: {
@@ -89,10 +90,14 @@ export const preventive = t.router({
                         startTime: new Date(startTime),
                         finishTime: new Date(finishTime),
                         concluded: true,
+                        responsible: {
+                            set: workers
+                        }
                     }
                 })
                 return successResponse()
             } catch (error) {
+                console.log(error)
                 throw internalServerError(error)
             }
         })

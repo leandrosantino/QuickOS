@@ -43,7 +43,7 @@ export function ServiceOrders({ _week, _year }: type) {
   const machines = api.main.getMachines.useQuery()
   const natures = api.main.getNatures.useQuery()
 
-  useEffect(() => { getServiceOrdersQuery.refetch() }, [revalidate])
+  useEffect(() => { getServiceOrdersQuery.refetch() }, [revalidate, getServiceOrdersQuery])
   useEffect(() => { console.log(data) }, [data])
 
   const { goToPage } = usePages()

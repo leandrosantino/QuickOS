@@ -1,4 +1,4 @@
-import { PreventiveCard } from "../../components/cards/PreventiveCard";
+import { PreventiveCard } from "./PreventiveCard";
 import { ScrollContainer } from "../../components/containers/ScrollContainer";
 import { PageHeader } from "../../components/PageHeader";
 
@@ -43,7 +43,7 @@ export function PreventiveOpened() {
             flex justify-center items-center rounded-lg
           "
         >
-          Atualizar 
+          Atualizar
           <span className="ml-2" >
             <TfiReload width={20} />
           </span>
@@ -55,7 +55,7 @@ export function PreventiveOpened() {
             data.length === 0 ?
               <div
                 className="
-                  w-full h-full 
+                  w-full h-full
                   flex justify-center items-center
                   font-medium
                 "
@@ -64,7 +64,7 @@ export function PreventiveOpened() {
               </div>
               : <div
                 className="
-                  grid grid-cols-2 xl:grid-cols-3 gap-4 p-4 
+                  grid grid-cols-2 xl:grid-cols-3 gap-4 p-4
                 "
               >
                 {/* {

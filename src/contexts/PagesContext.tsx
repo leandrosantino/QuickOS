@@ -134,16 +134,24 @@ export function PagesContainer({ children, className }: PagesProviderProps) {
 	const [pageComponent, setPageComponent] = useState<JSX.Element>()
 
 	useEffect(() => {
-		goToPage(children[0].props.name, {})
+		const child = children.length > 0 ? children[0]: (children as any as typeof children[number])
+		goToPage(child.props.name, {})
 		// eslint-disable-next-line
 	}, [])
 
 	useEffect(() => {
-		children.forEach(({ props }) => {
-			if (props.name === currentPage) {
-				setPageComponent(<props.component {...currentPageProps} />)
-			}
-		})
+		if(children.length > 0){
+			children.forEach(({ props }) => {
+				if (props.name === currentPage) {
+					setPageComponent(<props.component {...currentPageProps} />)
+				}
+			})
+			return
+		}
+		const child = children as any as typeof children[number]
+		if (child.props.name === currentPage) {
+			setPageComponent(<child.props.component {...currentPageProps} />)
+		}
 		// eslint-disable-next-line
 	}, [currentPage, currentPageProps])
 

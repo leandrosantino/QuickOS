@@ -24,6 +24,9 @@
   "prisma": {
     "seed": "bun run seed"
   },
+  "overrides": {
+    "yauzl": "^3.3.1"
+  },
   "build": {
     "asar": true,
     "appId": "com.teste.electron",

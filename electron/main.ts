@@ -5,7 +5,6 @@ import path from "path";
 import { windowCreator } from './utils/windowCreator'
 import { useRoutes } from "./utils/useIpcRoutes";
 
-import { navBarRoutes } from "./ipc.routes/navbar";
 import { printServiceOrder } from "./ipc.routes/printServiceOrder";
 
 !isDev && import('../server')
@@ -30,7 +29,6 @@ async function main() {
 
     const routes = useRoutes({ window, ipcMain })
 
-    routes.use(navBarRoutes)
     routes.use(printServiceOrder)
 
 }

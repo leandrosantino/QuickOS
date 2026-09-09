@@ -2,7 +2,7 @@ import React from 'react'
 
 import { VscDebugBreakpointLogUnverified, VscDebugBreakpointLog, VscSaveAs, VscEdit } from 'react-icons/vsc'
 import { BsPrinterFill } from 'react-icons/bs'
-import { InputButton } from '../forms/InputButton'
+import { InputButton } from '../../components/forms/InputButton'
 import { ServiceOrderType } from '../../utils/schemas'
 // import { api } from '../../utils/trpc'
 import { ipc } from '../../utils/ipc'

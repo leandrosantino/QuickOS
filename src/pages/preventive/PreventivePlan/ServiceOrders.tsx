@@ -1,4 +1,4 @@
-import { PreventiveCard } from '../../../components/cards/PreventiveCard';
+import { PreventiveCard } from '../PreventiveCard';
 import { ScrollContainer } from '../../../components/containers/ScrollContainer';
 import { InputButton } from '../../../components/forms/InputButton';
 import { PageHeader } from '../../../components/PageHeader';

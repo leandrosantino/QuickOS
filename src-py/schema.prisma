@@ -1,0 +1,87 @@
+generator client {
+  provider             = "prisma-client-py"
+  interface            = "asyncio"
+  recursive_type_depth = 5
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../database/app.db"
+}
+
+model Nature {
+  id               Int                @id @default(autoincrement())
+  name             String
+  PreventiveOS     PreventiveOS[]
+  PreventiveAction PreventiveAction[]
+}
+
+model Machine {
+  id         Int    @id @default(autoincrement())
+  tag        String @unique
+  ute        String
+  technology String
+
+  PreventiveOS     PreventiveOS[]
+  PreventiveAction PreventiveAction[]
+}
+
+model Worker {
+  id           Int    @id @default(autoincrement())
+  registration Int    @unique
+  name         String
+  workerClass  String @map("class")
+
+  PreventiveOs PreventiveOS[]
+}
+
+model PreventiveActionTaken {
+  id       Int      @id @default(autoincrement())
+  date     DateTime
+  osId     Int
+  actionId Int
+  weekCode String
+
+  action PreventiveAction @relation(fields: [actionId], references: [id])
+  os     PreventiveOS     @relation(fields: [osId], references: [id])
+}
+
+model PreventiveAction {
+  id             Int     @id @default(autoincrement())
+  description    String
+  machineId      Int
+  excution       String
+  frequency      Int
+  nextExecution  String
+  preventiveOSId Int?
+  natureId       Int
+  ignore         Boolean @default(false)
+
+  machine      Machine                 @relation(fields: [machineId], references: [id])
+  PreventiveOS PreventiveOS?           @relation(fields: [preventiveOSId], references: [id])
+  nature       Nature                  @relation(fields: [natureId], references: [id])
+  actionsTaken PreventiveActionTaken[]
+}
+
+model PreventiveOS {
+  id               Int                @id @default(autoincrement())
+  weekCode         String
+  date             DateTime?
+  natureId         Int
+  duration         Int?
+  concluded        Boolean?           @default(false)
+  startTime        DateTime?
+  finishTime       DateTime?
+
+  machineId        Int
+
+  nature      Nature   @relation(fields: [natureId], references: [id])
+  machine     Machine  @relation(fields: [machineId], references: [id])
+  responsible Worker[]
+
+  actions          PreventiveAction[]
+  actionsUniqueKey String
+  actionsTaken     PreventiveActionTaken[]
+
+  @@unique([machineId, natureId, weekCode, actionsUniqueKey])
+}

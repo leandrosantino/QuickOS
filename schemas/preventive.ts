@@ -13,6 +13,8 @@ export const actionCreateSchema = z.object({
     ignore: z.boolean()
 })
 
+export type ActionCreateType = z.infer<typeof actionCreateSchema>
+
 export const actionsSchema = z.object({
     id: z.number(),
     machine: machineSchema.optional(),
@@ -68,7 +70,65 @@ export const executeServiceOrdersParamsSchema = z.object({
     finishTime: z.string(),
 })
 
-export type ExecuteServiceOrdersType = z.input<typeof executeServiceOrdersParamsSchema>
+export type ExecuteServiceOrdersType = z.infer<typeof executeServiceOrdersParamsSchema>
+
+export const getServiceOrderByIdParamsSchema = z.object({
+    id: z.number(),
+})
+
+export type GetServiceOrderByIdParamsType = z.infer<typeof getServiceOrderByIdParamsSchema>
+
+export const deleteServiceOrderParamsSchema = z.object({
+    id: z.number(),
+})
+
+export type DeleteServiceOrderParamsType = z.infer<typeof deleteServiceOrderParamsSchema>
+
+export const updateServiceOrderParamsSchema = z.object({
+    id: z.number(),
+    data: executeServiceOrdersParamsSchema.omit({ id: true }),
+})
+
+export type UpdateServiceOrderParamsType = z.infer<typeof updateServiceOrderParamsSchema>
+
+export const getActionsParamsSchema = z.object({
+    searchText: z.string(),
+    weekCode: z.string(),
+    machineId: z.number(),
+    natureId: z.number(),
+    showIgnore: z.boolean(),
+    limit: z.number().optional(),
+    cursor: z.number().optional(),
+})
+
+export type GetActionsParamsType = z.infer<typeof getActionsParamsSchema>
+
+export const updateActionParamsSchema = z.object({
+    id: z.number(),
+    data: actionCreateSchema,
+})
+
+export type UpdateActionParamsType = z.infer<typeof updateActionParamsSchema>
+
+export const deleteActionParamsSchema = z.object({
+    id: z.number(),
+})
+
+export type DeleteActionParamsType = z.infer<typeof deleteActionParamsSchema>
+
+export const getServiceOrderCountParamsSchema = z.object({
+    week: z.number(),
+    year: z.number(),
+})
+
+export type GetServiceOrderCountParamsType = z.infer<typeof getServiceOrderCountParamsSchema>
+
+export const getServiceOrderCountResultSchema = z.object({
+    finished: z.number(),
+    unfinished: z.number(),
+})
+
+export type GetServiceOrderCountResultType = z.infer<typeof getServiceOrderCountResultSchema>
 
 export const generateActionsUniqueKeyParmsSchema = z.object({
     id: z.number().optional(),

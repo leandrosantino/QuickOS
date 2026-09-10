@@ -1,5 +1,5 @@
 import prisma from '../utils/prisma'
-import { initTRPC, TRPCError } from '@trpc/server'
+import { initTRPC } from '@trpc/server'
 import { z } from 'zod'
 
 const t = initTRPC.create()

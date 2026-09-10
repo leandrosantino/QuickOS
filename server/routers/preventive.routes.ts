@@ -1,22 +1,33 @@
 import { initTRPC } from '@trpc/server'
 import { z } from 'zod'
-import prisma from '../utils/prisma'
 import { internalServerError, successResponse, SuccessResponseSchema } from '../utils/responseMessages'
 
-import {
-    assembleServiceOrders,
-    executeServiceOrders,
-} from '../preventiveOsTools'
+import { assembleServiceOrders } from '../use-cases/assembleServiceOrders'
+import { executeServiceOrders } from '../use-cases/executeServiceOrders'
+import { getServiceOrderById } from '../use-cases/getServiceOrderById'
+import { updateServiceOrder } from '../use-cases/updateServiceOrder'
+import { deleteServiceOrder } from '../use-cases/deleteServiceOrder'
+import { getActions } from '../use-cases/getActions'
+import { createAction } from '../use-cases/createAction'
+import { updateAction } from '../use-cases/updateAction'
+import { deleteAction } from '../use-cases/deleteAction'
+import { getServiceOrderCount } from '../use-cases/getServiceOrderCount'
+
 import {
     serviceOrdersSchema,
     assembleServiceOrdersParamsSchema,
     executeServiceOrdersParamsSchema,
     actionsSchema,
     actionCreateSchema,
+    getServiceOrderByIdParamsSchema,
+    updateServiceOrderParamsSchema,
+    deleteServiceOrderParamsSchema,
+    getActionsParamsSchema,
+    updateActionParamsSchema,
+    deleteActionParamsSchema,
+    getServiceOrderCountParamsSchema,
+    getServiceOrderCountResultSchema,
 } from '../../schemas/preventive'
-
-import { weekYearToString } from '../utils/weekTools'
-import { differenceInMinutes } from 'date-fns'
 
 const t = initTRPC.create()
 
@@ -36,32 +47,11 @@ export const preventive = t.router({
     ,
 
     getServiceOrderById: t.procedure
-        .input(z.object({ id: z.number() }))
+        .input(getServiceOrderByIdParamsSchema)
         .output(z.object({ ...serviceOrdersSchema.shape }).nullable())
         .query(async ({ input }) => {
             try {
-                const serviceOrder = await prisma.preventiveOS.findUnique({
-                    where: { id: input.id },
-                    include: {
-                        nature: true,
-                        machine: true,
-                        responsible: true,
-                        actions: {
-                            include: {
-                                nature: true, machine: true
-                            }
-                        },
-                        actionsTaken: {
-                            include: {
-                                action: {
-                                    include: {
-                                        nature: true, machine: true
-                                    }
-                                },
-                            }
-                        }
-                    }
-                })
+                const serviceOrder = await getServiceOrderById(input)
                 return serviceOrder
             } catch (error) {
                 throw internalServerError(error)
@@ -70,30 +60,11 @@ export const preventive = t.router({
     ,
 
     updateServiceOrder: t.procedure
-        .input(z.object({
-            id: z.number(),
-            data: executeServiceOrdersParamsSchema.omit({ id: true }),
-        }))
+        .input(updateServiceOrderParamsSchema)
         .output(SuccessResponseSchema)
         .mutation(async ({ input }) => {
             try {
-                const { id, data: { date, finishTime, startTime, workers } } = input
-                const duration = differenceInMinutes(new Date(finishTime), new Date(startTime))
-                await prisma.preventiveOS.update({
-                    where: {
-                        id
-                    },
-                    data: {
-                        date: new Date(date),
-                        duration,
-                        startTime: new Date(startTime),
-                        finishTime: new Date(finishTime),
-                        concluded: true,
-                        responsible: {
-                            set: workers
-                        }
-                    }
-                })
+                await updateServiceOrder(input)
                 return successResponse()
             } catch (error) {
                 throw internalServerError(error)
@@ -102,15 +73,11 @@ export const preventive = t.router({
     ,
 
     deleteServiceOrder: t.procedure
-        .input(z.object({
-            id: z.number()
-        }))
+        .input(deleteServiceOrderParamsSchema)
         .output(SuccessResponseSchema)
         .mutation(async ({ input }) => {
             try {
-                await prisma.preventiveOS.delete({
-                    where: { id: input.id }
-                })
+                await deleteServiceOrder(input)
                 return successResponse()
             } catch (error) {
                 throw internalServerError(error)
@@ -132,39 +99,11 @@ export const preventive = t.router({
     ,
 
     getActions: t.procedure
+        .input(getActionsParamsSchema)
         .output(z.array(actionsSchema))
-        .input(z.object({
-            searchText: z.string(),
-            weekCode: z.string(),
-            machineId: z.number(),
-            natureId: z.number(),
-            showIgnore: z.boolean(),
-            limit: z.number().optional(),
-            cursor: z.number().optional(),
-        }))
         .query(async ({ input }) => {
             try {
-                const { machineId, natureId, searchText, weekCode, showIgnore } = input
-                const nextExecution = weekCode
-                const actions = await prisma.preventiveAction.findMany({
-                    skip: input.cursor === 1 ? 0 : 1,
-                    take: input.limit,
-                    cursor: { id: input?.cursor },
-                    orderBy: { id: 'asc' },
-                    where: {
-                        OR: {
-                            description: { contains: searchText },
-                        },
-                        ...machineId >= 0 ? { machineId } : {},
-                        ...natureId >= 0 ? { natureId } : {},
-                        ...nextExecution != '' ? { nextExecution } : {},
-                        ...showIgnore ? {} : { ignore: false }
-                    },
-                    include: {
-                        nature: true, machine: true, _count: { select: { actionsTaken: true } }
-                    }
-                })
-                // console.log(actions.length)
+                const actions = await getActions(input)
                 return actions
             } catch (error) {
                 throw internalServerError(error)
@@ -177,9 +116,7 @@ export const preventive = t.router({
         .output(SuccessResponseSchema)
         .mutation(async ({ input }) => {
             try {
-                await prisma.preventiveAction.create({
-                    data: input
-                })
+                await createAction(input)
                 return successResponse()
             } catch (error) {
                 throw internalServerError(error)
@@ -188,17 +125,11 @@ export const preventive = t.router({
     ,
 
     updateAction: t.procedure
-        .input(z.object({
-            id: z.number(),
-            data: actionCreateSchema
-        }))
+        .input(updateActionParamsSchema)
         .output(SuccessResponseSchema)
         .mutation(async ({ input }) => {
             try {
-                await prisma.preventiveAction.update({
-                    where: { id: input.id },
-                    data: input.data
-                })
+                await updateAction(input)
                 return successResponse()
             } catch (error) {
                 throw internalServerError(error)
@@ -207,13 +138,11 @@ export const preventive = t.router({
     ,
 
     deleteAction: t.procedure
-        .input(z.object({ id: z.number() }))
+        .input(deleteActionParamsSchema)
         .output(SuccessResponseSchema)
         .mutation(async ({ input }) => {
             try {
-                await prisma.preventiveAction.delete({
-                    where: { id: input.id }
-                })
+                await deleteAction(input)
                 return successResponse()
             } catch (error) {
                 throw internalServerError(error)
@@ -222,35 +151,12 @@ export const preventive = t.router({
     ,
 
     getcountPreventiveOs: t.procedure
-        .input(z.object({ week: z.number(), year: z.number() }))
-        .output(z.object({
-            finished: z.number(),
-            unfinished: z.number(),
-        }))
+        .input(getServiceOrderCountParamsSchema)
+        .output(getServiceOrderCountResultSchema)
         .query(async ({ input }) => {
             try {
-
-                const weekCode = weekYearToString(input.week, input.year)
-
-                const finished = await prisma.preventiveOS.count({
-                    where: {
-                        weekCode,
-                        concluded: true
-                    }
-                })
-                const unfinished = await prisma.preventiveOS.count({
-                    where: {
-                        weekCode,
-                        concluded: false
-                    }
-                })
-
-                const resp = {
-                    finished, unfinished
-                }
-
+                const resp = await getServiceOrderCount(input)
                 return resp
-
             } catch (error) {
                 throw internalServerError(error)
             }

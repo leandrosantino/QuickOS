@@ -62,6 +62,86 @@ class ActionTaken(BaseModel):
     action: Action
 
 
+class ActionCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    description: str
+    machineId: int
+    excution: str
+    frequency: int
+    natureId: int
+    nextExecution: str
+    preventiveOSId: Optional[int] = None
+    ignore: bool
+
+
+class UpdateActionParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: int = Field(gt=0)
+    data: ActionCreate
+
+
+class DeleteActionParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: int = Field(gt=0)
+
+
+class WorkerRef(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: int = Field(gt=0)
+
+
+class ExecuteServiceOrderData(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    date: str
+    workers: list[WorkerRef] = Field(default_factory=list)
+    startTime: str
+    finishTime: str
+
+
+class UpdateServiceOrderParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: int = Field(gt=0)
+    data: ExecuteServiceOrderData
+
+
+class DeleteServiceOrderParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: int = Field(gt=0)
+
+
+class GetServiceOrderCountParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    week: int
+    year: int
+
+
+class GetActionsParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    searchText: str
+    weekCode: str
+    machineId: int
+    natureId: int
+    showIgnore: bool
+    limit: Optional[int] = None
+    cursor: Optional[int] = None
+
+
+class ServiceOrderCount(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    finished: int
+    unfinished: int
+
+
 class ServiceOrder(BaseModel):
     model_config = ConfigDict(extra="ignore")
 

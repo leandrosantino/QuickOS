@@ -1,4 +1,4 @@
-from utils.prisma import prisma
+from infra.prisma import prisma
 
 
 async def getWorkers() -> list:

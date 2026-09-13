@@ -1,5 +1,5 @@
 from schemas.preventive import AssembleServiceOrdersParams
-from utils.prisma import prisma
+from infra.prisma import prisma
 from utils.week_tools import weekYearToString
 
 

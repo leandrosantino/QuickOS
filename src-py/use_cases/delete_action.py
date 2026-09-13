@@ -1,5 +1,5 @@
 from schemas.preventive import DeleteActionParams
-from utils.prisma import prisma
+from infra.prisma import prisma
 
 
 async def deleteAction(params: dict) -> None:

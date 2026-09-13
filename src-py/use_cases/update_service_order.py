@@ -2,7 +2,7 @@ from dateutil import parser
 
 from schemas.preventive import UpdateServiceOrderParams
 from utils.date_tools import differenceInMinutes
-from utils.prisma import prisma
+from infra.prisma import prisma
 
 
 async def updateServiceOrder(params: dict) -> None:

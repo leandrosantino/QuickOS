@@ -1,5 +1,5 @@
 from schemas.preventive import ActionCreate
-from utils.prisma import prisma
+from infra.prisma import prisma
 
 
 async def createAction(params: dict) -> None:

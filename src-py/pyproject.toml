@@ -8,4 +8,6 @@ dependencies = [
     "prisma>=0.15.0",
     "python-dateutil>=2.9.0.post0",
     "rich>=15.0.0",
+    "flask[async]>=3.0.0",
+    "flask-cors>=5.0.0",
 ]

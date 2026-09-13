@@ -1,5 +1,5 @@
 from schemas.preventive import UpdateActionParams
-from utils.prisma import prisma
+from infra.prisma import prisma
 
 
 async def updateAction(params: dict) -> None:

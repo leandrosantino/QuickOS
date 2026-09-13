@@ -14,7 +14,9 @@ import { useDialog } from '../../contexts/DialogContext';
 
 import { toast } from 'react-toastify'
 
-import { api } from '../../utils/trpc'
+import { useMachines } from '../../lib/machine'
+import { useNatures } from '../../lib/nature'
+import { useCreateAction, useUpdateAction, useDeleteAction } from '../../lib/preventiveAction'
 
 import {
   ActionsInfoType,
@@ -38,22 +40,20 @@ export function PreventiveActionForm({ id, data, onBack }: PreventiveActionFormP
 
   const [machines, setMachines] = useState<MachineInfoType[]>([{} as MachineInfoType])
   const [natures, setNatures] = useState<NatureInfoType[]>([{} as NatureInfoType])
-  const getMachine = api.main.getMachines.useQuery()
-  const getNature = api.main.getNatures.useQuery()
+  const machinesData = useMachines()
+  const naturesData = useNatures()
 
-  const saveAction = api.preventive.createAction.useMutation()
-  const updateAction = api.preventive.updateAction.useMutation()
-  const deleteAction = api.preventive.deleteAction.useMutation()
-
-  useEffect(() => {
-    setNatures(getNature.data ? getNature.data : [{} as NatureInfoType])
-    // eslint-disable-next-line
-  }, [getNature])
+  const createAction = useCreateAction()
+  const updateAction = useUpdateAction()
+  const deleteAction = useDeleteAction()
 
   useEffect(() => {
-    setMachines(getMachine.data ? getMachine.data : [{} as MachineInfoType])
-    // eslint-disable-next-line
-  }, [getMachine])
+    setNatures(naturesData ? naturesData : [{} as NatureInfoType])
+  }, [naturesData])
+
+  useEffect(() => {
+    setMachines(machinesData ? machinesData : [{} as MachineInfoType])
+  }, [machinesData])
 
   const [machineId, setMachineId] = useState(data ? data?.machineId : 1)
   const [natureId, setNatureId] = useState(data ? data?.natureId : 1)
@@ -86,7 +86,7 @@ export function PreventiveActionForm({ id, data, onBack }: PreventiveActionFormP
   function handleActionCreate(actionInfo: ActionsInfoType) {
     console.log(actionInfo)
     return new Promise((resolve, reject) => {
-      saveAction.mutateAsync(actionInfo)
+      createAction(actionInfo)
         .then((resp: any) => {
           resolve(resp)
           clearInputs()
@@ -99,7 +99,7 @@ export function PreventiveActionForm({ id, data, onBack }: PreventiveActionFormP
 
   function handleActionUpdate(actionInfo: ActionsInfoType) {
     return new Promise((resolve, reject) => {
-      updateAction.mutateAsync({ data: actionInfo, id: id ?? 0 })
+      updateAction({ data: actionInfo, id: id ?? 0 })
         .then(resp => {
           resolve(resp)
         })
@@ -114,7 +114,7 @@ export function PreventiveActionForm({ id, data, onBack }: PreventiveActionFormP
       dialogQuestion('Atenção!', 'Realmente Deseja excluir está ação?',
         () => {
           toast.promise(() => new Promise((resolve, reject) => {
-            deleteAction.mutateAsync({ id: id ?? 0 })
+            deleteAction({ id: id ?? 0 })
               .then(resp => {
                 resolve(resp)
                 backPage()

@@ -2,7 +2,9 @@ import { PreventiveCard } from './PreventiveCard';
 import { ScrollContainer } from '../../components/containers/ScrollContainer';
 import { InputButton } from '../../components/forms/InputButton';
 import { PageHeader } from '../../components/PageHeader';
-import { api } from '../../utils/trpc';
+import { useServiceOrders } from '../../lib/preventiveOS'
+import { useMachines } from '../../lib/machine'
+import { useNatures } from '../../lib/nature'
 import { IoIosArrowBack } from 'react-icons/io'
 import { RiFilterOffFill, RiFilterFill } from 'react-icons/ri'
 import { useEffect, useState } from 'react';
@@ -33,17 +35,17 @@ export function ServiceOrders({ _week, _year }: type) {
     setFiltered(nature !== -1 || machine !== -1 || status !== 'all')
   }, [nature, machine, status])
 
-  const { data, isLoading, ...getServiceOrdersQuery } = api.preventive.getServiceOrders.useQuery({
+  const { data, isLoading, refetch } = useServiceOrders({
     week,
     year,
     machine,
     nature,
     status
   })
-  const machines = api.main.getMachines.useQuery()
-  const natures = api.main.getNatures.useQuery()
+  const machines = useMachines()
+  const natures = useNatures()
 
-  useEffect(() => { getServiceOrdersQuery.refetch() }, [revalidate, getServiceOrdersQuery])
+  useEffect(() => { refetch() }, [revalidate, refetch])
   useEffect(() => { console.log(data) }, [data])
 
   const { goToPage } = usePages()
@@ -97,7 +99,7 @@ export function ServiceOrders({ _week, _year }: type) {
                 onChange={(e) => setMachine(Number(e.target.value))}
               >
                 <option value="-1">Todos</option>
-                {machines.data?.map((entry, index) => (
+                {machines?.map((entry, index) => (
                   <option key={index} value={entry.id}>{entry.tag}</option>
                 ))}
               </select>
@@ -117,7 +119,7 @@ export function ServiceOrders({ _week, _year }: type) {
                 onChange={(e) => setNature((Number(e.target.value)))}
               >
                 <option value="-1">Todos</option>
-                {natures.data?.map((entry, index) => (
+                {natures?.map((entry, index) => (
                   <option key={index} value={entry.id}>{entry.name}</option>
                 ))}
               </select>

@@ -4,7 +4,6 @@ import { VscDebugBreakpointLogUnverified, VscDebugBreakpointLog, VscSaveAs, VscE
 import { BsPrinterFill } from 'react-icons/bs'
 import { InputButton } from '../../components/forms/InputButton'
 import { ServiceOrderType } from '../../utils/schemas'
-// import { api } from '../../utils/trpc'
 import { ipc } from '../../utils/ipc'
 import { splitWorkerName } from '../../utils/stringTools'
 import { usePages } from '../../contexts/PagesContext'
@@ -16,8 +15,6 @@ interface PreventiveCardProps {
 export function PreventiveCard({ data }: PreventiveCardProps) {
 
   const { goToPage } = usePages()
-
-  // const responsable = api.main.getWorker.useQuery(data?.responsibleId ? data?.responsibleId : 0)
 
   const actions = !data.concluded ? data.actions : data?.actionsTaken?.map(entry => entry.action)
 

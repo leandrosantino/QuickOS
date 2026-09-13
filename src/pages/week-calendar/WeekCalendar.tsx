@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { PageHeader } from "../../components/PageHeader";
 import {BiArrowFromLeft, BiArrowFromRight} from 'react-icons/bi'
 
-import { api } from '../../utils/trpc'
 import { getWeek } from "date-fns";
 import { usePages } from "../../contexts/PagesContext";
 import { useYear } from "../../contexts/yearContext";
+import { useCountPreventiveOs } from '../../lib/preventiveOS'
 
 
 export function WeekCalendar() {
@@ -87,7 +87,7 @@ interface WeekCardType {
 
 function WeekCard({ week, year, onClick }: WeekCardType) {
   const { revalidate } = usePages()
-  const { data, refetch } = api.preventive.getcountPreventiveOs.useQuery({ week, year })
+  const { data, refetch } = useCountPreventiveOs(week, year)
   const [isDefeated, setIsDefeated] = useState<boolean>(false)
   const [percent, setPercent] = useState<number>(0)
 

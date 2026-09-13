@@ -5,7 +5,8 @@ import { ScrollContainer } from '../../components/containers/ScrollContainer'
 import { InputButton } from '../../components/forms/InputButton'
 import { InputCaseForm } from '../../components/forms/InputCaseForm'
 import { PageHeader } from '../../components/PageHeader'
-import { api, fetch } from '../../utils/trpc'
+import { getServiceOrderById, useUpdateServiceOrder, useExecuteServiceOrders } from '../../lib/preventiveOS'
+import { useWorkerByRegistration } from '../../lib/worker'
 import { splitWorkerName } from '../../utils/stringTools'
 import {
   ExecutePreventiveServiceOrderType,
@@ -49,10 +50,9 @@ type ResponsableType = { id: number }
 export function ExecuteServiceOrderForm({ id }: { id: number }) {
   const { backPage } = usePages()
   const { dialogQuestion } = useDialog()
-  // const { data: serviceOrder, ...serviceOrderQuery } = api.preventive.getServiceOrderById.useQuery({ id })
   const [serviceOrder, setServiceOrder] = useState<ServiceOrdersType>()
-  const executeServiceOrder = api.preventive.executeServiceOrders.useMutation()
-  const updateServiceOrder = api.preventive.updateServiceOrder.useMutation()
+  const executeServiceOrder = useExecuteServiceOrders()
+  const updateServiceOrder = useUpdateServiceOrder()
 
   const [rep1, setResp1] = useState<ResponsableType>({ id: -1 })
   const [rep2, setResp2] = useState<ResponsableType>({ id: -1 })
@@ -79,7 +79,7 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
   useEffect(() => {
     (async () => {
       try {
-        const data = await fetch.preventive.getServiceOrderById.query({ id })
+        const data = await getServiceOrderById(id)
         console.log(data)
         setServiceOrder(data as any)
       } catch (err) {
@@ -128,7 +128,7 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
       dialogQuestion('Atenção!', 'Realmente deseja salvar as alterações?',
         () => {
           toast.promise(new Promise((resolve, reject) => {
-            updateServiceOrder.mutateAsync({
+            updateServiceOrder({
               id,
               data: executeServiceOrderInfo
             })
@@ -180,7 +180,7 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
       dialogQuestion('Atenção!', 'Realmente deseja execultar es Ordem de Serviço',
         () => {
           toast.promise(new Promise((resolve, reject) => {
-            executeServiceOrder.mutateAsync(executeServiceOrderInfo)
+            executeServiceOrder(executeServiceOrderInfo)
               .then(resp => {
                 resolve(resp)
               })
@@ -369,8 +369,7 @@ const WorkerInput = ({ onChange, labelName, value = '', disabled = false}: {
 }) => {
 
   const [registration, setRegistration] = useState<string>('')
-  const worker = api.main.getWorkersByRegistration
-    .useQuery(Number(registration === '' ? -1 : registration))
+  const { worker, isLoading, refetch } = useWorkerByRegistration(Number(registration === '' ? -1 : registration))
 
   useEffect(() => {
     console.log(value)
@@ -387,9 +386,9 @@ const WorkerInput = ({ onChange, labelName, value = '', disabled = false}: {
         disabled={disabled}
         onChange={(e) => {
           setRegistration(e.target.value)
-          worker.refetch()
-            .then(worker => {
-              onChange(worker?.data?.id)
+          refetch()
+            .then(data => {
+              onChange(data?.id)
             })
         }}
         value={registration}
@@ -397,8 +396,8 @@ const WorkerInput = ({ onChange, labelName, value = '', disabled = false}: {
       <span
         className='w-3/4 text-end text-sm'
       >{
-          worker.isLoading ? 'Procurando...' :
-            splitWorkerName(worker?.data?.name)
+          isLoading ? 'Procurando...' :
+            splitWorkerName(worker?.name)
         }</span>
     </InputCaseForm>
   )

@@ -7,9 +7,11 @@ import { InputButton } from '../../components/forms/InputButton'
 import { InputSearch } from '../../components/forms/InputSearch'
 import { PageHeader } from '../../components/PageHeader'
 import { PreventiveActionsFormRoutes } from '../../routes/preventive.routes'
-import { api, fetch } from '../../utils/trpc'
 import { ActionsInfoType } from '../../utils/schemas'
 import { usePages } from '../../contexts/PagesContext'
+import { useMachines } from '../../lib/machine'
+import { useNatures } from '../../lib/nature'
+import { getActions } from '../../lib/preventiveAction'
 
 
 export function PreventiveActions() {
@@ -18,8 +20,8 @@ export function PreventiveActions() {
 
   // Filters
 
-  const machines = api.main.getMachines.useQuery()
-  const natures = api.main.getNatures.useQuery()
+  const machines = useMachines()
+  const natures = useNatures()
 
   const [nature, setNature] = useState(-1)
   const [machine, setMachine] = useState(-1)
@@ -48,7 +50,7 @@ export function PreventiveActions() {
   function onUpdate() {
     setActions([])
     cursor.current = 1
-    fetch.preventive.getActions.query({
+    getActions({
       searchText: inputSearchText,
       machineId: machine,
       natureId: nature,
@@ -67,7 +69,7 @@ export function PreventiveActions() {
     cursor.current = 1
     const intersectionObserver = new IntersectionObserver((entries) => {
       if (entries.some(entry => entry.isIntersecting)) {
-        fetch.preventive.getActions.query({
+        getActions({
           searchText: inputSearchText,
           machineId: machine,
           natureId: nature,
@@ -150,7 +152,7 @@ export function PreventiveActions() {
               onChange={(e) => setMachine(Number(e.target.value))}
             >
               <option value="-1">Todos</option>
-              {machines.data?.map((entry, index) => (
+              {machines?.map((entry, index) => (
                 <option key={index} value={entry.id}>{entry.tag}</option>
               ))}
             </select>
@@ -168,7 +170,7 @@ export function PreventiveActions() {
               onChange={(e) => setNature((Number(e.target.value)))}
             >
               <option value="-1">Todos</option>
-              {natures.data?.map((entry, index) => (
+              {natures?.map((entry, index) => (
                 <option key={index} value={entry.id}>{entry.name}</option>
               ))}
             </select>

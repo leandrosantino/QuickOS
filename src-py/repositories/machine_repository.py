@@ -1,0 +1,5 @@
+from utils.prisma import prisma
+
+
+async def getMachines() -> list:
+    return await prisma.machine.find_many()

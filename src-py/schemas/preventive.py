@@ -103,6 +103,16 @@ class ExecuteServiceOrderData(BaseModel):
     finishTime: str
 
 
+class ExecuteServiceOrdersParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: int = Field(gt=0)
+    date: str
+    workers: list[WorkerRef] = Field(default_factory=list)
+    startTime: str
+    finishTime: str
+
+
 class UpdateServiceOrderParams(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -133,6 +143,16 @@ class GetActionsParams(BaseModel):
     showIgnore: bool
     limit: Optional[int] = None
     cursor: Optional[int] = None
+
+
+class AssembleServiceOrdersParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    week: int
+    year: int
+    status: str
+    nature: int
+    machine: int
 
 
 class ServiceOrderCount(BaseModel):

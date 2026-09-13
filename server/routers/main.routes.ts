@@ -1,11 +1,13 @@
-import prisma from '../utils/prisma'
 import { initTRPC } from '@trpc/server'
 import { z } from 'zod'
 
-const t = initTRPC.create()
-
 import { natureSchema, machineSchema, workerSchema } from '@schemas/main'
 import { internalServerError } from '../utils/responseMessages'
+import { getMachines } from '../repositories/machineRepository'
+import { getNatures } from '../repositories/natureRepository'
+import { getWorkers, getWorkerById, getWorkerByRegistration } from '../repositories/workerRepository'
+
+const t = initTRPC.create()
 
 
 export const main = t.router({
@@ -13,7 +15,7 @@ export const main = t.router({
         .output(z.array(machineSchema))
         .query(async () => {
             try {
-                const machines = await prisma.machine.findMany()
+                const machines = await getMachines()
                 return machines
             } catch (error) {
                 throw internalServerError(error)
@@ -24,7 +26,7 @@ export const main = t.router({
         .output(z.array(natureSchema))
         .query(async () => {
             try {
-                const natures = await prisma.nature.findMany()
+                const natures = await getNatures()
                 return natures
             } catch (error) {
                 throw internalServerError(error)
@@ -36,7 +38,7 @@ export const main = t.router({
         .output(z.array(workerSchema))
         .query(async () => {
             try {
-                const workers = await prisma.worker.findMany()
+                const workers = await getWorkers()
                 return workers
             } catch (error) {
                 throw internalServerError(error)
@@ -49,11 +51,7 @@ export const main = t.router({
         .output(workerSchema.nullable())
         .query(async ({ input }) => {
             try {
-                const worker = await prisma.worker.findUnique({
-                    where: {
-                        registration: input
-                    }
-                })
+                const worker = await getWorkerByRegistration(input)
                 return worker
             } catch (error) {
                 throw internalServerError(error)
@@ -66,9 +64,7 @@ export const main = t.router({
         .output(workerSchema.nullable())
         .query(async ({ input }) => {
             try {
-                const worker = await prisma.worker.findUnique({
-                    where: { id: input }
-                })
+                const worker = await getWorkerById(input)
                 return worker
             } catch (error) {
                 throw internalServerError(error)

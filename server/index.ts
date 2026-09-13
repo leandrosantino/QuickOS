@@ -5,7 +5,7 @@ import { expressHandler } from 'trpc-playground/handlers/express'
 import path from 'path'
 import { appRouter } from './routers';
 import { serviceOrdersSchema } from '../schemas/preventive'
-import prisma from "./utils/prisma"
+import { getServiceOrderById } from './use-cases/getServiceOrderById'
 
 const isDev = process.env.IS_DEV
 
@@ -31,30 +31,7 @@ export default class Server {
 
         this.app.get('/createServiceorder/:id', async (req, res) => {
             try {
-                const data = await prisma.preventiveOS.findUnique({
-                    where: {
-                        id: Number(req.params.id)
-                    },
-                    include: {
-                        nature: true,
-                        machine: true,
-                        responsible: true,
-                        actions: {
-                            include: {
-                                nature: true, machine: true
-                            }
-                        },
-                        actionsTaken: {
-                            include: {
-                                action: {
-                                    include: {
-                                        nature: true, machine: true
-                                    }
-                                },
-                            }
-                        }
-                    }
-                })
+                const data = await getServiceOrderById({ id: Number(req.params.id) })
                 const serviceOrder = serviceOrdersSchema.parse(data)
 
                 res.render('serviceOrder.ejs', { data: serviceOrder })

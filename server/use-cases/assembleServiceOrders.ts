@@ -113,7 +113,7 @@ export async function assembleServiceOrders({ machine, nature, status, week, yea
 
 }
 
-export async function registerServiceOrders({ machineId, weekCode, actions, natureId, actionsUniqueKey }: ServiceOrdersType) {
+async function registerServiceOrders({ machineId, weekCode, actions, natureId, actionsUniqueKey }: ServiceOrdersType) {
     try {
 
         const osData = {
@@ -152,7 +152,7 @@ export async function registerServiceOrders({ machineId, weekCode, actions, natu
 }
 
 
-export function generateActionsUniqueKey(actions: GenerateActionsUniqueKeyParms) {
+function generateActionsUniqueKey(actions: GenerateActionsUniqueKeyParms) {
     let key = ''
     actions.forEach(({ id, machineId, natureId }) => key += `A-I${id}/M${machineId}/N${natureId}_`)
     return key

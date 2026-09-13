@@ -1,6 +1,7 @@
 import {
   createContext,
   ReactNode,
+  useContext,
   useState,
 } from "react";
 
@@ -30,4 +31,9 @@ export function YearContextProvider({ children }: { children: ReactNode }) {
     </YearContext.Provider>
   )
 
+}
+
+export function useYear(){
+  const context = useContext(YearContext);
+  return context
 }

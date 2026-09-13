@@ -1,6 +1,6 @@
 import {PagesContainer, Screen} from '../contexts/PagesContext';
 
-import { Preventive } from '../pages/preventive';
+import { Preventive } from '../pages/preventive-actions';
 
 export default function AppRoutes() {
   return (

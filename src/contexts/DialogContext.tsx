@@ -146,3 +146,9 @@ const DialogComponents = {
   Error: DialogError,
   Question: DialogQuestion,
 }
+
+export function useDialog() : UseDialogProps{
+	const context = useContext(DialogContext);
+	const {dialogAlert, dialogError, dialogQuestion} = context
+	return {dialogAlert, dialogError, dialogQuestion};
+}

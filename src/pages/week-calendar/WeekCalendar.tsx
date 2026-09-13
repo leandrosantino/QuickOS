@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { PageHeader } from "../../../components/PageHeader";
-import { usePages } from "../../../hooks/usePages";
+import { PageHeader } from "../../components/PageHeader";
 import {BiArrowFromLeft, BiArrowFromRight} from 'react-icons/bi'
 
-import { api } from '../../../utils/trpc'
+import { api } from '../../utils/trpc'
 import { getWeek } from "date-fns";
-import { useYear } from "../../../hooks/useYear";
+import { usePages } from "../../contexts/PagesContext";
+import { useYear } from "../../contexts/yearContext";
+
 
 export function WeekCalendar() {
 

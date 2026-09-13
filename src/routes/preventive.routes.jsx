@@ -1,10 +1,10 @@
 import { PagesContainer, Screen } from "../contexts/PagesContext";
-import { PreventivePlan } from "../pages/preventive/PreventivePlan";
-import { WeekCalendar } from "../pages/preventive/PreventivePlan/WeekCalendar";
-import { ServiceOrders } from "../pages/preventive/PreventivePlan/ServiceOrders";
-import { ExecuteServiceOrderForm } from "../pages/preventive/PreventivePlan/ExecuteServiceOrderForm";
-import { PreventiveActions } from "../pages/preventive/PreventiveActions";
-import { PreventiveActionForm } from "../pages/preventive/PreventiveActionForm";
+import { PreventivePlan } from "../pages/week-calendar";
+import { WeekCalendar } from "../pages/week-calendar/WeekCalendar";
+import { ServiceOrders } from "../pages/week-calendar/ServiceOrders";
+import { ExecuteServiceOrderForm } from "../pages/week-calendar/ExecuteServiceOrderForm";
+import { PreventiveActions } from "../pages/preventive-actions/PreventiveActions";
+import { PreventiveActionForm } from "../pages/preventive-actions/PreventiveActionForm";
 
 export function PreventiveRoutes() {
   return (

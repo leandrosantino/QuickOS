@@ -1,12 +1,12 @@
-import { PreventiveCard } from '../PreventiveCard';
-import { ScrollContainer } from '../../../components/containers/ScrollContainer';
-import { InputButton } from '../../../components/forms/InputButton';
-import { PageHeader } from '../../../components/PageHeader';
-import { usePages } from '../../../hooks/usePages'
-import { api } from '../../../utils/trpc';
+import { PreventiveCard } from './PreventiveCard';
+import { ScrollContainer } from '../../components/containers/ScrollContainer';
+import { InputButton } from '../../components/forms/InputButton';
+import { PageHeader } from '../../components/PageHeader';
+import { api } from '../../utils/trpc';
 import { IoIosArrowBack } from 'react-icons/io'
 import { RiFilterOffFill, RiFilterFill } from 'react-icons/ri'
 import { useEffect, useState } from 'react';
+import { usePages } from '../../contexts/PagesContext';
 
 interface type {
   _week: number;

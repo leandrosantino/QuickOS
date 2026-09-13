@@ -6,10 +6,10 @@ import { CheckBox } from '../../components/forms/CheckBox'
 import { InputButton } from '../../components/forms/InputButton'
 import { InputSearch } from '../../components/forms/InputSearch'
 import { PageHeader } from '../../components/PageHeader'
-import { usePages } from '../../hooks/usePages'
 import { PreventiveActionsFormRoutes } from '../../routes/preventive.routes'
 import { api, fetch } from '../../utils/trpc'
 import { ActionsInfoType } from '../../utils/schemas'
+import { usePages } from '../../contexts/PagesContext'
 
 
 export function PreventiveActions() {

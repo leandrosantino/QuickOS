@@ -1,7 +1,7 @@
 
 import { useEffect } from 'react'
-import { usePages } from '../../../hooks/usePages'
-import { PreventiveOsModalRoutes, PreventiveOsRoutes } from '../../../routes/preventive.routes'
+import { PreventiveOsModalRoutes, PreventiveOsRoutes } from '../../routes/preventive.routes'
+import { usePages } from '../../contexts/PagesContext'
 
 export function PreventivePlan() {
 

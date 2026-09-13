@@ -6,8 +6,8 @@ import { InputButton } from '../../components/forms/InputButton'
 import { ServiceOrderType } from '../../utils/schemas'
 // import { api } from '../../utils/trpc'
 import { ipc } from '../../utils/ipc'
-import { usePages } from '../../hooks/usePages'
 import { splitWorkerName } from '../../utils/stringTools'
+import { usePages } from '../../contexts/PagesContext'
 
 interface PreventiveCardProps {
   data: ServiceOrderType

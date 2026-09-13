@@ -162,6 +162,9 @@ export function PagesContainer({ children, className }: PagesProviderProps) {
 	)
 }
 
-
+export function usePages() : PageContextDataProps{
+	const context = useContext(PagesContext);
+	return context;
+}
 
 

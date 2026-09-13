@@ -2,8 +2,8 @@
 import { useEffect } from 'react'
 import { TabButton } from '../../components/Tab/TabButton'
 import { TabContainer } from '../../components/Tab/TabContainer'
-import { usePages } from '../../hooks/usePages'
 import { PreventiveRoutes } from '../../routes/preventive.routes'
+import { usePages } from '../../contexts/PagesContext'
 
 export function Preventive() {
 

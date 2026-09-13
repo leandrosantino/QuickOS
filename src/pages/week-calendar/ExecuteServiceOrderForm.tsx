@@ -1,23 +1,23 @@
 import { useEffect, useState } from 'react'
 import { BiSave } from 'react-icons/bi'
-import { PageModalContainer } from '../../../components/containers/PageModalContainer'
-import { ScrollContainer } from '../../../components/containers/ScrollContainer'
-import { InputButton } from '../../../components/forms/InputButton'
-import { InputCaseForm } from '../../../components/forms/InputCaseForm'
-import { PageHeader } from '../../../components/PageHeader'
-import { useDialog } from '../../../hooks/useDialog'
-import { usePages } from '../../../hooks/usePages'
-import { api, fetch } from '../../../utils/trpc'
-import { splitWorkerName } from '../../../utils/stringTools'
+import { PageModalContainer } from '../../components/containers/PageModalContainer'
+import { ScrollContainer } from '../../components/containers/ScrollContainer'
+import { InputButton } from '../../components/forms/InputButton'
+import { InputCaseForm } from '../../components/forms/InputCaseForm'
+import { PageHeader } from '../../components/PageHeader'
+import { api, fetch } from '../../utils/trpc'
+import { splitWorkerName } from '../../utils/stringTools'
 import {
   ExecutePreventiveServiceOrderType,
   executePreventiveServiceOrderSchema,
   updatePreventiveServiceOrderSchema,
-} from '../../../utils/schemas'
+} from '../../utils/schemas'
 import { toast } from 'react-toastify'
 import { ZodError } from 'zod'
 import { differenceInMinutes, format } from 'date-fns'
-import { ServiceOrdersType } from '@schemas/preventive'
+import { usePages } from '../../contexts/PagesContext'
+import { useDialog } from '../../contexts/DialogContext'
+import { ServiceOrdersType } from '../../../schemas/preventive'
 
 
 function timeInStringToDate(hour: string | undefined) {

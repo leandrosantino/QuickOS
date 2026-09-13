@@ -9,8 +9,8 @@ import { InputButton } from '../../components/forms/InputButton';
 import { InputCaseForm } from '../../components/forms/InputCaseForm';
 import { ZodError } from 'zod';
 import { PageModalContainer } from '../../components/containers/PageModalContainer';
-import { usePages } from '../../hooks/usePages';
-import { useDialog } from '../../hooks/useDialog';
+import { usePages } from '../../contexts/PagesContext';
+import { useDialog } from '../../contexts/DialogContext';
 
 import { toast } from 'react-toastify'
 

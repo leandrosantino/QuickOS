@@ -37,7 +37,7 @@ export function printServiceOrder({ ipcMain, window }: UseRoutesProps) {
                 minimizable: false,
                 resizable: true,
                 frame: true,
-                url: `http://localhost:9999/createServiceorder/${args.id}`
+                url: `http://localhost:3333/createServiceorder/${args.id}`
             }).load()
 
 

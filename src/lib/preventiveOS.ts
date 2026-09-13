@@ -1,18 +1,22 @@
-import { api, fetch } from '../utils/trpc'
+import {
+  getServiceOrderById,
+  useExecuteServiceOrdersMutation,
+  useServiceOrderCountQuery,
+  useServiceOrdersQuery,
+  useUpdateServiceOrderMutation,
+} from '../api'
 import { ExecutePreventiveServiceOrderType } from '../utils/schemas'
 
-export function getServiceOrderById(id: number) {
-  return fetch.preventive.getServiceOrderById.query({ id })
-}
+export { getServiceOrderById }
 
 export function useUpdateServiceOrder() {
-  const { mutateAsync } = api.preventive.updateServiceOrder.useMutation()
+  const { mutateAsync } = useUpdateServiceOrderMutation()
   return (input: { id: number; data: Omit<ExecutePreventiveServiceOrderType, 'id'> }) =>
     mutateAsync(input)
 }
 
 export function useExecuteServiceOrders() {
-  const { mutateAsync } = api.preventive.executeServiceOrders.useMutation()
+  const { mutateAsync } = useExecuteServiceOrdersMutation()
   return (input: ExecutePreventiveServiceOrderType) => mutateAsync(input)
 }
 
@@ -23,11 +27,11 @@ export function useServiceOrders(params: {
   nature: number
   machine: number
 }) {
-  const query = api.preventive.getServiceOrders.useQuery(params)
+  const query = useServiceOrdersQuery(params)
   return { data: query.data, isLoading: query.isLoading, refetch: query.refetch }
 }
 
 export function useCountPreventiveOs(week: number, year: number) {
-  const query = api.preventive.getcountPreventiveOs.useQuery({ week, year })
-  return { data: query.data, refetch: query.refetch }
+  const query = useServiceOrderCountQuery(week, year)
+  return { data: query.data ?? undefined, refetch: query.refetch }
 }

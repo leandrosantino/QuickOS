@@ -2,7 +2,7 @@ from schemas.preventive import GetActionsParams
 from infra.prisma import prisma
 
 
-async def getActions(params: dict) -> list:
+async def getActions(params: dict) -> list[dict]:
     validated = GetActionsParams.model_validate(params)
 
     next_execution = validated.weekCode
@@ -27,10 +27,19 @@ async def getActions(params: dict) -> list:
         "include": {
             "nature": True,
             "machine": True,
-            "_count": {"select": {"actionsTaken": True}},
+            "actionsTaken": True,
         },
     }
     if validated.cursor is not None:
         query["cursor"] = {"id": validated.cursor}
 
-    return await prisma.preventiveaction.find_many(**query)
+    actions = await prisma.preventiveaction.find_many(**query)
+
+    result: list[dict] = []
+    for action in actions:
+        data = action.model_dump(mode="json")
+        count = len(data.pop("actionsTaken", []) or [])
+        data["_count"] = {"actionsTaken": count}
+        result.append(data)
+
+    return result

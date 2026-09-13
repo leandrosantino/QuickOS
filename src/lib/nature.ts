@@ -1,5 +1,5 @@
-import { api } from '../utils/trpc'
+import { useNaturesQuery } from '../api'
 
 export function useNatures() {
-  return api.main.getNatures.useQuery().data
+  return useNaturesQuery().data
 }

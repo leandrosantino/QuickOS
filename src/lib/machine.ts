@@ -1,5 +1,5 @@
-import { api } from '../utils/trpc'
+import { useMachinesQuery } from '../api'
 
 export function useMachines() {
-  return api.main.getMachines.useQuery().data
+  return useMachinesQuery().data
 }

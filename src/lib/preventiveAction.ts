@@ -1,7 +1,15 @@
-import { api, fetch } from '../utils/trpc'
+import {
+  createAction,
+  deleteAction,
+  getActions,
+  updateAction,
+  useCreateActionMutation,
+  useDeleteActionMutation,
+  useUpdateActionMutation,
+} from '../api'
 import { ActionsInfoType } from '../utils/schemas'
 
-type GetActionsParams = {
+export type GetActionsParams = {
   searchText: string
   weekCode: string
   machineId: number
@@ -11,21 +19,20 @@ type GetActionsParams = {
   cursor?: number
 }
 
-export function getActions(params: GetActionsParams) {
-  return fetch.preventive.getActions.query(params)
-}
+export { getActions }
 
 export function useCreateAction() {
-  const { mutateAsync } = api.preventive.createAction.useMutation()
+  const { mutateAsync } = useCreateActionMutation()
   return (actionInfo: ActionsInfoType) => mutateAsync(actionInfo)
 }
 
 export function useUpdateAction() {
-  const { mutateAsync } = api.preventive.updateAction.useMutation()
-  return (input: { id: number; data: ActionsInfoType }) => mutateAsync(input)
+  const { mutateAsync } = useUpdateActionMutation()
+  return (input: { id: number; data: ActionsInfoType }) =>
+    mutateAsync({ id: input.id, data: input.data as Parameters<typeof updateAction>[0]['data'] })
 }
 
 export function useDeleteAction() {
-  const { mutateAsync } = api.preventive.deleteAction.useMutation()
-  return (input: { id: number }) => mutateAsync(input)
+  const { mutateAsync } = useDeleteActionMutation()
+  return (input: { id: number }) => mutateAsync(input.id)
 }

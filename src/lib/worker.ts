@@ -1,7 +1,7 @@
-import { api } from '../utils/trpc'
+import { useWorkerByRegistrationQuery } from '../api'
 
 export function useWorkerByRegistration(registration: number) {
-  const query = api.main.getWorkersByRegistration.useQuery(registration)
+  const query = useWorkerByRegistrationQuery(registration)
   return {
     worker: query.data,
     isLoading: query.isLoading,

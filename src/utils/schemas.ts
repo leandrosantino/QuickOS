@@ -92,13 +92,13 @@ export type ServiceOrderType = z.infer<typeof serviceOrdersSchema>
 const savePreventiveServiceOrderSchema = z.object({
     id: z.number(),
     date: z.date({ invalid_type_error: 'A data informada é inválida !!' })
-        .transform(value => String(value)),
+        .transform(value => value.toISOString()),
 
     startTime: z.date({ invalid_type_error: 'Informe a Hora de Início!!' })
-        .transform(value => String(value)),
+        .transform(value => value.toISOString()),
 
     finishTime: z.date({ invalid_type_error: 'Informe a Hora Final!!' })
-        .transform(value => String(value)),
+        .transform(value => value.toISOString()),
 
     workers: z.array(z.object({ id: z.number() }))
         .refine(workers => workers.length >= 1, 'Informe no mínimo 1 Manutencista!')

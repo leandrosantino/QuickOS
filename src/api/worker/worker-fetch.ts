@@ -1,6 +1,5 @@
-import { useQuery } from '@tanstack/react-query'
-import { get } from './client'
-import { WorkerInfoType } from '../utils/schemas'
+import { get } from '../client'
+import { WorkerInfoType } from './worker-types'
 
 type RawWorker = {
   id: number
@@ -33,22 +32,4 @@ export async function getWorkerByRegistration(
 export async function getWorkerById(id: number): Promise<WorkerInfoType | null> {
   const worker = await get<RawWorker>(`/main/workers/${id}`)
   return worker ? mapWorker(worker) : null
-}
-
-export function useWorkersQuery() {
-  return useQuery({ queryKey: ['api', 'workers'], queryFn: getWorkers })
-}
-
-export function useWorkerByRegistrationQuery(registration: number) {
-  return useQuery({
-    queryKey: ['api', 'workers', 'registration', registration],
-    queryFn: () => getWorkerByRegistration(registration),
-  })
-}
-
-export function useWorkerByIdQuery(id: number) {
-  return useQuery({
-    queryKey: ['api', 'workers', id],
-    queryFn: () => getWorkerById(id),
-  })
 }

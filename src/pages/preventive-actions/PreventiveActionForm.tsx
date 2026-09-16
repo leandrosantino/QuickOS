@@ -14,18 +14,18 @@ import { useDialog } from '../../contexts/DialogContext';
 
 import { toast } from 'react-toastify'
 
-import { useMachines } from '../../lib/machine'
-import { useNatures } from '../../lib/nature'
-import { useCreateAction, useUpdateAction, useDeleteAction } from '../../lib/preventiveAction'
+import { useMachines } from '../../api/machine/machine-query'
+import { useNatures } from '../../api/nature/nature-query'
+import { useCreateAction, useUpdateAction, useDeleteAction } from '../../api/preventive-action/preventive-action-query'
 
 import {
   ActionsInfoType,
   ActionsInfoTypeInupt,
   actionInfoSchema,
-  MachineInfoType,
-  NatureInfoType,
   ActionsInfoTypeWithActonsTaken
-} from '../../utils/schemas'
+} from '../../api/preventive-action/preventive-action-types'
+import { MachineInfoType } from '../../api/machine/machine-types'
+import { NatureInfoType } from '../../api/nature/nature-types'
 import { CheckBox } from '../../components/forms/CheckBox';
 import { getWeek } from 'date-fns';
 import { incrementWeekYear, weekYearToString } from '../../utils/weekTools';

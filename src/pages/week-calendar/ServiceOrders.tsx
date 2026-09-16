@@ -2,9 +2,9 @@ import { PreventiveCard } from './PreventiveCard';
 import { ScrollContainer } from '../../components/containers/ScrollContainer';
 import { InputButton } from '../../components/forms/InputButton';
 import { PageHeader } from '../../components/PageHeader';
-import { useServiceOrders } from '../../lib/preventiveOS'
-import { useMachines } from '../../lib/machine'
-import { useNatures } from '../../lib/nature'
+import { useServiceOrders } from '../../api/preventive-os/preventive-os-query'
+import { useMachines } from '../../api/machine/machine-query'
+import { useNatures } from '../../api/nature/nature-query'
 import { IoIosArrowBack } from 'react-icons/io'
 import { RiFilterOffFill, RiFilterFill } from 'react-icons/ri'
 import { useEffect, useState } from 'react';

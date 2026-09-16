@@ -1,29 +1,10 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { del, get, post, put } from './client'
-import { ActionsInfoTypeWithActonsTaken } from '../utils/schemas'
-
-export type GetActionsParams = {
-  searchText: string
-  weekCode: string
-  machineId: number
-  natureId: number
-  showIgnore: boolean
-  limit?: number
-  cursor?: number
-}
-
-export type CreateActionInput = {
-  description: string
-  machineId: number
-  excution: string
-  frequency: number
-  natureId: number
-  nextExecution: string
-  preventiveOSId?: number | null
-  ignore: boolean
-}
-
-export type UpdateActionInput = { id: number; data: CreateActionInput }
+import { del, get, post, put } from '../client'
+import {
+  ActionsInfoTypeWithActonsTaken,
+  CreateActionInput,
+  GetActionsParams,
+  UpdateActionInput,
+} from './preventive-action-types'
 
 export async function getActions(
   params: GetActionsParams,
@@ -53,20 +34,4 @@ export async function updateAction(input: UpdateActionInput): Promise<void> {
 
 export async function deleteAction(id: number): Promise<void> {
   await del(`/preventive/actions/${id}`)
-}
-
-export function useActionsQuery(params: GetActionsParams) {
-  return useQuery({ queryKey: ['api', 'actions', params], queryFn: () => getActions(params) })
-}
-
-export function useCreateActionMutation() {
-  return useMutation(createAction)
-}
-
-export function useUpdateActionMutation() {
-  return useMutation(updateAction)
-}
-
-export function useDeleteActionMutation() {
-  return useMutation(deleteAction)
 }

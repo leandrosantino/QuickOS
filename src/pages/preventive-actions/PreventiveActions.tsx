@@ -7,11 +7,11 @@ import { InputButton } from '../../components/forms/InputButton'
 import { InputSearch } from '../../components/forms/InputSearch'
 import { PageHeader } from '../../components/PageHeader'
 import { PreventiveActionsFormRoutes } from '../../routes/preventive.routes'
-import { ActionsInfoType } from '../../utils/schemas'
+import { ActionsInfoType } from '../../api/preventive-action/preventive-action-types'
 import { usePages } from '../../contexts/PagesContext'
-import { useMachines } from '../../lib/machine'
-import { useNatures } from '../../lib/nature'
-import { getActions } from '../../lib/preventiveAction'
+import { useMachines } from '../../api/machine/machine-query'
+import { useNatures } from '../../api/nature/nature-query'
+import { getActions } from '../../api/preventive-action/preventive-action-fetch'
 
 
 export function PreventiveActions() {

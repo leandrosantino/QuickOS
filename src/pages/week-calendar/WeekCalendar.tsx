@@ -5,7 +5,7 @@ import {BiArrowFromLeft, BiArrowFromRight} from 'react-icons/bi'
 import { getWeek } from "date-fns";
 import { usePages } from "../../contexts/PagesContext";
 import { useYear } from "../../contexts/yearContext";
-import { useCountPreventiveOs } from '../../lib/preventiveOS'
+import { useCountPreventiveOs } from '../../api/preventive-os/preventive-os-query'
 
 
 export function WeekCalendar() {

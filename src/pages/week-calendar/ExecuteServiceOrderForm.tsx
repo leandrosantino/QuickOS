@@ -5,14 +5,15 @@ import { ScrollContainer } from '../../components/containers/ScrollContainer'
 import { InputButton } from '../../components/forms/InputButton'
 import { InputCaseForm } from '../../components/forms/InputCaseForm'
 import { PageHeader } from '../../components/PageHeader'
-import { getServiceOrderById, useUpdateServiceOrder, useExecuteServiceOrders } from '../../lib/preventiveOS'
-import { useWorkerByRegistration } from '../../lib/worker'
+import { getServiceOrderById } from '../../api/preventive-os/preventive-os-fetch'
+import { useUpdateServiceOrder, useExecuteServiceOrders } from '../../api/preventive-os/preventive-os-query'
+import { useWorkerByRegistration } from '../../api/worker/worker-query'
 import { splitWorkerName } from '../../utils/stringTools'
 import {
   ExecutePreventiveServiceOrderType,
   executePreventiveServiceOrderSchema,
   updatePreventiveServiceOrderSchema,
-} from '../../utils/schemas'
+} from '../../api/preventive-os/preventive-os-types'
 import { toast } from 'react-toastify'
 import { ZodError } from 'zod'
 import { differenceInMinutes, format } from 'date-fns'

@@ -1,55 +1,10 @@
 import { z } from 'zod'
-import { weekYearRegex } from './weekTools'
 import { differenceInMinutes } from 'date-fns'
-
-export const machineInfoSchema = z.object({
-    id: z.number(),
-    tag: z.string(),
-    technology: z.string(),
-    ute: z.string()
-})
-
-export type MachineInfoType = z.infer<typeof machineInfoSchema>
-
-export const natureInfoSchema = z.object({
-    id: z.number(),
-    name: z.string(),
-})
-
-export type NatureInfoType = z.infer<typeof natureInfoSchema>
-
-export const actionInfoSchema = z.object({
-    id: z.number().optional(),
-    machineId: z.number(),
-    natureId: z.number(),
-    machine: machineInfoSchema.optional(),
-    nature: natureInfoSchema.optional(),
-    preventiveOSId: z.number().optional().nullable(),
-    ignore: z.boolean(),
-    frequency: z.number()
-        .positive('A a quantidade de semanas não pode ser menor que 1 !!'),
-
-    nextExecution: z.string()
-        .regex(/\d{4}-W\d{2}/, 'A semana selecionada é inválida !!'),
-
-    excution: z.string()
-        .min(10, 'O campo Execução precisa ter no mínimo 10 caracteres !!'),
-
-    description: z.string()
-        .min(10, 'O campo Descrição precisa ter no mínimo 10 caracteres !!'),
-
-})
-
-
-const actionsInfoSchemaWithActonsTaken = z.object({
-    ...actionInfoSchema.shape,
-    _count: z.object({ actionsTaken: z.number() }),
-})
-
-export type ActionsInfoTypeWithActonsTaken = z.output<typeof actionsInfoSchemaWithActonsTaken>
-
-export type ActionsInfoType = z.output<typeof actionInfoSchema>
-export type ActionsInfoTypeInupt = z.input<typeof actionInfoSchema>
+import { weekYearRegex } from '../../utils/weekTools'
+import { machineInfoSchema } from '../machine/machine-types'
+import { natureInfoSchema } from '../nature/nature-types'
+import { workerSchema } from '../worker/worker-types'
+import { actionInfoSchema } from '../preventive-action/preventive-action-types'
 
 export const actionsTakenSchema = z.object({
     id: z.number(),
@@ -59,17 +14,6 @@ export const actionsTakenSchema = z.object({
     weekCode: z.string().regex(weekYearRegex),
     action: actionInfoSchema
 })
-
-
-export const workerSchema = z.object({
-    id: z.number(),
-    registration: z.number(),
-    name: z.string(),
-    class: z.string(),
-})
-
-export type WorkerInfoType = z.infer<typeof workerSchema>
-
 
 export const serviceOrdersSchema = z.object({
     id: z.number().optional(),
@@ -112,4 +56,12 @@ export const executePreventiveServiceOrderSchema = savePreventiveServiceOrderSch
 
 export type ExecutePreventiveServiceOrderType = z.infer<typeof executePreventiveServiceOrderSchema>
 
-export { }
+export type GetServiceOrdersParams = {
+  week: number
+  year: number
+  status: string
+  nature: number
+  machine: number
+}
+
+export type ServiceOrderCount = { finished: number; unfinished: number }

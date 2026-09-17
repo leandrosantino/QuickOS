@@ -1,5 +1,4 @@
 {
-    "extends": "./paths.json",
     "compilerOptions": {
         "target": "es5",
         "lib": [
@@ -24,12 +23,12 @@
         "typeRoots": [
             "src/@types"
         ],
+        "paths": {
+            "*": ["node_modules/*" ],
+            "@/*": ["./src/*" ]
+        }
     },
     "include": [
         "src",
-        "@types",
-        "schemas/**/*",
-        "server/**/*",
-        "electron/**/*"
     ]
 }

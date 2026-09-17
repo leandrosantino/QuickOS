@@ -8,7 +8,7 @@ from infra import prisma
 
 
 def create_app() -> Flask:
-    app = Flask(__name__, template_folder="../templates")
+    app = Flask(__name__, template_folder="../../public")
     CORS(app)
     prisma.install(app)
     app.register_blueprint(main_blueprint)

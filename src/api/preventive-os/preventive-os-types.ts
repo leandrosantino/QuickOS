@@ -29,6 +29,8 @@ export const serviceOrdersSchema = z.object({
     nature: natureInfoSchema.optional(),
     duration: z.number().optional().nullable(),
     actionsTaken: z.array(actionsTakenSchema).optional(),
+    startTime: z.date().nullable().optional().or(z.string()),
+    finishTime: z.date().nullable().optional().or(z.string()),
 })
 
 export type ServiceOrderType = z.infer<typeof serviceOrdersSchema>

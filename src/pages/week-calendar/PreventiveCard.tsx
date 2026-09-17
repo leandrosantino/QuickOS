@@ -152,7 +152,7 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
                       className="text-gray-100 bg-green-500 "
                       Icon={BsPrinterFill}
                       onClick={() => {
-                        ipc.send('printServiceOrder', data)
+                        void ipc.printServiceOrder({ id: data.id })
                       }}
                     />
                   </> :
@@ -170,7 +170,7 @@ export function PreventiveCard({ data }: PreventiveCardProps) {
                       className="text-gray-100 bg-zinc-500 "
                       Icon={BsPrinterFill}
                       onClick={() => {
-                        ipc.send('printServiceOrder', data)
+                        void ipc.printServiceOrder({ id: data.id })
                       }}
                     />
                   </>

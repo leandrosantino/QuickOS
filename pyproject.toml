@@ -10,4 +10,5 @@ dependencies = [
     "rich>=15.0.0",
     "flask[async]>=3.0.0",
     "flask-cors>=5.0.0",
+    "pywebview[qt]>=6.2.1",
 ]

@@ -11,6 +11,7 @@ import { useWorkerByRegistration } from '../../api/worker/worker-query'
 import { splitWorkerName } from '../../utils/stringTools'
 import {
   ExecutePreventiveServiceOrderType,
+  ServiceOrderType,
   executePreventiveServiceOrderSchema,
   updatePreventiveServiceOrderSchema,
 } from '../../api/preventive-os/preventive-os-types'
@@ -19,7 +20,6 @@ import { ZodError } from 'zod'
 import { differenceInMinutes, format } from 'date-fns'
 import { usePages } from '../../contexts/PagesContext'
 import { useDialog } from '../../contexts/DialogContext'
-import { ServiceOrdersType } from '../../../schemas/preventive'
 
 
 function timeInStringToDate(hour: string | undefined) {
@@ -51,7 +51,7 @@ type ResponsableType = { id: number }
 export function ExecuteServiceOrderForm({ id }: { id: number }) {
   const { backPage } = usePages()
   const { dialogQuestion } = useDialog()
-  const [serviceOrder, setServiceOrder] = useState<ServiceOrdersType>()
+  const [serviceOrder, setServiceOrder] = useState<ServiceOrderType>()
   const executeServiceOrder = useExecuteServiceOrders()
   const updateServiceOrder = useUpdateServiceOrder()
 
@@ -82,7 +82,7 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
       try {
         const data = await getServiceOrderById(id)
         console.log(data)
-        setServiceOrder(data as any)
+        if (data) setServiceOrder(data)
       } catch (err) {
         console.log(err)
       }
@@ -92,12 +92,12 @@ export function ExecuteServiceOrderForm({ id }: { id: number }) {
   useEffect(() => {
     if(!serviceOrder) return
 
-    setDate(serviceOrder.date ? format(new Date(serviceOrder?.date), "yyyy-MM-dd" ) : '')
-    setStartTime(serviceOrder.startTime ? new Date(serviceOrder.startTime).toLocaleTimeString('pt-br', {
+    setDate(serviceOrder.date ? format(new Date(serviceOrder?.date as string), "yyyy-MM-dd" ) : '')
+    setStartTime(serviceOrder.startTime ? new Date(serviceOrder.startTime as string).toLocaleTimeString('pt-br', {
       hour: '2-digit',
       minute: '2-digit'
     }) : '')
-    setFinishTime(serviceOrder.finishTime ? new Date(serviceOrder.finishTime).toLocaleTimeString('pt-br', {
+    setFinishTime(serviceOrder.finishTime ? new Date(serviceOrder.finishTime as string).toLocaleTimeString('pt-br', {
       hour: '2-digit',
       minute: '2-digit'
     }) : '')

@@ -339,11 +339,27 @@
 
     <script>
         const pdfName = "{{ data.id }}_{{ data.weekCode.replace('W', 'S') }}_{{ data.machine.tag }}-{{ data.nature.name }}"
+
         function printPage() {
-            window.ipc.send('runPrint')
+            // O pywebview não expõe API de impressão; no QtWebEngine o
+            // window.print() cai no diálogo do sistema. O @media print acima
+            // esconde a barra de botões.
+            debugger
+            window.print()
         }
-        function printPageToPDF() {
-            window.ipc.send('runPrintToPdf', pdfName)
+
+        async function printPageToPDF() {
+            // window.pywebview só existe depois do load, então consultamos a
+            // cada clique em vez de guardar a referência no escopo do módulo.
+            const bridge = window.pywebview && window.pywebview.api
+            if (!bridge) {
+                return window.print()
+            }
+            try {
+                await bridge.run_print_to_pdf(pdfName)
+            } catch (error) {
+                console.error(error)
+            }
         }
     </script>
 </body>

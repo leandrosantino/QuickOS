@@ -1,10 +1,10 @@
-import { del, get, post, put } from '../client'
+import { del, get, post, put } from '../client';
 import {
-  ExecutePreventiveServiceOrderType,
-  GetServiceOrdersParams,
-  ServiceOrderCount,
-  ServiceOrderType,
-} from './preventive-os-types'
+  type ExecutePreventiveServiceOrderType,
+  type GetServiceOrdersParams,
+  type ServiceOrderCount,
+  type ServiceOrderType,
+} from './preventive-os-types';
 
 export async function getServiceOrders(
   params: GetServiceOrdersParams,

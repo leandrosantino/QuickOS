@@ -1,9 +1,9 @@
 import { del, get, post, put } from '../client'
 import {
-  ActionsInfoTypeWithActonsTaken,
-  CreateActionInput,
-  GetActionsParams,
-  UpdateActionInput,
+  type ActionsInfoTypeWithActonsTaken,
+  type CreateActionInput,
+  type GetActionsParams,
+  type UpdateActionInput,
 } from './preventive-action-types'
 
 export async function getActions(

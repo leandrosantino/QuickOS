@@ -24,3 +24,4 @@ def start() -> None:
         app.run(host="0.0.0.0", port=3333)
     finally:
         prisma.stop()
+

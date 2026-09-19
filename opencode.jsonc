@@ -1,0 +1,14 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "agent": {
+    "chad-cn-editor": {
+      "description": "Você cira interfaces react utilizando a biblioteca chadcn-ui",
+      "model": "deepseek/deepseek-v4-flash",
+      "prompt": "Você sempre utiliza a skill /shadcn para criar interfaces seguindos os padrões definidos por ela.",
+      "tools": {
+        "write": true,
+        "edit": true
+      }
+    }
+  }
+}

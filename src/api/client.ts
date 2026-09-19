@@ -1,9 +1,9 @@
-const BASE_URL = process.env.REACT_APP_API_URL ?? 'http://localhost:3333'
+const BASE_URL = 'http://localhost:3333'
 
 export type SuccessResponse = { message: string; code: number }
 
 export class ApiError extends Error {
-  constructor(public status: number, message?: string) {
+  constructor(status: number, message?: string) {
     super(message ?? `Request failed with status ${status}`)
     this.name = 'ApiError'
   }

@@ -5,7 +5,11 @@ import webview
 from dotenv import load_dotenv
 from api.main_window_controller import MainWindowController
 import os
+
 load_dotenv()
+
+# if __name__ == "__main__":
+#     start()
 
 if __name__ == "__main__":
     global window
@@ -13,15 +17,18 @@ if __name__ == "__main__":
 
     url = "view/index.html"
     if NODE_ENV == "development":
-        url = "http://localhost:3000/"
+        url = "http://localhost:5173/"
 
     api = MainWindowController()
+    width = 1280
+    height = 860
 
     window = webview.create_window(
         "Sistema de Preventivas",
         url,
-        width=1280,
-        height=720,
+        width=width,
+        height=height,
+        min_size=(width, height),
         js_api=api,
     )
 

@@ -8,8 +8,8 @@ import {
   updateServiceOrder,
 } from './preventive-os-fetch'
 import {
-  ExecutePreventiveServiceOrderType,
-  GetServiceOrdersParams,
+  type ExecutePreventiveServiceOrderType,
+  type GetServiceOrdersParams,
 } from './preventive-os-types'
 
 export function useServiceOrders(params: GetServiceOrdersParams) {

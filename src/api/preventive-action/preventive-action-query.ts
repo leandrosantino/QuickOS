@@ -5,7 +5,7 @@ import {
   getActions,
   updateAction,
 } from './preventive-action-fetch'
-import { ActionsInfoType, GetActionsParams } from './preventive-action-types'
+import { type ActionsInfoType, type GetActionsParams } from './preventive-action-types'
 
 export function useActionsQuery(params: GetActionsParams) {
   return useQuery({ queryKey: ['api', 'actions', params], queryFn: () => getActions(params) })

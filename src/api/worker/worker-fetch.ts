@@ -1,5 +1,5 @@
 import { get } from '../client'
-import { WorkerInfoType } from './worker-types'
+import { type WorkerInfoType } from './worker-types'
 
 type RawWorker = {
   id: number

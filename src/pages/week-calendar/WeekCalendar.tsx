@@ -1,153 +1,201 @@
-import { useEffect, useState } from "react";
-import { PageHeader } from "../../components/PageHeader";
-import {BiArrowFromLeft, BiArrowFromRight} from 'react-icons/bi'
+import {
+  addDays,
+  format,
+  getISOWeek,
+  getISOWeekYear,
+  setISOWeek,
+  startOfISOWeek,
+} from "date-fns"
+import { MinusIcon, PlusIcon } from "lucide-react"
+import { useState } from "react"
 
-import { getWeek } from "date-fns";
-import { usePages } from "../../contexts/PagesContext";
-import { useYear } from "../../contexts/yearContext";
-import { useCountPreventiveOs } from '../../api/preventive-os/preventive-os-query'
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Progress } from "@/components/ui/progress"
+import { Separator } from "@/components/ui/separator"
+import { cn } from "cn"
 
+type WeekCell = {
+  week: number
+  total: number
+  executed: number
+  pending: number
+}
 
-export function WeekCalendar() {
+type WeekStatus = "completed" | "overdue" | "default"
 
-  const { goToPage } = usePages()
-  const {setYear, year} = useYear()
+const weeks: WeekCell[] = Array.from({ length: 52 }, (_, index) => {
+  const total = index % 8 === 7 ? 0 : ((index * 7) % 13) + 1
+  const executed = (index * 3) % (total + 1)
 
-  const semanas = new Array<string>(52).fill('teste')
+  return {
+    week: index + 1,
+    total,
+    executed,
+    pending: total - executed,
+  }
+})
 
-  return (
-    <div
-      className="
-        w-full h-tabPage
-        px-5
-      "
-    >
+function weekDateRange(week: number, year: number) {
+  const start = startOfISOWeek(setISOWeek(new Date(year, 0, 4), week))
+  const end = addDays(start, 6)
 
-      <PageHeader title="Calendário de Preventivas" >
-        <div
-          className="flex flex-row justify-center items-center gap-2"
-        >
-          <button className="p-2 hover:bg-zinc-200 rounded-md text-lg" onClick={() => setYear(year - 1)} >
-            <BiArrowFromRight/>
-          </button>
-          <div className="!indent-0 justify-center items-center text-lg py-1 px-4 rounded-md border-zinc-700 border">
-            <span>{year}</span>
-          </div>
-          <button className="p-2 hover:bg-zinc-200 rounded-md text-lg" onClick={() => setYear(year + 1)} >
-            <BiArrowFromLeft/>
-          </button>
-        </div>
-      </PageHeader>
+  return `${format(start, "dd/MM")} — ${format(end, "dd/MM")}`
+}
 
-      <div className="p-1 flex items-center" >
-        <span className="font-medium mr-3" >Legenda:</span>
-        <div className="flex p-1 justify-center items-center gap-1" >
-          <div className="bg-zinc-500 w-5 h-5 rounded-full" ></div>
-          <span className="mr-2" >Pendente</span>
-        </div>
-        <div className="flex p-1 justify-center items-center gap-1" >
-          <div className="bg-orange-500 w-5 h-5 rounded-full" ></div>
-          <span className="mr-2" >Atrasado</span>
-        </div>
-        <div className="flex p-1 justify-center items-center gap-1" >
-          <div className="bg-green-500 w-5 h-5 rounded-full" ></div>
-          <span className="mr-2" >Concluído</span>
-        </div>
-      </div>
+function getWeekStatus(cell: WeekCell, year: number): WeekStatus {
+  if (cell.total === 0) {
+    return "default"
+  }
 
-      <div
-        className="
-          w-full h-[75%] mt-5
-          grid grid-cols-8 grid-rows-7 gap-2
-        "
-      >
-        {
-          semanas.map((entry, index) => (
-            <WeekCard
-              onClick={() => goToPage('Preventive.Plan.Calendar.ServiceOrders', {
-                _week: index + 1, _year: year
-              })}
-              key={index}
-              week={index + 1}
-              year={year}
-            />
-          ))
-        }
-      </div>
+  const completion = Math.round((cell.executed / cell.total) * 100)
+  const now = new Date()
+  const currentWeek = getISOWeek(now)
+  const currentWeekYear = getISOWeekYear(now)
+  const isPastWeek =
+    year < currentWeekYear ||
+    (year === currentWeekYear && cell.week < currentWeek)
 
-    </div>
+  if (completion === 100) {
+    return "completed"
+  }
+
+  if (isPastWeek && cell.executed < cell.total) {
+    return "overdue"
+  }
+
+  return "default"
+}
+
+function weekCellBackground(status: WeekStatus) {
+  return cn(
+    status === "completed" && "bg-primary/15 hover:bg-primary/25",
+    status === "overdue" && "bg-warning/15 hover:bg-warning/30",
+    status === "default" && "hover:bg-muted"
   )
 }
 
-interface WeekCardType {
-  week: number,
-  year: number,
-  onClick: () => void
+function weekCellForeground(status: WeekStatus) {
+  return cn(
+    status === "completed" && "text-primary",
+    status === "overdue" && "text-warning",
+
+  )
 }
 
-function WeekCard({ week, year, onClick }: WeekCardType) {
-  const { revalidate } = usePages()
-  const { data, refetch } = useCountPreventiveOs(week, year)
-  const [isDefeated, setIsDefeated] = useState<boolean>(false)
-  const [percent, setPercent] = useState<number>(0)
+function weekProgressColor(status: WeekStatus) {
+  return cn(
+    status === "overdue" &&
+    "[&_[data-slot=progress-track]]:bg-warning/10 [&_[data-slot=progress-indicator]]:bg-warning"
+  )
+}
 
-  useEffect(() => {refetch()}, [revalidate, refetch])
+export function WeekCalendar() {
+  const [year, setYear] = useState(new Date().getFullYear())
 
-  useEffect(() => {
-    setIsDefeated(false)
-    let value: number = 0
-    const now = new Date()
-    const currentYear = now.getFullYear()
-    const currentWeek = getWeek(now)
-
-    if (data) {
-      if (data?.unfinished > 0 || data?.finished > 0) {
-        value = data.finished === 0 ? 0 : (data.finished / (data.finished + data.unfinished)) * 100
-        if(year < currentYear) setIsDefeated(true)
-        if(year === currentYear && week < currentWeek) setIsDefeated(true)
-      }
-    }
-    setPercent(Math.round(value))
-  }, [week, year, data])
+  function openWeek(week: number) {
+    console.log("Abrir semana: W" + week)
+  }
 
   return (
-    <div
-      className="
-        w-full h-full
-        bg-zinc-200 rounded-md
-        flex flex-col justify-center items-center
-        font-medium text-xl
-        cursor-pointer
-        active:bg-opacity-90
-        hover:bg-opacity-70
-        shadow-md border border-zinc-500
-        overflow-auto
-      "
-      onClick={() => onClick()}
-    >
-      <div
-        className={`
-          w-full h-full
-          flex flex-row justify-center items-center
-        `}
-      >
-        {week}
-      </div>
-      <div
-        className={`
-          w-full h-1.5
-          ${isDefeated ? 'bg-orange-500' : 'bg-zinc-500'}
-        `}
-      >
-        <div
-          style={{
-            width: percent + '%'
-          }}
-          className={`
-            h-1.5
-            bg-green-500
-          `}
-        ></div>
+    <div className="flex flex-col gap-4 p-6">
+      <header className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-col gap-1">
+          <h1 className="font-heading text-2xl font-semibold">Calendário</h1>
+          <div className="flex flex-wrap items-center gap-4">
+            <p className="text-sm text-muted-foreground">
+              Acompanhe as ordens de serviço da semana.
+            </p>
+            <Separator orientation="vertical" />
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant="ghost" className="gap-1.5 bg-transparent">
+                <span className="size-2.5 rounded-sm border border-foreground/40 bg-primary/80" />
+                Concluída
+              </Badge>
+              <Badge variant="ghost" className="gap-1.5 bg-transparent">
+                <span className="size-2.5 rounded-sm border border-foreground/40 bg-warning/80" />
+                Atrasada
+              </Badge>
+              <Badge variant="ghost" className="gap-1.5 bg-transparent">
+                <span className="size-2.5 rounded-sm border border-foreground/40 bg-background" />
+                Em andamento
+              </Badge>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center">
+          <Button
+            variant="outline"
+            size="icon-sm"
+            aria-label="Ano anterior"
+            className={"h-10 w-10"}
+            onClick={() => setYear((current) => current - 1)}
+          >
+            <MinusIcon />
+          </Button>
+          <span className="border px-4 h-10 min-w-14 flex justify-center items-center font-heading text-lg font-semibold tabular-nums">
+            {year}
+          </span>
+          <Button
+            variant="outline"
+            size="icon-sm"
+            aria-label="Próximo ano"
+            className={"h-10 w-10"}
+            onClick={() => setYear((current) => current + 1)}
+          >
+            <PlusIcon />
+          </Button>
+        </div>
+      </header>
+
+      <div className="grid grid-cols-8 border-t border-l border-foreground/40">
+        {weeks.map((cell) => {
+          const hasOrders = cell.total > 0
+          const completion = hasOrders
+            ? Math.round((cell.executed / cell.total) * 100)
+            : 0
+          const status = getWeekStatus(cell, year)
+
+          return (
+            <button
+              key={cell.week}
+              type="button"
+              onClick={() => openWeek(cell.week)}
+              className={cn(
+                "flex h-24 cursor-pointer flex-col gap-1 border-r border-b border-foreground/40 p-2 text-left transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset focus-visible:outline-none",
+                weekCellBackground(status),
+              )}
+            >
+              <div className="flex items-start justify-between">
+                <span className="text-md font-medium text-foreground">
+                  W{cell.week}
+                </span>
+                {hasOrders && (
+                  <span className={cn(
+                    "font-heading text-sm font-semibold text-muted-foreground tabular-nums",
+                    weekCellForeground(status)
+                  )}
+                  >
+                    {completion}%
+                  </span>
+                )}
+              </div>
+              <span className="text-xs text-muted-foreground/70">
+                {weekDateRange(cell.week, year)}
+              </span>
+              {hasOrders ? (
+                <Progress
+                  className={cn("mt-auto", weekProgressColor(status))}
+                  value={completion}
+                />
+              ) : (
+                <span className="mt-auto text-xs text-muted-foreground/70">
+                  Sem preventivas esta semana.
+                </span>
+              )}
+            </button>
+          )
+        })}
       </div>
     </div>
   )

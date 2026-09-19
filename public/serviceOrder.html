@@ -344,13 +344,14 @@
             // O pywebview não expõe API de impressão; no QtWebEngine o
             // window.print() cai no diálogo do sistema. O @media print acima
             // esconde a barra de botões.
-            debugger
+            console.log(window.print)
             window.print()
         }
 
         async function printPageToPDF() {
             // window.pywebview só existe depois do load, então consultamos a
             // cada clique em vez de guardar a referência no escopo do módulo.
+            console.log(window.pywebview)
             const bridge = window.pywebview && window.pywebview.api
             if (!bridge) {
                 return window.print()

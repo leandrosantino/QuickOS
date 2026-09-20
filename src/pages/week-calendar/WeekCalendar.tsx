@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "cn"
+import { getISOWeek } from "date-fns"
 
 type WeekStatus = WeekCalendarData['status']
 
@@ -35,6 +36,13 @@ function weekProgressColor(status: WeekStatus) {
   )
 }
 
+function isCurrentWeek(week: number, year: number) {
+  const now = new Date()
+  const currentWeek = getISOWeek(now)
+  const currentYear = now.getFullYear()
+  return currentWeek == week && currentYear == year
+}
+
 export function WeekCalendar() {
   const [year, setYear] = useState(new Date().getFullYear())
 
@@ -54,18 +62,22 @@ export function WeekCalendar() {
               Acompanhe as ordens de serviço da semana.
             </p>
             <Separator orientation="vertical" />
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center">
               <Badge variant="ghost" className="gap-1.5 bg-transparent">
-                <span className="size-2.5 rounded-sm border border-foreground/40 bg-primary/80" />
-                Concluída
+                <span className="size-2.5 rounded-full bg-destructive" />
+                Semana Atual
+              </Badge>
+              <Badge variant="ghost" className="gap-1.5 bg-transparent">
+                <span className="size-2.5 rounded-sm border border-foreground/40 bg-background" />
+                Em andamento
               </Badge>
               <Badge variant="ghost" className="gap-1.5 bg-transparent">
                 <span className="size-2.5 rounded-sm border border-foreground/40 bg-warning/80" />
                 Atrasada
               </Badge>
               <Badge variant="ghost" className="gap-1.5 bg-transparent">
-                <span className="size-2.5 rounded-sm border border-foreground/40 bg-background" />
-                Em andamento
+                <span className="size-2.5 rounded-sm border border-foreground/40 bg-primary/80" />
+                Concluída
               </Badge>
             </div>
           </div>
@@ -104,12 +116,18 @@ export function WeekCalendar() {
               onClick={() => openWeek(cell.week)}
               className={cn(
                 "flex h-24 cursor-pointer flex-col gap-1 border-r border-b border-foreground/40 p-2 text-left transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset focus-visible:outline-none",
-                weekCellBackground(cell.status),
+                weekCellBackground(cell.status)
               )}
             >
               <div className="flex items-start justify-between">
-                <span className="text-md font-medium text-foreground">
+                <span className={cn(
+                  "relative flex justify-center items-center gap-2 text-md font-medium text-foreground",
+                  isCurrentWeek(cell.week, year) && "text-destructive font-bold"
+                )}>
                   W{cell.week}
+                  {isCurrentWeek(cell.week, year) &&
+                    <div className="bg-destructive w-2.5 h-2.5 rounded-full" ></div>
+                  }
                 </span>
                 {cell.hasOrders && (
                   <span className={cn(
@@ -124,12 +142,16 @@ export function WeekCalendar() {
               <span className="text-xs text-muted-foreground/70">
                 {cell.start_of_week} - {cell.end_of_week}
               </span>
-              {cell.hasOrders ? (
+
+              {cell.hasOrders ? <>
+                <span className="text-xs text-muted-foreground/70">
+                  {cell.executed}/{cell.total}
+                </span>
                 <Progress
                   className={cn("mt-auto", weekProgressColor(cell.status))}
                   value={cell.completion}
                 />
-              ) : (
+              </> : (
                 <span className="mt-auto text-xs text-muted-foreground/70">
                   Sem preventivas esta semana.
                 </span>

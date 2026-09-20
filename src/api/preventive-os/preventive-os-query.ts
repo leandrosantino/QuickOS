@@ -5,6 +5,7 @@ import {
   getServiceOrderById,
   getServiceOrderCount,
   getServiceOrders,
+  getWeekCalendar,
   updateServiceOrder,
 } from './preventive-os-fetch'
 import {
@@ -46,6 +47,14 @@ export function useCountPreventiveOs(week: number, year: number) {
   const query = useQuery({
     queryKey: ['api', 'service-orders', 'count', week, year],
     queryFn: () => getServiceOrderCount(week, year),
+  })
+  return { data: query.data ?? undefined, refetch: query.refetch }
+}
+
+export function useGetWeekCalendar(year: number) {
+  const query = useQuery({
+    queryKey: ['api', 'service-orders', 'calendar', year],
+    queryFn: () => getWeekCalendar(year),
   })
   return { data: query.data ?? undefined, refetch: query.refetch }
 }

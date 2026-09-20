@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -160,6 +160,19 @@ class ServiceOrderCount(BaseModel):
 
     finished: int
     unfinished: int
+
+
+class WeekCalendarData(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    week: int
+    total: int
+    executed: int
+    pending: int
+    completion: int
+    hasOrders: bool
+    start_of_week: str
+    end_of_week: str
+    status: Literal["completed", "overdue", "default"]
 
 
 class ServiceOrder(BaseModel):

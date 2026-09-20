@@ -4,6 +4,7 @@ import {
   type GetServiceOrdersParams,
   type ServiceOrderCount,
   type ServiceOrderType,
+  type WeekCalendarData,
 } from './preventive-os-types';
 
 export async function getServiceOrders(
@@ -37,4 +38,10 @@ export async function getServiceOrderCount(
   year: number,
 ): Promise<ServiceOrderCount | null> {
   return get<ServiceOrderCount>(`/preventive/service-orders/count?week=${week}&year=${year}`)
+}
+
+export async function getWeekCalendar(
+  year: number,
+): Promise<WeekCalendarData[] | null> {
+  return get<WeekCalendarData[]>(`/preventive/service-orders/calendar?year=${year}`)
 }

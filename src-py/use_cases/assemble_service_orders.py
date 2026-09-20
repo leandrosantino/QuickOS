@@ -44,7 +44,7 @@ async def _register_service_orders(
                 "actionsUniqueKey": actions_unique_key,
             },
         },
-        data={"create": os_data, "update": os_data},
+        data={"create": os_data, "update": os_data},  # type: ignore
         include={
             "actions": {"include": {"nature": True, "machine": True}},
             "nature": True,
@@ -109,7 +109,9 @@ async def assembleServiceOrders(params: dict) -> list:
                                 "machine": True,
                                 "actionsTaken": {
                                     "include": {
-                                        "action": {"include": {"nature": True, "machine": True}},
+                                        "action": {
+                                            "include": {"nature": True, "machine": True}
+                                        },
                                     }
                                 },
                             },

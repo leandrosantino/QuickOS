@@ -15,7 +15,6 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "app": "uv run ./src-py/main.py",
-    "server": "uv run ./src-py/infra/server.py",
     "dbstudio": "prisma studio"
   },
   "dependencies": {

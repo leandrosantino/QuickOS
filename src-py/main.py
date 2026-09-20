@@ -5,11 +5,14 @@ import webview
 from dotenv import load_dotenv
 from api.main_window_controller import MainWindowController
 import os
+import asyncio
+from use_cases.get_week_calendar import getWeekCalendar
+from infra.prisma import _connect
 
 load_dotenv()
 
-# if __name__ == "__main__":
-#     start()
+if __name__ == "__main__a":
+    start()
 
 if __name__ == "__main__":
     global window

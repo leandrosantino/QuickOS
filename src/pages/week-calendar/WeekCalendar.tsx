@@ -1,71 +1,16 @@
-import {
-  addDays,
-  format,
-  getISOWeek,
-  getISOWeekYear,
-  setISOWeek,
-  startOfISOWeek,
-} from "date-fns"
 import { MinusIcon, PlusIcon } from "lucide-react"
 import { useState } from "react"
 
+import { useGetWeekCalendar } from "@/api/preventive-os/preventive-os-query"
+import type { WeekCalendarData } from "@/api/preventive-os/preventive-os-types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "cn"
 
-type WeekCell = {
-  week: number
-  total: number
-  executed: number
-  pending: number
-}
+type WeekStatus = WeekCalendarData['status']
 
-type WeekStatus = "completed" | "overdue" | "default"
-
-const weeks: WeekCell[] = Array.from({ length: 52 }, (_, index) => {
-  const total = index % 8 === 7 ? 0 : ((index * 7) % 13) + 1
-  const executed = (index * 3) % (total + 1)
-
-  return {
-    week: index + 1,
-    total,
-    executed,
-    pending: total - executed,
-  }
-})
-
-function weekDateRange(week: number, year: number) {
-  const start = startOfISOWeek(setISOWeek(new Date(year, 0, 4), week))
-  const end = addDays(start, 6)
-
-  return `${format(start, "dd/MM")} — ${format(end, "dd/MM")}`
-}
-
-function getWeekStatus(cell: WeekCell, year: number): WeekStatus {
-  if (cell.total === 0) {
-    return "default"
-  }
-
-  const completion = Math.round((cell.executed / cell.total) * 100)
-  const now = new Date()
-  const currentWeek = getISOWeek(now)
-  const currentWeekYear = getISOWeekYear(now)
-  const isPastWeek =
-    year < currentWeekYear ||
-    (year === currentWeekYear && cell.week < currentWeek)
-
-  if (completion === 100) {
-    return "completed"
-  }
-
-  if (isPastWeek && cell.executed < cell.total) {
-    return "overdue"
-  }
-
-  return "default"
-}
 
 function weekCellBackground(status: WeekStatus) {
   return cn(
@@ -92,6 +37,8 @@ function weekProgressColor(status: WeekStatus) {
 
 export function WeekCalendar() {
   const [year, setYear] = useState(new Date().getFullYear())
+
+  const calendar = useGetWeekCalendar(year)
 
   function openWeek(week: number) {
     console.log("Abrir semana: W" + week)
@@ -149,13 +96,7 @@ export function WeekCalendar() {
       </header>
 
       <div className="grid grid-cols-8 border-t border-l border-foreground/40">
-        {weeks.map((cell) => {
-          const hasOrders = cell.total > 0
-          const completion = hasOrders
-            ? Math.round((cell.executed / cell.total) * 100)
-            : 0
-          const status = getWeekStatus(cell, year)
-
+        {calendar.data?.map((cell) => {
           return (
             <button
               key={cell.week}
@@ -163,30 +104,30 @@ export function WeekCalendar() {
               onClick={() => openWeek(cell.week)}
               className={cn(
                 "flex h-24 cursor-pointer flex-col gap-1 border-r border-b border-foreground/40 p-2 text-left transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset focus-visible:outline-none",
-                weekCellBackground(status),
+                weekCellBackground(cell.status),
               )}
             >
               <div className="flex items-start justify-between">
                 <span className="text-md font-medium text-foreground">
                   W{cell.week}
                 </span>
-                {hasOrders && (
+                {cell.hasOrders && (
                   <span className={cn(
                     "font-heading text-sm font-semibold text-muted-foreground tabular-nums",
-                    weekCellForeground(status)
+                    weekCellForeground(cell.status)
                   )}
                   >
-                    {completion}%
+                    {cell.completion}%
                   </span>
                 )}
               </div>
               <span className="text-xs text-muted-foreground/70">
-                {weekDateRange(cell.week, year)}
+                {cell.start_of_week} - {cell.end_of_week}
               </span>
-              {hasOrders ? (
+              {cell.hasOrders ? (
                 <Progress
-                  className={cn("mt-auto", weekProgressColor(status))}
-                  value={completion}
+                  className={cn("mt-auto", weekProgressColor(cell.status))}
+                  value={cell.completion}
                 />
               ) : (
                 <span className="mt-auto text-xs text-muted-foreground/70">

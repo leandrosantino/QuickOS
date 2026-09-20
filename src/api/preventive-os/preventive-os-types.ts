@@ -59,11 +59,25 @@ export const executePreventiveServiceOrderSchema = savePreventiveServiceOrderSch
 export type ExecutePreventiveServiceOrderType = z.infer<typeof executePreventiveServiceOrderSchema>
 
 export type GetServiceOrdersParams = {
-  week: number
-  year: number
-  status: string
-  nature: number
-  machine: number
+    week: number
+    year: number
+    status: string
+    nature: number
+    machine: number
 }
 
 export type ServiceOrderCount = { finished: number; unfinished: number }
+
+export const weekCalendarDataSchema = z.object({
+    week: z.number(),
+    total: z.number(),
+    executed: z.number(),
+    pending: z.number(),
+    completion: z.number(),
+    hasOrders: z.boolean(),
+    end_of_week: z.string(),
+    start_of_week: z.string(),
+    status: z.enum(["completed", "overdue", "default"])
+})
+
+export type WeekCalendarData = z.infer<typeof weekCalendarDataSchema>

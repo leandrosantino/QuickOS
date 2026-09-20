@@ -10,6 +10,7 @@ from use_cases.get_service_order_by_id import getServiceOrderById
 from use_cases.get_service_order_count import getServiceOrderCount
 from use_cases.update_action import updateAction
 from use_cases.update_service_order import updateServiceOrder
+from use_cases.get_week_calendar import getWeekCalendar
 from rich.console import Console
 
 preventive_blueprint = Blueprint("preventive", __name__, url_prefix="/preventive")
@@ -96,3 +97,15 @@ async def get_service_order_count():
     }
     result = await getServiceOrderCount(params)
     return jsonify(result.model_dump())
+
+
+@preventive_blueprint.get("/service-orders/calendar")
+async def get_week_calendar():
+    params = {
+        "year": request.args.get("year", type=int),
+    }
+    assert params["year"]
+    result = []
+    for i in await getWeekCalendar(params["year"]):
+        result.append(i.model_dump())
+    return jsonify(result)

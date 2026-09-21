@@ -6,7 +6,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:../database/app.db"
+  url      = "file:./database/app.db"
 }
 
 model Nature {

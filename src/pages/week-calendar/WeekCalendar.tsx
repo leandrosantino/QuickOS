@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "cn"
 import { getISOWeek } from "date-fns"
+import { useNavigate } from "react-router-dom"
 
 type WeekStatus = WeekCalendarData['status']
 
@@ -44,11 +45,13 @@ function isCurrentWeek(week: number, year: number) {
 }
 
 export function WeekCalendar() {
+  const navigate = useNavigate();
   const [year, setYear] = useState(new Date().getFullYear())
 
   const calendar = useGetWeekCalendar(year)
 
   function openWeek(week: number) {
+    navigate('week-details', { state: { week, year } });
     console.log("Abrir semana: W" + week)
   }
 
@@ -140,12 +143,12 @@ export function WeekCalendar() {
                 )}
               </div>
               <span className="text-xs text-muted-foreground/70">
-                {cell.start_of_week} - {cell.end_of_week}
+                {cell.start_of_week} à {cell.end_of_week}
               </span>
 
               {cell.hasOrders ? <>
                 <span className="text-xs text-muted-foreground/70">
-                  {cell.executed}/{cell.total}
+                  Realizado: {cell.executed}/{cell.total}
                 </span>
                 <Progress
                   className={cn("mt-auto", weekProgressColor(cell.status))}

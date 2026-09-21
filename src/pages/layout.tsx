@@ -5,7 +5,7 @@ import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 
 const tabs = [
-  { to: "/", label: "Calendário Semanal" },
+  { to: "/week-calendar", label: "Calendário Semanal" },
   { to: "/acoes", label: "Plano de Preventivas" },
   { to: "/maquinas", label: "Máquinas" },
   { to: "/manutencistas", label: "Manutencistas" },
@@ -24,7 +24,6 @@ export function AppLayout() {
             <NavLink
               key={tab.to}
               to={tab.to}
-              end={tab.to === "/"}
               className={({ isActive }) =>
                 cn(
                   buttonVariants({

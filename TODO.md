@@ -6,3 +6,5 @@
 [ ] Implementar método de impressão direta da ordem de serviço
 [ ] Migrar funções do servidor para a api do pywebview
 [ ] Configurar build e distribuição para windows e linux 
+[ ] Implementar função para atualizar o plano de OSs automaticamente.
+[ ] Resolver OSs fantasmas no sistema.

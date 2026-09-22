@@ -1,3 +1,5 @@
+from prisma.models import PreventiveOS
+
 from schemas.preventive import AssembleServiceOrdersParams
 from infra.prisma import prisma
 from utils.week_tools import weekYearToString
@@ -56,7 +58,7 @@ async def _register_service_orders(
 async def assembleServiceOrders(params: dict) -> list:
     validated = AssembleServiceOrdersParams.model_validate(params)
 
-    result: list = []
+    result: list[PreventiveOS] = []
 
     machines = await prisma.machine.find_many()
     natures = await prisma.nature.find_many()

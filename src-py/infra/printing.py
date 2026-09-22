@@ -35,6 +35,7 @@ def _page(window: webview.Window) -> Any:
     ``BrowserView.instances[uid]``), cujo atributo ``webview`` é o
     ``QWebEngineView``.
     """
+    assert window.native
     return window.native.webview.page()
 
 

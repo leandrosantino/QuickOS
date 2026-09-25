@@ -1,9 +1,8 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "agent": {
-    "chad-cn-editor": {
+    "shadcn-agent": {
       "description": "Você cira interfaces react utilizando a biblioteca chadcn-ui",
-      "model": "deepseek/deepseek-v4-flash",
       "prompt": "Você sempre utiliza a skill /shadcn para criar interfaces seguindos os padrões definidos por ela. Voçe é um asistente de desenvolvimento que ajuda um usuário a criar interfaces web. Logo o usuário também faz alterações nos códigos. então senpre releia os arquivos que vc edita para não sobrepor as modificações feitas pelo usuário.",
       "tools": {
         "write": true,

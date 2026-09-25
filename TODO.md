@@ -8,7 +8,10 @@
 
 [ ] Implementar função para atualizar o plano de OSs automaticamente.
     (Mudar a forma como as OSs são montadas. Criar scrips de agrupamento para 
-    rodar ao criar uma nova ação e ao executar uma OS.)
+    rodar ao criar uma nova ação e ao executar uma OS.Mudar a lógica de montagem 
+    das OSs. ao invés de rodar o algoritimo de agrupamento sempre que for 
+    visualizar as OSs. O algoritimo roda ao atualizar uma ação. 
+    Ele roda sempre que uma ação fro execultada também.)
 
 [ ] Implementar função para imprimir várias OSs ao memso tempo.
 

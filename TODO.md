@@ -3,6 +3,8 @@
 ## Fix
 
 [ ] Resolver OSs fantasmas no sistema.
+[ ] Corrigir falha ao fechar janela de impressçao da OS
+    (O sistema quebra ao fechar) 
 
 ## New features
 
@@ -17,7 +19,7 @@
 
 [ ] Criar método para apagar a execução de uma OS 
 
-[ ] Ciar página com detalhes da OS. 
+[X] Ciar página com detalhes da OS. 
     (Exibir os detalhes da OS e permitir execultar, editar e imprimir )
 
 [ ] Criar página para CRUD do model de Máquinas.

@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useRef, useState, type FormEvent } from "react"
 import { useQueryClient } from "@tanstack/react-query"
+import { cn } from "cn"
 import { differenceInMinutes, format, parseISO } from "date-fns"
 import { ArrowLeftIcon, PlayIcon, PrinterIcon, SaveIcon } from "lucide-react"
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { cn } from "cn"
 
 import {
   useExecuteServiceOrders,
@@ -85,6 +85,8 @@ export function ServiceOrderForm() {
     if (order == null || currentId == null || initializedId.current === currentId) {
       return
     }
+
+    console.log(order.actions)
 
     initializedId.current = currentId
     setValues({
@@ -207,146 +209,158 @@ export function ServiceOrderForm() {
   }
 
   const concluded = Boolean(order.concluded)
+  const actionsCount = concluded
+    ? (order.actionsTaken?.length ?? 0)
+    : (order.actions?.length ?? 0)
 
   return (
-    <div className="flex min-h-full flex-col gap-6 p-6">
-      <header className="flex flex-wrap items-start justify-between gap-4">
-        <div className="flex flex-col gap-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="-ml-2 w-fit"
-            onClick={() => navigate(-1)}
-          >
-            <ArrowLeftIcon data-icon="inline-start" />
-            Voltar
-          </Button>
-          <h1 className="font-heading text-2xl font-semibold">
-            Ordem de Serviço
-          </h1>
-          <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-            <Badge variant="secondary">Nº {order.id}</Badge>
-            <span>{order.nature?.name ?? "Tipo não informado"}</span>
-            <Separator orientation="vertical" className="h-4" />
-            <span>{order.machine?.tag ?? "Máquina não informada"}</span>
-            <Badge
-              className={cn(
-                "border-transparent",
-                concluded
-                  ? "bg-primary/15 text-primary"
-                  : "bg-warning/15 text-warning",
-              )}
-            >
-              {concluded ? "Realizado" : "Pendente"}
-            </Badge>
+    <div className="flex min-h-full flex-col p-6">
+      <Button
+        variant="ghost"
+        size="sm"
+        className="-ml-2 w-fit"
+        onClick={() => navigate(-1)}
+      >
+        <ArrowLeftIcon data-icon="inline-start" />
+        Voltar
+      </Button>
+
+      <div className="mx-auto flex w-full max-w-255 flex-1 flex-col gap-6">
+        <header className="flex flex-wrap items-start justify-between gap-4">
+          <div className="flex flex-col gap-1">
+            <h1 className="font-heading text-2xl font-semibold">
+              Ordem de Serviço Preventiva
+            </h1>
+            <div className="flex flex-wrap items-center gap-2 text-muted-foreground">
+              <span>{order.machine?.tag ?? "Máquina não informada"}</span>
+              <Separator orientation="vertical" />
+              <span>{order.nature?.name ?? "Tipo não informado"}</span>
+              <Separator orientation="vertical" />
+              <span>{order.weekCode}</span>
+              <Separator orientation="vertical" />
+              <Badge
+                className={cn(
+                  "border-transparent",
+                  concluded
+                    ? "bg-primary/15 text-primary"
+                    : "bg-warning/15 text-warning",
+                )}
+              >
+                {concluded ? "Realizado" : "Pendente"}
+              </Badge>
+
+            </div>
           </div>
-        </div>
-        <Button variant="outline" size="sm" onClick={handlePrint}>
-          <PrinterIcon data-icon="inline-start" />
-          Imprimir OS
-        </Button>
-      </header>
+          <div className="flex gap-2 text-2xl font-semibold tabular-nums">
+            Nº {order.id}
+          </div>
+        </header>
 
-      <form className="flex flex-1 flex-col" onSubmit={handleSubmit}>
-        <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
-          <section className="rounded-2xl border border-border/60 p-6">
-            <FieldGroup>
-              {/* Linha 1: Data, Hora de início e Hora Final */}
-              <div className="grid gap-4 sm:grid-cols-3">
-                <Field data-invalid={Boolean(errors.date)}>
-                  <FieldLabel htmlFor="service-order-date">Data</FieldLabel>
-                  <EditableDatePicker
-                    id="service-order-date"
-                    value={values.date}
-                    onChange={(date) => setField("date", date)}
-                    aria-invalid={Boolean(errors.date)}
-                  />
-                  <FieldError
-                    errors={errors.date ? [{ message: errors.date }] : undefined}
-                  />
-                </Field>
-
-                <Field data-invalid={Boolean(errors.startTime)}>
-                  <FieldLabel htmlFor="service-order-start">
-                    Hora de início
-                  </FieldLabel>
-                  <Input
-                    id="service-order-start"
-                    type="time"
-                    value={values.startTime}
-                    onChange={(event) =>
-                      setField("startTime", event.target.value)
-                    }
-                    aria-invalid={Boolean(errors.startTime)}
-                  />
-                  <FieldError
-                    errors={
-                      errors.startTime
-                        ? [{ message: errors.startTime }]
-                        : undefined
-                    }
-                  />
-                </Field>
-
-                <Field data-invalid={Boolean(errors.finishTime)}>
-                  <FieldLabel htmlFor="service-order-finish">
-                    Hora Final
-                  </FieldLabel>
-                  <Input
-                    id="service-order-finish"
-                    type="time"
-                    value={values.finishTime}
-                    onChange={(event) =>
-                      setField("finishTime", event.target.value)
-                    }
-                    aria-invalid={Boolean(errors.finishTime)}
-                  />
-                  <FieldError
-                    errors={
-                      errors.finishTime
-                        ? [{ message: errors.finishTime }]
-                        : undefined
-                    }
-                  />
-                </Field>
-              </div>
-
-              {/* Linha 2: Responsáveis */}
-              <Field data-invalid={Boolean(errors.workers)}>
-                <FieldLabel htmlFor="service-order-workers">
-                  Responsáveis
-                </FieldLabel>
-                <ResponsiblesCombobox
-                  id="service-order-workers"
-                  value={values.workers}
-                  onChange={(workers) => setField("workers", workers)}
-                  aria-invalid={Boolean(errors.workers)}
+        <form className="flex flex-1 flex-col gap-4" onSubmit={handleSubmit}>
+          <FieldGroup className="gap-5">
+            {/* Linha 1: Data, Hora de início e Hora Final */}
+            <div className="grid gap-4 sm:grid-cols-3">
+              <Field data-invalid={Boolean(errors.date)}>
+                <FieldLabel htmlFor="service-order-date">Data</FieldLabel>
+                <EditableDatePicker
+                  id="service-order-date"
+                  value={values.date}
+                  onChange={(date) => setField("date", date)}
+                  aria-invalid={Boolean(errors.date)}
                 />
-                <FieldDescription>
-                  Digite a matrícula do manutentista e selecione para incluí-lo
-                  na OS.
-                </FieldDescription>
+                <FieldError
+                  errors={errors.date ? [{ message: errors.date }] : undefined}
+                />
+              </Field>
+
+              <Field data-invalid={Boolean(errors.startTime)}>
+                <FieldLabel htmlFor="service-order-start">
+                  Hora de início
+                </FieldLabel>
+                <Input
+                  id="service-order-start"
+                  type="time"
+                  value={values.startTime}
+                  onChange={(event) =>
+                    setField("startTime", event.target.value)
+                  }
+                  aria-invalid={Boolean(errors.startTime)}
+                />
                 <FieldError
                   errors={
-                    errors.workers ? [{ message: errors.workers }] : undefined
+                    errors.startTime
+                      ? [{ message: errors.startTime }]
+                      : undefined
                   }
                 />
               </Field>
 
-              {errors.form ? (
-                <p className="text-sm text-destructive">{errors.form}</p>
-              ) : null}
+              <Field data-invalid={Boolean(errors.finishTime)}>
+                <FieldLabel htmlFor="service-order-finish">
+                  Hora Final
+                </FieldLabel>
+                <Input
+                  id="service-order-finish"
+                  type="time"
+                  value={values.finishTime}
+                  onChange={(event) =>
+                    setField("finishTime", event.target.value)
+                  }
+                  aria-invalid={Boolean(errors.finishTime)}
+                />
+                <FieldError
+                  errors={
+                    errors.finishTime
+                      ? [{ message: errors.finishTime }]
+                      : undefined
+                  }
+                />
+              </Field>
+            </div>
 
-              {/* Linha 3: Duração à esquerda e botão à direita */}
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-sm font-medium text-muted-foreground">
-                    Duração
-                  </span>
-                  <span className="text-lg font-semibold tabular-nums">
-                    {formatDuration(durationMinutes)}
-                  </span>
-                </div>
+            {/* Linha 2: Responsáveis */}
+            <Field data-invalid={Boolean(errors.workers)}>
+              <FieldLabel htmlFor="service-order-workers">
+                <span>Responsáveis </span>
+                <Separator orientation="vertical" />
+                <FieldDescription className="text-xs" >
+                  Digite a matrícula do manutentista e selecione para
+                  incluí-lo na OS.
+                </FieldDescription>
+              </FieldLabel>
+              <ResponsiblesCombobox
+                id="service-order-workers"
+                value={values.workers}
+                onChange={(workers) => setField("workers", workers)}
+                aria-invalid={Boolean(errors.workers)}
+              />
+
+              <FieldError
+                errors={
+                  errors.workers ? [{ message: errors.workers }] : undefined
+                }
+              />
+            </Field>
+
+            {errors.form ? (
+              <p className="text-sm text-destructive">{errors.form}</p>
+            ) : null}
+
+            {/* Linha 3: Duração + botões Salvar/Executar e Imprimir */}
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex flex-col gap-0.5">
+                <span className="text-sm font-medium text-muted-foreground">
+                  Duração
+                </span>
+                <span className="text-lg font-semibold tabular-nums">
+                  {formatDuration(durationMinutes)}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" onClick={handlePrint}>
+                  <PrinterIcon data-icon="inline-start" />
+                  Imprimir OS
+                </Button>
                 <Button type="submit" disabled={isSaving}>
                   {concluded ? (
                     <SaveIcon data-icon="inline-start" />
@@ -355,16 +369,24 @@ export function ServiceOrderForm() {
                   )}
                   {isSaving ? "Salvando..." : concluded ? "Salvar" : "Executar"}
                 </Button>
+
               </div>
-            </FieldGroup>
-          </section>
+            </div>
+          </FieldGroup>
+
+          <Separator orientation="horizontal" />
 
           <section className="flex flex-col gap-2">
-            <h2 className="font-heading text-lg font-semibold">Ações da OS</h2>
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="font-heading text-lg font-semibold">Ações Preventivas</h2>
+              <span className="text-sm tabular-nums text-muted-foreground">
+                {actionsCount} {actionsCount === 1 ? "item" : "itens"}
+              </span>
+            </div>
             <ServiceOrderActionsTable order={order} />
           </section>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   )
 }

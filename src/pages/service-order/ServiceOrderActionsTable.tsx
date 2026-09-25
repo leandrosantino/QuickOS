@@ -14,6 +14,7 @@ type ActionRow = {
   id: number | string
   description: string
   excution: string
+  nextExecution: string
 }
 
 type ServiceOrderActionsTableProps = {
@@ -23,11 +24,15 @@ type ServiceOrderActionsTableProps = {
 export function ServiceOrderActionsTable({ order }: ServiceOrderActionsTableProps) {
   const actions = useMemo<ActionRow[]>(() => {
     // OS já executada: as ações vêm dos registros de execução.
+
     if (order.concluded) {
       return (order.actionsTaken ?? []).map((taken) => ({
         id: taken.action.id ?? taken.actionId,
         description: taken.action.description,
         excution: taken.action.excution,
+        nextExecution: order.actions?.find((iten) =>
+          iten.id == taken.actionId
+        )?.nextExecution || ""
       }))
     }
 
@@ -36,6 +41,7 @@ export function ServiceOrderActionsTable({ order }: ServiceOrderActionsTableProp
       id: action.id ?? "—",
       description: action.description,
       excution: action.excution,
+      nextExecution: action.nextExecution
     }))
   }, [order])
 
@@ -47,6 +53,7 @@ export function ServiceOrderActionsTable({ order }: ServiceOrderActionsTableProp
             <TableHead className="h-10 w-24 px-3 text-xs">Nº</TableHead>
             <TableHead className="h-10 px-3 text-xs">Descrição</TableHead>
             <TableHead className="h-10 px-3 text-xs">Execução</TableHead>
+            {order.concluded && <TableHead className="h-10 px-3 text-xs">Proxima Execução</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -68,12 +75,15 @@ export function ServiceOrderActionsTable({ order }: ServiceOrderActionsTableProp
                 <TableCell className="px-3 py-2 align-top font-medium tabular-nums">
                   {action.id}
                 </TableCell>
-                <TableCell className="px-3 py-2 align-top">
+                <TableCell className="whitespace-pre-wrap break-words px-3 py-2 align-top">
                   {action.description}
                 </TableCell>
-                <TableCell className="px-3 py-2 align-top">
+                <TableCell className="whitespace-pre-wrap break-words px-3 py-2 align-top">
                   {action.excution}
                 </TableCell>
+                {order.concluded && <TableCell className="px-3 py-2 align-top">
+                  {action.nextExecution}
+                </TableCell>}
               </TableRow>
             ))
           )}

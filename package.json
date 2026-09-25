@@ -30,6 +30,7 @@
     "date-fns": "^4.4.0",
     "lucide-react": "^1.47.0",
     "react": "^19.2.8",
+    "react-day-picker": "^10.0.1",
     "react-dom": "^19.2.8",
     "react-icons": "^4.7.1",
     "react-inlinesvg": "^3.0.1",

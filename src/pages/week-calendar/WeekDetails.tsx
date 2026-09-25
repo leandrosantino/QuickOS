@@ -1,6 +1,6 @@
 import { PrinterIcon } from "lucide-react";
 import { useMemo, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { useServiceOrders } from "@/api/preventive-os/preventive-os-query";
 import type { ServiceOrderType } from "@/api/preventive-os/preventive-os-types";
@@ -22,6 +22,7 @@ import {
 } from "./WeekDetailsFilters";
 
 export function WeekDetails() {
+  const navigate = useNavigate();
   const location = useLocation();
   // Acessa o objeto enviado via state
   const week = location.state?.week as number
@@ -85,8 +86,8 @@ export function WeekDetails() {
   }
 
   function handleRowClick(order: ServiceOrderType) {
-    // TODO: abrir o formulário de detalhamento da OS.
-    console.log("Abrir detalhamento da OS", order.id)
+    if (order.id == null) return
+    navigate(`service-order/${order.id}`)
   }
 
   function handlePrintSelected() {

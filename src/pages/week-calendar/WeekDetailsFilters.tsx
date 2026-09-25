@@ -57,7 +57,7 @@ export function WeekDetailsFilters({ filters, onFilterChange, onReset }: WeekDet
       <Select
         items={STATUS_ITEMS}
         value={filters.status}
-        onValueChange={(value) => onFilterChange("status", value)}
+        onValueChange={(value) => onFilterChange("status", value ?? "all")}
       >
         <SelectTrigger size="sm" className="w-40" aria-label="Filtrar por status">
           <SelectValue />

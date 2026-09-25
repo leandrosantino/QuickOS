@@ -23,3 +23,7 @@ inclua na lista de responsaveis pela OS, no minimo um responsavel deve ser cadas
 - Como são poucos campos centralise o formulário no centro da página.
 - A página deve ser uma sub rota de /week-details. "/week-calendar/week-details/service-order
 - A pagina e seus componentes devem ficar em uma nova pasta diretamente dentro de @src/pages
+- Utilize a api para realizar as operações de exeção e atualização das OS
+
+
+Modifica o layout para que a lista de Ações fique ao lado do formulário. O botão de salvar fica abaixo do formulário. o campo duração não precisa ser um input pode ser só um texto. dei o ley oute da seguinte forma: linha 1 - Data, hora inici, hora final | linha 2 - Responsáveis | linha 3 - duração a esquerdae botão salvar/execultar a direita.

@@ -23,8 +23,8 @@ if __name__ == "__main__":
         url = "http://localhost:5173/"
 
     api = MainWindowController()
-    width = 1280
-    height = 860
+    width = 1350
+    height = 900
 
     window = webview.create_window(
         "Sistema de Preventivas",

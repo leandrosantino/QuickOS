@@ -5,10 +5,11 @@
 [ ] Resolver OSs fantasmas no sistema.
 [ ] Corrigir falha ao fechar janela de impressçao da OS
     (O sistema quebra ao fechar) 
+[ ] Falha ao gerar PDF no windows
 
 ## New features
 
-[ ] Implementar função para atualizar o plano de OSs automaticamente.
+[ ] (future release) Implementar função para atualizar o plano de OSs automaticamente.
     (Mudar a forma como as OSs são montadas. Criar scrips de agrupamento para 
     rodar ao criar uma nova ação e ao executar uma OS.Mudar a lógica de montagem 
     das OSs. ao invés de rodar o algoritimo de agrupamento sempre que for 
@@ -16,8 +17,6 @@
     Ele roda sempre que uma ação fro execultada também.)
 
 [ ] Implementar função para imprimir várias OSs ao memso tempo.
-
-[ ] Criar método para apagar a execução de uma OS 
 
 [X] Ciar página com detalhes da OS. 
     (Exibir os detalhes da OS e permitir execultar, editar e imprimir )
@@ -39,9 +38,9 @@
 
 [x] Solucionar problema ao gerar PDF da ordem de serviço.
 
-[ ] Implementar método de impressão direta da ordem de serviço
+[x] Implementar método de impressão direta da ordem de serviço (only windows)
 
-[ ] Migrar funções do servidor para a api do pywebview.
+[x] Incluir caixas de dialogo para confirmar a execução das OSs 
 
 [ ] Criar página para exibir as Ações preventivas.
 
@@ -51,3 +50,6 @@
 ## Build
 
 [ ] Configurar build e distribuição para windows e linux.
+[ ] Configurar local do banco de dados no arquivo .env
+[ ] Configurar porta do servidor no .env
+[ ] Configurar local do template de OS no .env

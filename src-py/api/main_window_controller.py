@@ -2,6 +2,7 @@ import webview
 
 API_URL = "http://localhost:3333"
 from api.so_window_controller import SoWindowController
+
 class MainWindowController:
     """Ponte exposta ao JS via ``window.pywebview.api``.
 
@@ -50,4 +51,16 @@ class MainWindowController:
         api._bind(self._service_order_window)
         
         return {"opened": True}
+
+    def confirm_execute_service_order(self, args: dict) -> bool:
+        """Exibe o diálogo nativo de confirmação antes de executar a OS."""
+        if self._main is None:
+            return False
+
+        title = (args or {}).get("title") or "Confirmar execução"
+        message = (args or {}).get("message") or (
+            "Deseja realmente executar esta ordem de serviço?"
+        )
+
+        return bool(self._main.create_confirmation_dialog(title, message))
 

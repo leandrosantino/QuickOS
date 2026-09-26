@@ -1,15 +1,3 @@
-type PrintServiceOrderBridge = {
-  print_service_order?: (args: { id: number }) => void | Promise<unknown>
-}
-
-declare global {
-  interface Window {
-    pywebview?: {
-      api?: PrintServiceOrderBridge
-    }
-  }
-}
-
 const API_URL = "http://localhost:3333"
 
 /**

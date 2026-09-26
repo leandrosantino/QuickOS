@@ -22,7 +22,9 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
+import { toast } from "@/components/ui/toast"
 
+import { confirmExecuteServiceOrder } from "./confirmExecuteServiceOrder"
 import { EditableDatePicker } from "./EditableDatePicker"
 import { printServiceOrder } from "./printServiceOrder"
 import { ResponsiblesCombobox, type FormWorker } from "./ResponsiblesCombobox"
@@ -78,6 +80,7 @@ export function ServiceOrderForm() {
   const [values, setValues] = useState<FormValues | null>(null)
   const [errors, setErrors] = useState<FormErrors>({})
   const [isSaving, setIsSaving] = useState(false)
+  const [isConfirming, setIsConfirming] = useState(false)
   const initializedId = useRef<number | null>(null)
 
   useEffect(() => {
@@ -151,6 +154,14 @@ export function ServiceOrderForm() {
       return
     }
 
+    if (!order.concluded) {
+      setIsConfirming(true)
+      const confirmed = await confirmExecuteServiceOrder(order.id)
+      console.log(confirmed)
+      setIsConfirming(false)
+      if (!confirmed) return
+    }
+
     setErrors({})
     setIsSaving(true)
 
@@ -163,13 +174,22 @@ export function ServiceOrderForm() {
       }
 
       await queryClient.invalidateQueries({ queryKey: ["api", "service-orders"] })
+      toast.add({
+        type: "success",
+        title: order.concluded
+          ? "Ordem de serviço salva."
+          : "Ordem de serviço executada.",
+        description: `OS nº ${order.id} atualizada com sucesso.`,
+      })
       navigate(-1)
     } catch (error) {
-      setErrors({
-        form:
+      toast.add({
+        type: "error",
+        title: "Não foi possível concluir a operação.",
+        description:
           error instanceof Error
             ? error.message
-            : "Não foi possível concluir a operação.",
+            : "Tente novamente em instantes.",
       })
     } finally {
       setIsSaving(false)
@@ -214,7 +234,13 @@ export function ServiceOrderForm() {
     : (order.actions?.length ?? 0)
 
   return (
-    <div className="flex min-h-full flex-col p-6">
+    <div
+      className={cn(
+        "flex min-h-full flex-col p-6",
+        isConfirming && "opacity-60",
+      )}
+      inert={isConfirming}
+    >
       <Button
         variant="ghost"
         size="sm"
@@ -342,10 +368,6 @@ export function ServiceOrderForm() {
               />
             </Field>
 
-            {errors.form ? (
-              <p className="text-sm text-destructive">{errors.form}</p>
-            ) : null}
-
             {/* Linha 3: Duração + botões Salvar/Executar e Imprimir */}
             <div className="flex items-center justify-between gap-4">
               <div className="flex flex-col gap-0.5">
@@ -361,13 +383,19 @@ export function ServiceOrderForm() {
                   <PrinterIcon data-icon="inline-start" />
                   Imprimir OS
                 </Button>
-                <Button type="submit" disabled={isSaving}>
+                <Button type="submit" disabled={isSaving || isConfirming}>
                   {concluded ? (
                     <SaveIcon data-icon="inline-start" />
                   ) : (
                     <PlayIcon data-icon="inline-start" />
                   )}
-                  {isSaving ? "Salvando..." : concluded ? "Salvar" : "Executar"}
+                  {isConfirming
+                    ? "Aguardando confirmação..."
+                    : isSaving
+                      ? "Salvando..."
+                      : concluded
+                        ? "Salvar"
+                        : "Executar"}
                 </Button>
 
               </div>

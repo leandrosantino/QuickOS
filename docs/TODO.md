@@ -50,6 +50,9 @@
 ## Build
 
 [ ] Configurar build e distribuição para windows e linux.
+
 [ ] Configurar local do banco de dados no arquivo .env
+
 [ ] Configurar porta do servidor no .env
+
 [ ] Configurar local do template de OS no .env

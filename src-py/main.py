@@ -1,3 +1,5 @@
+from rich.console import Console
+
 from infra.server import start
 from infra.printing import print_pdf
 import threading
@@ -16,13 +18,19 @@ if __name__ == "__main__a":
 
 if __name__ == "__main__":
     global window
-    NODE_ENV = os.getenv("NODE_ENV", "development")
+    MODE = os.getenv("MODE", "production")
+    API_URL = os.getenv("API_URL", "")
+    DEV_URL = os.getenv("DEV_URL", "")
+    
+    Console().print(MODE)
+    Console().print(API_URL)
+    Console().print(DEV_URL)
 
     url = "view/index.html"
-    if NODE_ENV == "development":
-        url = "http://localhost:5173/"
-
-    api = MainWindowController()
+    if MODE == "development":
+        url = DEV_URL
+    
+    api = MainWindowController(API_URL)
     width = 1350
     height = 900
 
@@ -41,4 +49,4 @@ if __name__ == "__main__":
     server_thread = threading.Thread(target=start, name="flask-server", daemon=True)
     server_thread.start()
 
-    webview.start(debug=NODE_ENV == "development")
+    webview.start(debug=MODE == "development")

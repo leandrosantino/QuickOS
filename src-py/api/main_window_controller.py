@@ -1,34 +1,24 @@
 import webview
 
-API_URL = "http://localhost:3333"
-from api.so_window_controller import SoWindowController
-
 class MainWindowController:
-    """Ponte exposta ao JS via ``window.pywebview.api``.
 
-    Os nomes dos métodos são usados literalmente como chave no JS — o pywebview
-    não converte snake_case para camelCase (``webview/util.py``).
-    """
-
-    def __init__(self) -> None:
+    def __init__(self, API_URL) -> None:
         self._main: webview.Window | None = None
         self._service_order_window: webview.Window | None = None
+        self.API_URL: webview.Window | None = API_URL
 
     def _bind(self, main_window: webview.Window) -> None:
 
         self._main = main_window
 
     def print_service_order(self, args: dict) -> dict:
-        """Abre a janela de impressão da OS. Equivale à rota IPC ``printServiceOrder``."""
-        from webview import windows  # local: `webview.windows` só existe após o start
 
         order_id = (args or {}).get("id")
         if order_id is None:
             return {"opened": False, "reason": "missing_id"}
 
-        # Só uma janela por vez: reexibe a existente em vez de abrir outra.
         existing = self._service_order_window
-        if existing is not None and any(w.uid == existing.uid for w in windows):
+        if existing is not None and any(w.uid == existing.uid for w in webview.windows):
             try:
                 existing.restore()
                 existing.show()
@@ -36,19 +26,16 @@ class MainWindowController:
                 pass
             return {"opened": False, "reason": "already_open"}
         
-        api = SoWindowController()
-
         self._service_order_window = webview.create_window(
             "Ordem de Serviço Preventiva",
-            f"{API_URL}/createServiceorder/{order_id}",
-            width=900,
-            height=700,
-            resizable=True,
-            js_api=api
+            f"{self.API_URL}/createServiceorder/{order_id}",
+            width=1350,
+            height=900,
+            resizable=True
         )
         
         assert self._service_order_window
-        api._bind(self._service_order_window)
+
         
         return {"opened": True}
 

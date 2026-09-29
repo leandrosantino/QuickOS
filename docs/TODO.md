@@ -3,9 +3,6 @@
 ## Fix
 
 [ ] Resolver OSs fantasmas no sistema.
-[ ] Corrigir falha ao fechar janela de impressçao da OS
-    (O sistema quebra ao fechar) 
-[ ] Falha ao gerar PDF no windows
 
 ## New features
 
@@ -42,7 +39,7 @@
 
 [x] Incluir caixas de dialogo para confirmar a execução das OSs 
 
-[ ] Criar página para exibir as Ações preventivas.
+[X] Criar página para exibir as Ações preventivas.
 
 [ ] Criar página para criar/editar as Ações preventivas.
 

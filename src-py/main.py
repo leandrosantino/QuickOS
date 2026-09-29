@@ -1,23 +1,17 @@
 from rich.console import Console
-
 from infra.server import start
-from infra.printing import print_pdf
 import threading
 import webview
-from dotenv import load_dotenv
-from api.main_window_controller import MainWindowController
+from web_view_api import WebviewApi
 import os
-import asyncio
-from use_cases.get_week_calendar import getWeekCalendar
-from infra.prisma import _connect
 
+from dotenv import load_dotenv
 load_dotenv()
 
 if __name__ == "__main__a":
     start()
 
 if __name__ == "__main__":
-    global window
     MODE = os.getenv("MODE", "production")
     API_URL = os.getenv("API_URL", "")
     DEV_URL = os.getenv("DEV_URL", "")
@@ -30,7 +24,7 @@ if __name__ == "__main__":
     if MODE == "development":
         url = DEV_URL
     
-    api = MainWindowController(API_URL)
+    api = WebviewApi(API_URL)
     width = 1350
     height = 900
 

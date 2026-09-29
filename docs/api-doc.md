@@ -346,6 +346,50 @@ determinada semana/ano.
 
 ---
 
+### `GET /preventive/service-orders/calendar`
+
+Retorna o calendário anual de semanas com o resumo de ordens de serviço de cada
+uma (total, executadas, pendentes e percentual de conclusão).
+
+**Parâmetros de query:**
+
+| Parâmetro | Tipo | Obrigatório | Descrição                                          |
+| --------- | ---- | ----------- | -------------------------------------------------- |
+| `year`    | int  | Sim         | Ano de referência (sem o parâmetro a rota falha)   |
+
+**Resposta:** `200 OK` — array com 52 objetos `WeekCalendarData` (um por semana
+do ano, de 1 a 52):
+
+```json
+[
+  {
+    "week": 37,
+    "total": 4,
+    "executed": 3,
+    "pending": 1,
+    "completion": 75,
+    "hasOrders": true,
+    "start_of_week": "07/09",
+    "end_of_week": "13/09",
+    "status": "default"
+  }
+]
+```
+
+| Campo           | Tipo   | Descrição                                                              |
+| --------------- | ------ | ---------------------------------------------------------------------- |
+| `week`          | int    | Número da semana ISO do ano (1 a 52)                                   |
+| `total`         | int    | Total de ordens da semana (`executed + pending`)                       |
+| `executed`      | int    | Ordens de serviço concluídas                                           |
+| `pending`       | int    | Ordens de serviço não concluídas                                       |
+| `completion`    | int    | Percentual de conclusão (0–100, arredondado; `0` quando não há ordens) |
+| `hasOrders`     | bool   | Indica se a semana possui ordens de serviço                            |
+| `start_of_week` | string | Início da semana no formato `dd/mm`                                    |
+| `end_of_week`   | string | Fim da semana no formato `dd/mm`                                       |
+| `status`        | string | `"completed"` (100%), `"overdue"` (semana passada com pendências) ou `"default"` |
+
+---
+
 ## Modelos de Dados
 
 ### `Machine`

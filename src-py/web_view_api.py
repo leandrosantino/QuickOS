@@ -1,6 +1,6 @@
 import webview
 
-class MainWindowController:
+class WebviewApi:
 
     def __init__(self, API_URL) -> None:
         self._main: webview.Window | None = None

@@ -1,1 +1,0 @@
-export const weekYearRegex = new RegExp(/\d{4}-W\d{2}/)

@@ -6,10 +6,11 @@ alias="${1:-}"
 case "${alias,,}" in
 
     dev)
-        npx concurrently --kill-others \
-            "bun dev" `
+        concurrently --kill-others \
+            "bun dev" \
             "wait-on tcp:5173 && bun run app" 
         ;;
+        
 
     build)
         uv run pyinstaller \
@@ -20,10 +21,11 @@ case "${alias,,}" in
             --name "bom_viewer" \
             py-src/main.py
         ;;
-
     *)
-        echo "Alias '$alias' não encontrado!" >&2
-        echo -e "Aliases disponíveis: dev, build" >&2
-        exit 1
-        ;;
+
+    echo "Alias '$alias' não encontrado!" >&2
+    echo -e "Aliases disponíveis: dev, build" >&2
+    exit 1
+    ;;
+
 esac

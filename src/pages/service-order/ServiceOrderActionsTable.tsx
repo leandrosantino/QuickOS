@@ -46,9 +46,9 @@ export function ServiceOrderActionsTable({ order }: ServiceOrderActionsTableProp
   }, [order])
 
   return (
-    <div className="max-h-[40vh] overflow-y-auto rounded-2xl border border-border/60">
+    <div className="max-h-[40vh] overflow-y-auto rounded-2xl border border-border/60 [&>div]:overflow-visible">
       <Table>
-        <TableHeader className="sticky top-0 z-10 bg-background">
+        <TableHeader className="sticky top-0 z-10 bg-accent">
           <TableRow className="hover:bg-transparent">
             <TableHead className="h-10 w-24 px-3 text-xs">Nº</TableHead>
             <TableHead className="h-10 px-3 text-xs">Descrição</TableHead>
@@ -70,7 +70,7 @@ export function ServiceOrderActionsTable({ order }: ServiceOrderActionsTableProp
             actions.map((action, index) => (
               <TableRow
                 key={`${action.id}-${index}`}
-                className="border-b border-border/50 even:bg-muted/60 hover:bg-transparent"
+                className="border-b border-border/50 hover:bg-transparent"
               >
                 <TableCell className="px-3 py-2 align-top font-medium tabular-nums">
                   {action.id}

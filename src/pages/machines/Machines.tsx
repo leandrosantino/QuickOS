@@ -1,8 +1,8 @@
 export function Machines() {
   return (
-    <div className="flex flex-col gap-4 p-4">
+    <div className="flex flex-col gap-4 p-6">
       <header className="flex flex-col gap-1">
-        <h1 className="font-heading text-xl font-semibold">Máquinas</h1>
+        <h1 className="font-heading text-2xl font-semibold">Máquinas</h1>
         <p className="text-sm text-muted-foreground">
           Consulte e cadastre as máquinas.
         </p>

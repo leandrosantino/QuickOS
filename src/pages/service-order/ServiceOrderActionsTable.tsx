@@ -75,10 +75,10 @@ export function ServiceOrderActionsTable({ order }: ServiceOrderActionsTableProp
                 <TableCell className="px-3 py-2 align-top font-medium tabular-nums">
                   {action.id}
                 </TableCell>
-                <TableCell className="whitespace-pre-wrap break-words px-3 py-2 align-top">
+                <TableCell className="whitespace-pre-wrap wrap-break-word px-3 py-2 align-top">
                   {action.description}
                 </TableCell>
-                <TableCell className="whitespace-pre-wrap break-words px-3 py-2 align-top">
+                <TableCell className="whitespace-pre-wrap wrap-break-word px-3 py-2 align-top">
                   {action.excution}
                 </TableCell>
                 {order.concluded && <TableCell className="px-3 py-2 align-top">

@@ -1,3 +1,4 @@
+import { ConfirmProvider } from '@/components/ConfirmProvider'
 import { Toaster } from '@/components/ui/toast'
 import '@/styles.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -10,7 +11,9 @@ function Main(){
   return (
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-        <AppRouter />
+        <ConfirmProvider>
+          <AppRouter />
+        </ConfirmProvider>
         <Toaster />
       </QueryClientProvider>
     </StrictMode>

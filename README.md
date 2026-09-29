@@ -6,8 +6,8 @@ impressão das ordens e o registro de execução das mesmas. Ele foi construído
 como um programa nativo para o Windows, utilizando o _**"ElectronJS"**_ como
 Framework.
 
-![image1](https://raw.githubusercontent.com/leandrosantino/QuickOS/main/docs/image1.png)
-![image2](https://raw.githubusercontent.com/leandrosantino/QuickOS/main/docs/image2.png)
+![image2](./docs/screenshots/calendar.png)
+![image1](./docs/screenshots/service-order.png)
 
 O objetivo do desenvolvimento deste programa é facilitar a gestão das ordens de
 serviço, através de uma interface amigável, permitindo ao usuário controlar as
@@ -59,17 +59,9 @@ Por fim, todo o processo de construção deste programa me trouxe muito
 aprendizado e evolução como programador, e o conhecimento adquirido com ele vou
 carregar por toda a minha carreira.
 
-## Veja o QuickOS funcionando
-
-[![](https://raw.githubusercontent.com/leandrosantino/QuickOS/main/docs/tamb.png)](https://youtu.be/04RF9WVgicU)
-
 #### Link para o Repostório
 
 [github.com/leandrosantino/QuickOS](https://github.com/leandrosantino/QuickOS)
-
-#### Post no Linkedin
-
-[Linkedin - LeandroSantino_QuickOS](https://www.linkedin.com/posts/leandro-santino-7b2717215_fala-galera-hoje-eu-vim-compartilhar-com-activity-7081794046922268672-NqdY?utm_source=share&utm_medium=member_desktop)
 
 ## Licença
 

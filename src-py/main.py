@@ -2,7 +2,7 @@ from rich.console import Console
 from infra.server import start
 import threading
 import webview
-from web_view_api import WebviewApi
+from webview_api import WebviewApi
 import os
 
 from dotenv import load_dotenv
@@ -43,4 +43,7 @@ if __name__ == "__main__":
     server_thread = threading.Thread(target=start, name="flask-server", daemon=True)
     server_thread.start()
 
-    webview.start(debug=MODE == "development")
+    webview.start(
+        debug=MODE == "development",
+        # icon='../public/icon.png'
+    )

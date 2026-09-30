@@ -41,7 +41,7 @@
 
 [X] Criar página para exibir as Ações preventivas.
 
-[ ] Criar página para criar/editar as Ações preventivas.
+[X] Criar página para criar/editar as Ações preventivas.
 
 
 ## Build

@@ -75,6 +75,12 @@ class ActionCreate(BaseModel):
     ignore: bool
 
 
+class GetActionByIdParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: int = Field(gt=0)
+
+
 class UpdateActionParams(BaseModel):
     model_config = ConfigDict(extra="forbid")
 

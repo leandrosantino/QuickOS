@@ -31,6 +31,34 @@ const actionsInfoSchemaWithActonsTaken = z.object({
 
 export type ActionsInfoTypeWithActonsTaken = z.output<typeof actionsInfoSchemaWithActonsTaken>
 
+export const savePreventiveActionSchema = z.object({
+    machineId: z.string()
+        .min(1, 'Selecione a máquina !!')
+        .pipe(z.coerce.number().int().positive()),
+
+    natureId: z.string()
+        .min(1, 'Selecione o tipo !!')
+        .pipe(z.coerce.number().int().positive()),
+
+    frequency: z.string()
+        .min(1, 'Informe a periodicidade !!')
+        .pipe(z.coerce.number().positive('A quantidade de semanas não pode ser menor que 1 !!')),
+
+    nextExecution: z.string()
+        .min(1, 'Informe a próxima execução !!')
+        .regex(/\d{4}-W\d{2}/, 'A semana selecionada é inválida !!'),
+
+    description: z.string()
+        .min(10, 'O campo Descrição precisa ter no mínimo 10 caracteres !!'),
+
+    excution: z.string()
+        .min(10, 'O campo Execução precisa ter no mínimo 10 caracteres !!'),
+
+    ignore: z.boolean(),
+})
+
+export type SavePreventiveActionType = z.output<typeof savePreventiveActionSchema>
+
 export type ActionsInfoType = z.output<typeof actionInfoSchema>
 export type ActionsInfoTypeInupt = z.input<typeof actionInfoSchema>
 

@@ -2,6 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import {
   createAction,
   deleteAction,
+  getActionById,
   getActions,
   updateAction,
 } from './preventive-action-fetch'
@@ -9,6 +10,14 @@ import { type ActionsInfoType, type GetActionsParams } from './preventive-action
 
 export function useActionsQuery(params: GetActionsParams) {
   return useQuery({ queryKey: ['api', 'actions', params], queryFn: () => getActions(params) })
+}
+
+export function useActionByIdQuery(id: number) {
+  return useQuery({
+    queryKey: ['api', 'actions', id],
+    queryFn: () => getActionById(id),
+    enabled: Number.isFinite(id) && id > 0,
+  })
 }
 
 export function useCreateAction() {

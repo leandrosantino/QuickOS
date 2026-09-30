@@ -250,6 +250,18 @@ Lista as ações preventivas com filtros e paginação via cursor.
 
 ---
 
+### `GET /preventive/actions/<int:id>`
+
+Busca uma ação preventiva pelo ID.
+
+**Parâmetro de rota:** `id` (int) — identificador da ação.
+
+**Resposta:**
+- `200 OK` — objeto `Action`.
+- `404 Not Found` — `null` quando não encontrado.
+
+---
+
 ### `POST /preventive/actions`
 
 Cria uma nova ação preventiva.

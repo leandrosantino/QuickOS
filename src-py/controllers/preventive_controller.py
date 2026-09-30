@@ -6,6 +6,7 @@ from use_cases.delete_action import deleteAction
 from use_cases.delete_service_order import deleteServiceOrder
 from use_cases.execute_service_orders import executeServiceOrders
 from use_cases.get_actions import getActions
+from use_cases.get_action_by_id import getActionById
 from use_cases.get_service_order_by_id import getServiceOrderById
 from use_cases.get_service_order_count import getServiceOrderCount
 from use_cases.update_action import updateAction
@@ -67,6 +68,14 @@ async def get_actions():
     Console().print(params)
     result = await getActions(params)
     return jsonify(result)
+
+
+@preventive_blueprint.get("/actions/<int:id>")
+async def get_action_by_id(id: int):
+    action = await getActionById({"id": id})
+    if action is None:
+        return jsonify(None), 404
+    return jsonify(action.model_dump(mode="json"))
 
 
 @preventive_blueprint.post("/actions")

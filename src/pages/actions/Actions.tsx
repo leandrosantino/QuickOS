@@ -1,5 +1,6 @@
 import { PlusIcon } from "lucide-react"
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 import { useActionsQuery } from "@/api/preventive-action/preventive-action-query"
 import { Button } from "@/components/ui/button"
@@ -17,6 +18,7 @@ import {
 const PAGE_SIZE = 100
 
 export function Actions() {
+  const navigate = useNavigate()
   const [filters, setFilters] = useState<ActionFilters>(DEFAULT_ACTION_FILTERS)
   const [cursors, setCursors] = useState<number[]>([1])
 
@@ -75,7 +77,7 @@ export function Actions() {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Button size="sm">
+          <Button size="sm" onClick={() => navigate("/acoes/form")}>
             <PlusIcon data-icon="inline-start" />
             Nova ação
           </Button>
@@ -86,7 +88,11 @@ export function Actions() {
           />
         </div>
       </header>
-      <ActionsTable actions={visibleActions} isLoading={actionsQuery.isLoading} />
+      <ActionsTable
+        actions={visibleActions}
+        isLoading={actionsQuery.isLoading}
+        onRowClick={(action) => navigate(`/acoes/form/${action.id}`)}
+      />
       <ActionsPagination
         page={page}
         hasPrev={page > 1}

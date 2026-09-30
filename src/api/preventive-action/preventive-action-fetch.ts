@@ -24,6 +24,10 @@ export async function getActions(
   )
 }
 
+export async function getActionById(id: number): Promise<ActionsInfoTypeWithActonsTaken | null> {
+  return get<ActionsInfoTypeWithActonsTaken>(`/preventive/actions/${id}`)
+}
+
 export async function createAction(data: CreateActionInput): Promise<void> {
   await post('/preventive/actions', data)
 }

@@ -10,13 +10,31 @@ switch ($Alias.ToLower()) {
         "wait-on tcp:5173 && bun run app" 
     }
 
-    "build"    { uv run pyinstaller `
-        --noconfirm `
-        --onefile `
-        --windowed `
-        --add-data "py-src/view;view" `
-        --name "bom_viewer.exe" `
-        py-src/main.py 
+    "build"    {
+        $engine = uv run python -c "from prisma.client import BINARY_PATHS; from prisma.binaries import platform; print(BINARY_PATHS.query_engine[platform.binary_platform()])"
+        uv run pyinstaller `
+            --noconfirm `
+            --onefile `
+            --add-data "web;view" `
+            --collect-all prisma `
+            --add-binary "$engine;." `
+            --runtime-hook "prisma_runtime_hook.py" `
+            --name "quick-os.exe" `
+            src-py/main.py
+
+        if ($?) {
+            New-Item -ItemType Directory -Force "dist\public"   | Out-Null
+            New-Item -ItemType Directory -Force "dist\database" | Out-Null
+            Copy-Item -Path "public\*" -Destination "dist\public" -Recurse -Force
+
+            if (-not (Test-Path "dist\database\app.db")) {
+                Copy-Item -Path "database\*" -Destination "dist\database" -Recurse -Force
+            }
+
+            if (-not (Test-Path "dist\.env")) {
+                Copy-Item -LiteralPath ".env.production" -Destination "dist\.env"
+            }
+        }
     }
 
     Default { 

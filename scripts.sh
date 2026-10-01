@@ -13,13 +13,27 @@ case "${alias,,}" in
         
 
     build)
+        engine="$(uv run python -c "from prisma.client import BINARY_PATHS; from prisma.binaries import platform; print(BINARY_PATHS.query_engine[platform.binary_platform()])")"
         uv run pyinstaller \
             --noconfirm \
             --onefile \
-            --windowed \
-            --add-data "py-src/view:view" \
-            --name "bom_viewer" \
-            py-src/main.py
+            --add-data "web:view" \
+            --collect-all prisma \
+            --add-binary "${engine}:." \
+            --runtime-hook "prisma_runtime_hook.py" \
+            --name "quick-os" \
+            src-py/main.py
+
+        mkdir -p dist/public dist/database
+        cp -r public/. dist/public/
+
+        if [ ! -f dist/database/app.db ]; then
+            cp -r database/. dist/database/
+        fi
+
+        if [ ! -f dist/.env ]; then
+            cp .env.production dist/.env
+        fi
         ;;
     *)
 

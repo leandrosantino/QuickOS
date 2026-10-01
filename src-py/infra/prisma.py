@@ -20,6 +20,7 @@ from typing import Any, Awaitable, Coroutine, TypeVar
 
 from flask import Flask
 from prisma import Prisma
+from rich.console import Console
 
 T = TypeVar("T")
 
@@ -34,7 +35,8 @@ _boot_error: BaseException | None = None
 
 async def _connect() -> None:
     if not prisma.is_connected():
-        await prisma.connect()
+        a = await prisma.connect()
+        Console().print(a)
 
 
 async def _disconnect() -> None:

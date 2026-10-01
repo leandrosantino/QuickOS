@@ -11,6 +11,9 @@ export default defineConfig({
     tailwindcss(),
     babel({ presets: [reactCompilerPreset()] })
   ],
+  build:{
+    outDir: "web"
+  },
   resolve: {
     alias: {
       '@': path.resolve(import.meta.dirname, './src'),

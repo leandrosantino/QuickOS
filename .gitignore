@@ -34,7 +34,7 @@ dist-ssr
 .env
 .env.development.local
 .env.test.local
-.env.production.local
+# .env.production.local
 .env.local
 
 # caches
@@ -60,7 +60,6 @@ wheels/
 /data
 /data/bom_files
 *.spec
-/py-src/view
 uv.lock
 
 #----
@@ -81,3 +80,4 @@ uv.lock
 
 #Ai
 .agents
+/web

@@ -1,0 +1,7 @@
+CREATE TABLE
+  "_PreventiveOSToWorker" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL,
+    CONSTRAINT "_PreventiveOSToWorker_A_fkey" FOREIGN KEY ("A") REFERENCES "PreventiveOS" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "_PreventiveOSToWorker_B_fkey" FOREIGN KEY ("B") REFERENCES "Worker" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+  )

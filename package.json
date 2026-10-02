@@ -46,7 +46,12 @@
       "buildResources": "public"
     },
     "win": {
-      "icon": "./src/icon.png"
+      "icon": "./src/icon.png",
+      "target": "portable"
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-portable.exe",
+      "requestExecutionLevel": "user"
     }
   },
   "dependencies": {

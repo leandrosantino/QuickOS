@@ -51,3 +51,4 @@ wheels/
 *.spec
 /py-src/view
 uv.lock
+.agents

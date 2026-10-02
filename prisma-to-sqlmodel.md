@@ -11,17 +11,7 @@ Os models definidos em [schema.prisma](./schema.prisma) precisam ser migrados pa
 SQLModel, matento todos os relacionamentos de schema.prisma e considerando as tabelas pivot geradas automaticamento pelo prisma. 
 
 ## Arquitetura
-Os models devem ser criados dentro da pasta [models](./src-py/model). Reorganise a pasta o sistema da seguinte forma: 
-
-src-py
----- model
--------- actions   
--------- service_order
------------- service_order.py (SQLModel)
------------- use_case
----------------- get_service_order_by_id.py
------------- schema
------------- controller
+Os models devem ser criados dentro da pasta [models](./src-py/model). 
 
 As funções que estão em [repositories](./src-py/repositories/) devem ser ficar tambem dentro das pasta 
 model, ciradas como um caso de uso.
@@ -34,10 +24,14 @@ do PyDantic  Avalie qual são necessárias e quais não são tendo em vista que 
 os tipos dos models. Aqueles consideradas necessárias com DTOs dos casos de uso. mova para o seu 
 respectivo caso de uso. Mas mantenha o arquivo original para a migração.
 
+A configuração do banco de dados deve ficar dentro de [infra](./src-py/infra/),
+a localização do arquivo é definida pela variavel de ambiente DATABASE_ULR e o cliente
+deve ser sync para não gerar problemas com as threads do flask.
+
 ## TODO
 
-[ ] T01 | Criar os models do SQLModel migrando as definições de schema.prisma e os schemas sql exportado dos banco;
-[ ] T02 | Reescrever os casos de uso com a sintax do SQLModel
+[x] T01 | Criar os models do SQLModel migrando as definições de schema.prisma e os schemas sql exportado dos banco;
+[x] T02 | Reescrever os casos de uso com a sintax do SQLModel em uma nova pasta dentro de /src/model
 [ ] T03 | Mover e reorganizar os schemas do PyDantic em [schema/preventive.py](./src-py/schemas/preventive.py)
 [ ] T04 | Reescrever os controller de api utilizando os novos casos de uso
 [ ] T05 | Remover o código prisma obsoleto

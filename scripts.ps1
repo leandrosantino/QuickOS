@@ -13,6 +13,7 @@ switch ($Alias.ToLower()) {
     "build"    {
         $engine = uv run python -c "from prisma.client import BINARY_PATHS; from prisma.binaries import platform; print(BINARY_PATHS.query_engine[platform.binary_platform()])"
         uv run pyinstaller `
+            --windowed `
             --noconfirm `
             --onefile `
             --add-data "web;view" `

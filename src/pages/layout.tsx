@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils"
 const tabs = [
   { to: "/week-calendar", label: "Calendário Semanal" },
   { to: "/acoes", label: "Plano de Preventivas" },
-  { to: "/maquinas", label: "Máquinas" },
-  { to: "/manutencistas", label: "Manutencistas" },
+  // { to: "/maquinas", label: "Máquinas" },
+  // { to: "/manutencistas", label: "Manutencistas" },
 ]
 
 export function AppLayout() {
